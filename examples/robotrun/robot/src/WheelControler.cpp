@@ -88,20 +88,17 @@ void WheelControler::setup(int speedPin, int directionPin1, int directionPin2, i
 
 void WheelControler::drive(int value) {
 	int v = 0;
-	float powerFactor = 0.0;
 	if (value > 0) {
 		setForwardDirection();
-		v = value;
-		powerFactor = powerFactorForward;
+		v = (int)round((float)value * powerFactorForward);
 	} else if (value < 0){
 		setBackwardDirection();
-		v = -value;
-		powerFactor = powerFactorBackward;
+		v = (int)round((float)(-value) * powerFactorBackward);
 	}
 	if (v > 255) {
 		v = 255;
 	}
-	analogWrite(speed_pin,v*powerFactor);
+	analogWrite(speed_pin,v);
 };
 
 void WheelControler::stop() {

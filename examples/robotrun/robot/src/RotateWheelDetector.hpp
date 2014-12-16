@@ -41,6 +41,16 @@
 #define VELOCITY_COFF_0 -0.3296559103
 #define VELOCITY_COFF_1 0.3513509810
 
+/**
+ * RotateWheelDetector Class.
+ *
+ * 	Used to calculate wheel speed rotation and measure running distance.
+ * 	For rotate intervals use IR comparator on detectorPin pin.
+ * 	Require periodic call method detect() as much as possible.
+ * 	Time in microseconds of signal change from IR comparator stored in circular buffer hist_p.
+ * 	Using two hist_p calculates velocity, velocity values processed with IIRFilter
+ * 	and stores into  circular buffer vel_p.
+ */
 class RotateWheelDetector {
 	private:
 		int currentState;
@@ -53,29 +63,63 @@ class RotateWheelDetector {
 		int vel_p;
 		IIRFilter velocityFilter;
 
+	/**
+	 * init() method cleanup all variables and buffers.
+	 */
 	void init();
 
 	public:
+		/**
+		 * Default constructor.
+		 */
 		RotateWheelDetector();
+
+		/**
+		 * Set pin assigned to IR comparator.
+		 */
 		void setPin(int pin);
 
+		/**
+		 * return distance which travel wheel on one tick of comparator, in mm.
+		 * @return float distance in mm
+		 */
 		float const static getMinDetectDistance() {
 			return DIST_PER_TICK;
 		};
 
-
+		/**
+		 * Method which detect signal change and calculate velocity and traveled distance
+		 * should be called as much as possible.
+		 */
 		void detect();
-		int getState();
 
+		/**
+		 * cleanup all variables and buffers.
+		 */
 		void reset();
 
+		/**
+		 * Return number of times signal on comparator was changed.
+		 * @return int
+		 */
 		int getTicks();
 
+		/**
+		 * Return traveled distance in mm
+		 * @return float
+		 */
 		float getDistance();
 
+		/**
+		 * Return current velocity
+		 * @return float
+		 */
 		float getVelocity();
 
 
+		/**
+		 * print into Serial current debug hist_p and vel_p arrays.
+		 */
 		void printHistory();
 };
 

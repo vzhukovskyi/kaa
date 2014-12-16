@@ -39,12 +39,10 @@ void RotateWheelDetector::init() {
 	ticks = 0;
 	vel_p = 0;
 	velocityFilter.init();
-	cli();
 	hist_p = 0;
 	for(int i=0;i<TICKS_HISTORY_LENGTH;i++) {
 		history[i] = 0;
 	}
-	sei();
 	for(int i=0;i<VELOCITY_HISTORY_LENGTH;i++) {
 		velosity[i] = 0;
 	}
@@ -64,7 +62,6 @@ RotateWheelDetector::RotateWheelDetector() :
 void RotateWheelDetector::setPin(int pin) {
 	detectorPin = pin;
 	pinMode(detectorPin, INPUT);
-	//Serial.print("RotateWheelDetector set pin "); Serial.println(pin);
 };
 
 
@@ -99,8 +96,6 @@ void RotateWheelDetector::detect() {
 	}
 
 };
-
-int RotateWheelDetector::getState() { return currentState; };
 
 void RotateWheelDetector::reset() {
 	init();

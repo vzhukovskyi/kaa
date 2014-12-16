@@ -67,12 +67,19 @@
 
 #define NUMBER_PIDS_CONSTANTS 3
 
+/**
+ *
+ */
 class PIDControlable {
 	public:
 		virtual ~PIDControlable() {};
 		virtual void updatePidCoefficients(float Kp, float Ki, float Kd) = 0;
 };
 
+/**
+ * PID coefficients holding Class.
+ * 	Use PIDControlable to apply new coefficients.
+ */
 class PIDConst {
 
 	private:
@@ -80,12 +87,22 @@ class PIDConst {
 		float constKi;
 		float constKd;
 	public:
+		/**
+		 * Default constructor
+		 * @param - float Kp
+		 * @param - float Ki
+		 * @param - float Kd
+		 */
 		PIDConst(float Kp, float Ki, float Kd) {
 			constKp = Kp;
 			constKi = Ki;
 			constKd = Kd;
 		};
 
+		/**
+		 * Apply new coefficients to PIDControlable
+		 * @param pinter to PIDControlable
+		 */
 		void setCoefficients(PIDControlable * pid) const {
 			if (pid == NULL)
 				return;
@@ -93,12 +110,15 @@ class PIDConst {
 		};
 };
 
+/**
+ * Storage class for PIDConst.
+ */
 class PIDConstants {
 	public:
 		enum CONST_TYPE {
-			PID_SLOW = 0,
-			PID_FAST = 1,
-			PID_FORWARD = 2
+			PID_SLOW = 0, // Used to precisely orient robot around set angel
+			PID_FAST = 1, // Used for fast orient robot
+			PID_FORWARD = 2 // Used to drive forward
 		};
 
 	private:
@@ -112,7 +132,14 @@ class PIDConstants {
 			constants[type] = pidConst;
 		};
 	public:
-
+		/**
+		 * Default constructor,
+		 * 	Put into storage PID coefficients:
+		 * 		PID_SLOW - used to precisely orient robot,
+		 * 			Applying when slow motion detected and orient angel less than SLOW_MOTION_PID_THRESHOLD
+		 * 		PID_FAST - used for orient robot when angel more than SLOW_MOTION_PID_THRESHOLD
+		 * 		PID_FORWARD - used to orient angel around setpoint during forward moving
+		 */
 		PIDConstants() : current(PID_SLOW)
 		{
 			addConst(PID_SLOW, new PIDConst(TURN_SLOW_KP, TURN_SLOW_KI, TURN_FAST_KD));
@@ -120,6 +147,11 @@ class PIDConstants {
 			addConst(PID_FORWARD, new PIDConst(FORWARD_FAST_KP, FORWARD_FAST_KI, FORWARD_FAST_KD));
 		};
 
+		/**
+		 * Apply PID coefficients according to specified type.
+		 * @param CONST_TYPE type
+		 * @param pointer to PIDControlable
+		 */
 		void applyTunings(CONST_TYPE type, PIDControlable * pid) {
 			if (type == current)
 				return;
@@ -142,6 +174,11 @@ class PIDConstants {
 
 class MoveDriver;
 
+/**
+ * Orientation keep driver class.
+ * 	Used to orient robot to specified angel.
+ * 	Class implement PIDDrivable and PIDControlable interfaces.
+ */
 class OrientationDriver : PIDDrivable, PIDControlable {
 	private:
 		MoveDriver * driver;

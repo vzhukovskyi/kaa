@@ -42,6 +42,7 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.kaaproject.kaa.examples.robotrun.controller.robot.PingDirection;
 import org.kaaproject.kaa.examples.robotrun.controller.robot.TurnDirection;
 import org.kaaproject.kaa.examples.robotrun.controller.robot.callbacks.ErrorCallback;
 import org.kaaproject.kaa.examples.robotrun.controller.robot.callbacks.MoveForwardCallback;
@@ -341,7 +342,7 @@ public class RobotEmulatorTest {
             }
         });
 
-        emu.turn(TurnDirection.RIGHT, false); //NORTH after right turn should face to EAST
+        emu.turn(TurnDirection.RIGHT); //NORTH after right turn should face to EAST
         synchronized (objSync) {
             try {
                 objSync.wait(emu.getCommandTimeout() + emu.getTimeoutDeviation());
@@ -351,7 +352,7 @@ public class RobotEmulatorTest {
             }
         }
 
-        emu.turn(TurnDirection.RIGHT, false); //EAST after right turn should face to SOUTH
+        emu.turn(TurnDirection.RIGHT); //EAST after right turn should face to SOUTH
         synchronized (objSync) {
             try {
                 objSync.wait(emu.getCommandTimeout() + emu.getTimeoutDeviation());
@@ -361,7 +362,7 @@ public class RobotEmulatorTest {
             }
         }
 
-        emu.turn(TurnDirection.RIGHT, false); //SOUTH after right turn should face to WEST
+        emu.turn(TurnDirection.RIGHT); //SOUTH after right turn should face to WEST
         synchronized (objSync) {
             try {
                 objSync.wait(emu.getCommandTimeout() + emu.getTimeoutDeviation());
@@ -371,7 +372,7 @@ public class RobotEmulatorTest {
             }
         }
 
-        emu.turn(TurnDirection.RIGHT, false); //WEST after right turn should face to NORTH
+        emu.turn(TurnDirection.RIGHT); //WEST after right turn should face to NORTH
         synchronized (objSync) {
             try {
                 objSync.wait(emu.getCommandTimeout() + emu.getTimeoutDeviation());
@@ -382,7 +383,7 @@ public class RobotEmulatorTest {
         }
 
         //Test LEFT turn
-        emu.turn(TurnDirection.LEFT, false); //NORTH after left turn should face to WEST
+        emu.turn(TurnDirection.LEFT); //NORTH after left turn should face to WEST
         synchronized (objSync) {
             try {
                 objSync.wait(emu.getCommandTimeout() + emu.getTimeoutDeviation());
@@ -392,7 +393,7 @@ public class RobotEmulatorTest {
             }
         }
 
-        emu.turn(TurnDirection.LEFT, false); //WEST after left turn should face to SOUTH
+        emu.turn(TurnDirection.LEFT); //WEST after left turn should face to SOUTH
         synchronized (objSync) {
             try {
                 objSync.wait(emu.getCommandTimeout() + emu.getTimeoutDeviation());
@@ -402,7 +403,7 @@ public class RobotEmulatorTest {
             }
         }
 
-        emu.turn(TurnDirection.LEFT, false); //SOUTH after left turn should face to EAST
+        emu.turn(TurnDirection.LEFT); //SOUTH after left turn should face to EAST
         synchronized (objSync) {
             try {
                 objSync.wait(emu.getCommandTimeout() + emu.getTimeoutDeviation());
@@ -412,7 +413,7 @@ public class RobotEmulatorTest {
             }
         }
 
-        emu.turn(TurnDirection.LEFT, false); //EAST after left turn should face to NORTH
+        emu.turn(TurnDirection.LEFT); //EAST after left turn should face to NORTH
         synchronized (objSync) {
             try {
                 objSync.wait(emu.getCommandTimeout() + emu.getTimeoutDeviation());
@@ -485,7 +486,6 @@ public class RobotEmulatorTest {
             }
         });
 
-        Cell posBefore = emu.getCurrentPosition();
         Cell posAfter = getReadyForMoveForward(emu);
 
         emu.moveForward(false);
@@ -512,18 +512,6 @@ public class RobotEmulatorTest {
                 }
             }
         });
-
-        emu.moveBackward();
-
-        synchronized (objSync) {
-            try {
-                objSync.wait(emu.getCommandTimeout() + emu.getTimeoutDeviation());
-                assertEquals(posBefore.getX(), emu.getCurrentPosition().getX());
-                assertEquals(posBefore.getY(), emu.getCurrentPosition().getY());
-            } catch (InterruptedException e) {
-                fail(e.toString());
-            }
-        }
 
     }
 
@@ -554,7 +542,7 @@ public class RobotEmulatorTest {
                 }
             });
 
-            emu.turn(TurnDirection.RIGHT, false);
+            emu.turn(TurnDirection.RIGHT);
             synchronized (objSync) {
                 try {
                     objSync.wait(emu.getCommandTimeout() + emu.getTimeoutDeviation());
@@ -615,7 +603,7 @@ public class RobotEmulatorTest {
 
             }
         });
-        emu.ping();
+        emu.ping(PingDirection.FRONT);
 
     }
 

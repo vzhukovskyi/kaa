@@ -45,7 +45,6 @@ public class Ping extends Movement {
      */
     public Ping(long sleep, OperationCallback callback) {
         super(sleep, callback);
-        // TODO Auto-generated constructor stub
     }
 
     /* (non-Javadoc)
@@ -56,5 +55,5 @@ public class Ping extends Movement {
         // TODO Auto-generated method stub
 
     }
-
+    
 }

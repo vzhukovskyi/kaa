@@ -134,7 +134,7 @@ public class TestBTDriver implements BTDriver {
                         callback.onMessage("f");
                     } else if (command.equals("b")) {
                         callback.onMessage("b");
-                    } else if (command.equals("p")) {
+                    } else if (command.equals("n")) {
                         callback.onMessage("p");
                         callback.onMessage("340");
                     }

@@ -40,9 +40,9 @@ import java.util.regex.Pattern;
 import org.kaaproject.kaa.examples.robotrun.controller.adapter.bluetooth.BTDriver;
 import org.kaaproject.kaa.examples.robotrun.controller.adapter.bluetooth.BTManageable;
 import org.kaaproject.kaa.examples.robotrun.controller.robot.Drivable;
+import org.kaaproject.kaa.examples.robotrun.controller.robot.PingDirection;
 import org.kaaproject.kaa.examples.robotrun.controller.robot.TurnDirection;
 import org.kaaproject.kaa.examples.robotrun.controller.robot.callbacks.ErrorCallback;
-import org.kaaproject.kaa.examples.robotrun.controller.robot.callbacks.MoveBackwardCallback;
 import org.kaaproject.kaa.examples.robotrun.controller.robot.callbacks.MoveForwardCallback;
 import org.kaaproject.kaa.examples.robotrun.controller.robot.callbacks.OperationCallback;
 import org.kaaproject.kaa.examples.robotrun.controller.robot.callbacks.OperationStatus;
@@ -66,17 +66,15 @@ public class Bot implements Drivable,BTManageable {
     private final static String COMMAND_BUSY = ".*u.*";
     private final static String COMMAND_INVALID = ".*i.*";
     private final static String SEND_COMMAND_TURN_LEFT = "l";
-    private final static String SEND_COMMAND_TURN_LEFT_CLBR = "L";
     private final static String COMMAND_TURN_LEFT = ".*l.*";
     private final static String SEND_COMMAND_TURN_RIGHT = "r";
-    private final static String SEND_COMMAND_TURN_RIGHT_CLBR = "R";
     private final static String COMMAND_TURN_RIGHT = ".*r.*";
     private final static String SEND_COMMAND_MOVE_FORWARD = "f";
     private final static String SEND_COMMAND_MOVE_FORWARD_CLBR = "F";
     private final static String COMMAND_MOVE_FORWARD = ".*f.*";
-    private final static String SEND_COMMAND_MOVE_BACKWARD = "b";
-    private final static String COMMAND_MOVE_BACKWARD = ".*b.*";
-    private final static String SEND_COMMAND_PING = "p";
+    private final static String SEND_COMMAND_PING_LEFT = "b";
+    private final static String SEND_COMMAND_PING_FRONT = "n";
+    private final static String SEND_COMMAND_PING_RIGHT = "m";
     private final static String COMMAND_PING = ".*p([0-9]+).*";
     
     /** Default distance, if less - mean WALL if more - mean EMPTY */
@@ -91,7 +89,6 @@ public class Bot implements Drivable,BTManageable {
     /** Drivable callbacks */
     private TurnCallback turnCallback;
     private MoveForwardCallback mfCallback;
-    private MoveBackwardCallback mbCallback;
     private PingCallback pingCallback;
     private ErrorCallback errorCallback;
     private StateCallback stateCallback;
@@ -164,6 +161,22 @@ public class Bot implements Drivable,BTManageable {
      * 
      */
     protected class PingRunner implements Runnable {
+        
+        private String pingCommand;
+        
+        protected PingRunner(PingDirection direction) {
+            switch (direction) {
+            case LEFT:
+                pingCommand = SEND_COMMAND_PING_LEFT;
+                break;
+            case FRONT:
+                pingCommand = SEND_COMMAND_PING_FRONT;
+                break;
+            case RIGHT:
+                pingCommand = SEND_COMMAND_PING_RIGHT;
+                break;
+            }
+        }
 
         /* (non-Javadoc)
          * @see java.lang.Runnable#run()
@@ -173,7 +186,7 @@ public class Bot implements Drivable,BTManageable {
             OperationStatus status = OperationStatus.FAILED;
             waitConnected();
             try {
-                getDriver().sendCommand(SEND_COMMAND_PING);
+                getDriver().sendCommand(pingCommand);
                 status = waitResponse(COMMAND_PING);
                 if (status == OperationStatus.SUCESSFULL) {
                     LOG.trace("Ping response sucessfull");
@@ -269,24 +282,16 @@ public class Bot implements Drivable,BTManageable {
      * @see org.kaaproject.kaa.examples.robotrun.controller.robot.Drivable#turn(org.kaaproject.kaa.examples.robotrun.controller.robot.TurnDirection)
      */
     @Override
-    public void turn(TurnDirection direction, boolean withCalibration) {
+    public void turn(TurnDirection direction) {
         LOG.info("Turn run with direction "+direction.toString());
         
         switch (direction) {
         case LEFT:
-            String sc = SEND_COMMAND_TURN_LEFT;
-            if (withCalibration) {
-                sc = SEND_COMMAND_TURN_LEFT_CLBR;
-            }
-            Runner runLeft = new Runner(sc, COMMAND_TURN_LEFT, turnCallback);
+            Runner runLeft = new Runner(SEND_COMMAND_TURN_LEFT, COMMAND_TURN_LEFT, turnCallback);
             executor.execute(runLeft);
             break;
         case RIGHT:
-            String cs = SEND_COMMAND_TURN_RIGHT;
-            if (withCalibration) {
-                cs = SEND_COMMAND_TURN_RIGHT_CLBR;
-            }
-            Runner runRight = new Runner(cs, COMMAND_TURN_RIGHT, turnCallback);
+            Runner runRight = new Runner(SEND_COMMAND_TURN_RIGHT, COMMAND_TURN_RIGHT, turnCallback);
             executor.execute(runRight);
             break;
         default:
@@ -309,22 +314,12 @@ public class Bot implements Drivable,BTManageable {
     }
 
     /* (non-Javadoc)
-     * @see org.kaaproject.kaa.examples.robotrun.controller.robot.Drivable#moveBackward()
-     */
-    @Override
-    public void moveBackward() {
-        LOG.info("Move Backward run... ");
-        Runner run = new Runner(SEND_COMMAND_MOVE_BACKWARD, COMMAND_MOVE_BACKWARD, mbCallback);
-        executor.execute(run);
-    }
-
-    /* (non-Javadoc)
      * @see org.kaaproject.kaa.examples.robotrun.controller.robot.Drivable#ping()
      */
     @Override
-    public void ping() {
-        LOG.info("Ping run... ");
-        PingRunner run = new PingRunner();
+    public void ping(PingDirection direction) {
+        LOG.info("Ping run... "+direction.toString());
+        PingRunner run = new PingRunner(direction);
         executor.execute(run);
     }
 
@@ -344,13 +339,6 @@ public class Bot implements Drivable,BTManageable {
         this.mfCallback = callback;
     }
 
-    /* (non-Javadoc)
-     * @see org.kaaproject.kaa.examples.robotrun.controller.robot.Drivable#registerMoveBackwardCallback(org.kaaproject.kaa.examples.robotrun.controller.robot.callbacks.MoveBackwardCallback)
-     */
-    @Override
-    public void registerMoveBackwardCallback(MoveBackwardCallback callback) {
-        this.mbCallback = callback;
-    }
 
     /* (non-Javadoc)
      * @see org.kaaproject.kaa.examples.robotrun.controller.robot.Drivable#registerPingCallback(org.kaaproject.kaa.examples.robotrun.controller.robot.callbacks.PingCallback)

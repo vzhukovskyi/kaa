@@ -107,24 +107,24 @@ void loop() {
  */
 
 void Sonar_Measure(float distance) {
-	Serial.print("P"); Serial.println(distance);
+	Serial.print("p"); Serial.println(distance);
 	cliInterface->commandComplete();
 }
 
 void Forward_Complete() {
-	Serial.println("F");
-	float LD = driver.getLeft()->getWheelDetector()->getDistance();
-	float RD = driver.getRight()->getWheelDetector()->getDistance();
-	Serial.print(LD); Serial.print(","); Serial.println(RD);
+	Serial.println("f");
+	//float LD = driver.getLeft()->getWheelDetector()->getDistance();
+	//float RD = driver.getRight()->getWheelDetector()->getDistance();
+	//Serial.print(LD); Serial.print(","); Serial.println(RD);
 	cliInterface->commandComplete();
 }
 
 void TurnLeft_Complete() {
-	Serial.println("L");
+	Serial.println("l");
 	cliInterface->commandComplete();
 }
 void TurnRight_Complete() {
-	Serial.println("R");
+	Serial.println("r");
 	cliInterface->commandComplete();
 }
 
@@ -237,6 +237,7 @@ CLI * initCliInterface() {
 	c->addAction('v', verbousOutput);
 #ifndef CALIBRATE_CODE
 	c->addAction('f',forwardAction);
+	c->addAction('F',forwardAction);
 	c->addAction('l', leftTurnAction);
 	c->addAction('r', rightTurnAction);
 	c->addAction('s', stopAction);

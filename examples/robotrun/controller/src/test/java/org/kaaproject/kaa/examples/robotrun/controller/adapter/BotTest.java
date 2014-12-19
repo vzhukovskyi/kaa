@@ -38,9 +38,9 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.kaaproject.kaa.examples.robotrun.controller.robot.PingDirection;
 import org.kaaproject.kaa.examples.robotrun.controller.robot.TurnDirection;
 import org.kaaproject.kaa.examples.robotrun.controller.robot.callbacks.ErrorCallback;
-import org.kaaproject.kaa.examples.robotrun.controller.robot.callbacks.MoveBackwardCallback;
 import org.kaaproject.kaa.examples.robotrun.controller.robot.callbacks.MoveForwardCallback;
 import org.kaaproject.kaa.examples.robotrun.controller.robot.callbacks.OperationStatus;
 import org.kaaproject.kaa.examples.robotrun.controller.robot.callbacks.PingCallback;
@@ -173,8 +173,8 @@ public class BotTest {
             
             bot.start();
             
-            bot.turn(TurnDirection.LEFT, false);
-            bot.turn(TurnDirection.RIGHT, false);
+            bot.turn(TurnDirection.LEFT);
+            bot.turn(TurnDirection.RIGHT);
             
             synchronized (objSync) {
                 objSync.wait(2000);
@@ -247,59 +247,7 @@ public class BotTest {
         }
     }
 
-    /**
-     * Test method for {@link org.kaaproject.kaa.examples.robotrun.controller.adapter.Bot#moveBackward()}.
-     */
-    @Test
-    public void testMoveBackward() {
-        try {
-            final Bot bot = new Bot(new TestBTDriver());
-            assertNotNull(bot);
-            assertNotNull(bot.getExecutor());
-            
-            final Object objSync = new Object();
-            
-            OK = false;
-            
-            bot.registerErrorCallback(new ErrorCallback() {
-                
-                @Override
-                public void error(Exception exception) {
-                    fail(exception.toString());
-                }
-            });
-            
-            bot.registerMoveBackwardCallback(new MoveBackwardCallback() {
-                
-                @Override
-                public void complete(OperationStatus status) {
-                    if (status != OperationStatus.SUCESSFULL) {
-                        fail("Move backward command failed");
-                    }
-                    OK = true;
-                    synchronized (objSync) {
-                        objSync.notify();
-                    }
-                    
-                }
-            });
-            
-            bot.start();
-            
-            bot.moveBackward();
-            
-            synchronized (objSync) {
-                objSync.wait(2000);
-            }
-            if(!OK) {
-                fail("Move backward failed");
-            }
-            
-        } catch (Exception e) {
-            fail(e.toString());
-        }
-    }
-
+    
     /**
      * Test method for {@link org.kaaproject.kaa.examples.robotrun.controller.adapter.Bot#ping()}.
      */
@@ -335,7 +283,7 @@ public class BotTest {
             
             bot.start();
             
-            bot.ping();
+            bot.ping(PingDirection.FRONT);
             synchronized (objSync) {
                 objSync.wait(2000);
             }

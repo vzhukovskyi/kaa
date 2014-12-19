@@ -32,7 +32,6 @@
 package org.kaaproject.kaa.examples.robotrun.controller.robot;
 
 import org.kaaproject.kaa.examples.robotrun.controller.robot.callbacks.ErrorCallback;
-import org.kaaproject.kaa.examples.robotrun.controller.robot.callbacks.MoveBackwardCallback;
 import org.kaaproject.kaa.examples.robotrun.controller.robot.callbacks.MoveForwardCallback;
 import org.kaaproject.kaa.examples.robotrun.controller.robot.callbacks.PingCallback;
 import org.kaaproject.kaa.examples.robotrun.controller.robot.callbacks.StateCallback;
@@ -53,9 +52,8 @@ public interface Drivable {
     /**
      * Send Turn command to Robot
      * @param direction TurnDirection, possible LEFT or RIGHT.
-     * @param withColebration - boolean, true - switch on calibration during
      */
-    public void turn(TurnDirection direction, boolean withCalibration);
+    public void turn(TurnDirection direction);
     
     /**
      * Send Move forward command to Robot.
@@ -64,14 +62,10 @@ public interface Drivable {
     public void moveForward(boolean withCalibration);
     
     /**
-     * Send Move backward command to Robot.
+     * Initiate wall existing measurement on direction specified
+     * @param PingDirection direction
      */
-    public void moveBackward();
-    
-    /**
-     * Initiate wall existing measurement on forward direction.
-     */
-    public void ping();
+    public void ping(PingDirection direction);
     
     /**
      * Register Turn completion callback
@@ -84,12 +78,6 @@ public interface Drivable {
      * @param callback MoveForwardCallback interface.
      */
     public void registerMoveForwardCallback(MoveForwardCallback callback);
-    
-    /**
-     * Register Move Backward completion callback
-     * @param callback MoveBackwardCallback interface.
-     */
-    public void registerMoveBackwardCallback(MoveBackwardCallback callback);
     
     /**
      * Register Ping completion callback

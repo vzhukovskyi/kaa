@@ -38,9 +38,9 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import org.kaaproject.kaa.examples.robotrun.controller.robot.Drivable;
+import org.kaaproject.kaa.examples.robotrun.controller.robot.PingDirection;
 import org.kaaproject.kaa.examples.robotrun.controller.robot.TurnDirection;
 import org.kaaproject.kaa.examples.robotrun.controller.robot.callbacks.ErrorCallback;
-import org.kaaproject.kaa.examples.robotrun.controller.robot.callbacks.MoveBackwardCallback;
 import org.kaaproject.kaa.examples.robotrun.controller.robot.callbacks.MoveForwardCallback;
 import org.kaaproject.kaa.examples.robotrun.controller.robot.callbacks.OperationCallback;
 import org.kaaproject.kaa.examples.robotrun.controller.robot.callbacks.OperationStatus;
@@ -48,7 +48,6 @@ import org.kaaproject.kaa.examples.robotrun.controller.robot.callbacks.PingCallb
 import org.kaaproject.kaa.examples.robotrun.controller.robot.callbacks.PongStatus;
 import org.kaaproject.kaa.examples.robotrun.controller.robot.callbacks.StateCallback;
 import org.kaaproject.kaa.examples.robotrun.controller.robot.callbacks.TurnCallback;
-import org.kaaproject.kaa.examples.robotrun.emulator.commands.MoveBackward;
 import org.kaaproject.kaa.examples.robotrun.emulator.commands.MoveForward;
 import org.kaaproject.kaa.examples.robotrun.emulator.commands.MovementCollision;
 import org.kaaproject.kaa.examples.robotrun.emulator.commands.Ping;
@@ -104,8 +103,6 @@ public class RobotEmulator implements Drivable {
     private TurnCallback turnCallback;
 
     private MoveForwardCallback mForwardCallback;
-
-    private MoveBackwardCallback mBackwardCallback;
 
     private PingCallback pingCallback;
 
@@ -190,7 +187,7 @@ public class RobotEmulator implements Drivable {
      * @see org.kaaproject.kaa.examples.robotrun.controller.robot.Drivable#turn(org.kaaproject.kaa.examples.robotrun.controller.robot.TurnDirection)
      */
     @Override
-    public void turn(final TurnDirection direction, boolean withCalibration) {
+    public void turn(final TurnDirection direction) {
         Turn turn = new Turn(getTimeout(), new OperationCallback() {
 
             @Override
@@ -240,47 +237,50 @@ public class RobotEmulator implements Drivable {
         executor.execute(move);
     }
 
-    /* (non-Javadoc)
-     * @see org.kaaproject.kaa.examples.robotrun.controller.robot.Drivable#moveBackward()
+    /*
+     * (non-Javadoc)
+     * @see org.kaaproject.kaa.examples.robotrun.controller.robot.Drivable#ping(org.kaaproject.kaa.examples.robotrun.controller.robot.PingDirection)
      */
     @Override
-    public void moveBackward() {
-        MoveBackward move = new MoveBackward(getTimeout(), new OperationCallback( ) {
-
-            @Override
-            public void complete(OperationStatus status) {
-                OperationStatus realStatus = status;
-                if (status == OperationStatus.SUCESSFULL) {
-                    try {
-                        updatePositionBackward();
-                    } catch (MovementCollision e) {
-                        realStatus = OperationStatus.FAILED;
-                        if (errorCallabck != null) {
-                            errorCallabck.error(e);
-                        }
-                    }
-                }
-                if (mBackwardCallback != null) {
-                    mBackwardCallback.complete(realStatus);
-                }
-            }
-
-        });
-        executor.execute(move);
-
-    }
-
-    /* (non-Javadoc)
-     * @see org.kaaproject.kaa.examples.robotrun.controller.robot.Drivable#ping()
-     */
-    @Override
-    public void ping() {
+    public void ping(final PingDirection direction) {
         Ping ping  = new Ping(getPingTimeout(), new OperationCallback() {
 
             @Override
             public void complete(OperationStatus status) {
                 PongStatus pongStatus = PongStatus.EMPTY;
-                if (getCurrentPosition().getBorder(getCurrentDirection()) == BorderType.SOLID) {
+                Direction pingDirection = getCurrentDirection();
+                Direction currentDir = getCurrentDirection();
+                switch (currentDir) {
+                case NORTH:
+                    if (direction == PingDirection.LEFT) {
+                        pingDirection = Direction.WEST;
+                    } else if (direction == PingDirection.RIGHT) {
+                        pingDirection = Direction.EAST;
+                    }
+                    break;
+                case SOUTH:
+                    if (direction == PingDirection.LEFT) {
+                        pingDirection = Direction.EAST;
+                    } else if (direction == PingDirection.RIGHT) {
+                        pingDirection = Direction.WEST;
+                    }
+                    break;
+                case EAST:
+                    if (direction == PingDirection.LEFT) {
+                        pingDirection = Direction.NORTH;
+                    } else if (direction == PingDirection.RIGHT) {
+                        pingDirection = Direction.SOUTH;
+                    }
+                    break;                    
+                case WEST:
+                    if (direction == PingDirection.LEFT) {
+                        pingDirection = Direction.SOUTH;
+                    } else if (direction == PingDirection.RIGHT) {
+                        pingDirection = Direction.NORTH;
+                    }
+                    break;
+                }
+                if (getCurrentPosition().getBorder(pingDirection) == BorderType.SOLID) {
                     pongStatus = PongStatus.WALL;
                 }
                 if (pingCallback != null) {
@@ -307,15 +307,7 @@ public class RobotEmulator implements Drivable {
         mForwardCallback = callback;
     }
 
-    /* (non-Javadoc)
-     * @see org.kaaproject.kaa.examples.robotrun.controller.robot.Drivable#registerMoveBackwardCallback(org.kaaproject.kaa.examples.robotrun.controller.robot.callbacks.MoveBackwardCallback)
-     */
-    @Override
-    public void registerMoveBackwardCallback(MoveBackwardCallback callback) {
-        mBackwardCallback = callback;
-    }
-
-    /* (non-Javadoc)
+        /* (non-Javadoc)
      * @see org.kaaproject.kaa.examples.robotrun.controller.robot.Drivable#registerPingCallback(org.kaaproject.kaa.examples.robotrun.controller.robot.callbacks.PingCallback)
      */
     @Override
@@ -436,86 +428,7 @@ public class RobotEmulator implements Drivable {
 
     }
 
-    /**
-     * Update current robot position on one Cell backward, check wall behind before movement
-     * @throws If wall exist.
-     */
-    private void updatePositionBackward() throws MovementCollision {
-        if (getCurrentPosition().getBorder(getOpositeDirection(getCurrentDirection())) == BorderType.SOLID) {
-            throw new MovementCollision("Wall is set in "+
-                            getCurrentDirection().toString()+
-                            " direction from X="+getCurrentPosition().getX()+
-                            " Y="+getCurrentPosition().getY());
-        }
-        switch (getCurrentDirection()) {
-        case SOUTH:
-            if(getCurrentPosition().getY() > 0) {
-                Cell newPosition = getLabyrinth().getCell(getCurrentPosition().getX(), getCurrentPosition().getY() - 1);
-                currentPosition = newPosition;
-            } else {
-                throw new MovementCollision("Labyrinth error, can't move to outside of Labyrinth: direction="+
-                        getCurrentDirection().toString()+
-                        " X="+getCurrentPosition().getX()+
-                        " Y="+getCurrentPosition().getY());
-            }
-            break;
-        case NORTH:
-            if(getLabyrinth().getHeight() > (getCurrentPosition().getY()+1)) {
-                Cell newPosition = getLabyrinth().getCell(getCurrentPosition().getX(), getCurrentPosition().getY() + 1);
-                currentPosition = newPosition;
-            } else {
-                throw new MovementCollision("Labyrinth error, can't move to outside of Labyrinth: direction="+
-                        getCurrentDirection().toString()+
-                        " X="+getCurrentPosition().getX()+
-                        " Y="+getCurrentPosition().getY());
-            }
-            break;
-        case EAST:
-            if(getCurrentPosition().getX() > 0) {
-                Cell newPosition = getLabyrinth().getCell(getCurrentPosition().getX() - 1, getCurrentPosition().getY());
-                currentPosition = newPosition;
-            } else {
-                throw new MovementCollision("Labyrinth error, can't move to outside of Labyrinth: direction="+
-                        getCurrentDirection().toString()+
-                        " X="+getCurrentPosition().getX()+
-                        " Y="+getCurrentPosition().getY());
-            }
-            break;
-        case WEST:
-            if(getLabyrinth().getWidth() > (getCurrentPosition().getX()+1)) {
-                Cell newPosition = getLabyrinth().getCell(getCurrentPosition().getX() + 1, getCurrentPosition().getY());
-                currentPosition = newPosition;
-            } else {
-                throw new MovementCollision("Labyrinth error, can't move to outside of Labyrinth: direction="+
-                        getCurrentDirection().toString()+
-                        " X="+getCurrentPosition().getX()+
-                        " Y="+getCurrentPosition().getY());
-            }
-            break;
-        default:
-            break;
-        }
 
-    }
-
-    /**
-     * Return Direction of opposite to specified
-     * @param direction Direction
-     * @return opposite Direction
-     */
-    private Direction getOpositeDirection(Direction direction) {
-        switch (direction) {
-        case NORTH:
-            return Direction.SOUTH;
-        case SOUTH:
-            return Direction.NORTH;
-        case WEST:
-            return Direction.EAST;
-        case EAST:
-            return Direction.WEST;
-        }
-        return Direction.SOUTH;
-    }
 
     /**
      * Get command emulation timeout.

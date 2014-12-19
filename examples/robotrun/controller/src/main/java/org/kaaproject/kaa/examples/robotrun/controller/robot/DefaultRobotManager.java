@@ -117,8 +117,7 @@ public class DefaultRobotManager implements RobotManager {
                         doMove(listener);
                     }
                 });
-                //TODO set to use properly turn with calibration
-                drivable.turn(turn, true);
+                drivable.turn(turn);
             } else {
                 final Cell pendingPos = targetPos;
                 drivable.registerMoveForwardCallback(new MoveForwardCallback() {
@@ -196,7 +195,8 @@ public class DefaultRobotManager implements RobotManager {
                         }
                     }
                 });
-                drivable.ping();
+                //TODO Added use of ping direction, now use only FRONT
+                drivable.ping(PingDirection.FRONT);
             } else {
                 drivable.registerTurnCallback(new TurnCallback() {
                     @Override
@@ -211,11 +211,11 @@ public class DefaultRobotManager implements RobotManager {
                         if (undiscoveredDirections.peek() == currentDirection) {
                             doScan(listener, undiscoveredDirections);
                         } else {
-                            drivable.turn(turnDirection, true);
+                            drivable.turn(turnDirection);
                         }
                     }
                 });
-                drivable.turn(turnDirection, true);
+                drivable.turn(turnDirection);
             }
         }
     }

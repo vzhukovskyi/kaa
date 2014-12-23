@@ -34,6 +34,7 @@ MoveDriver::MoveDriver(int baseAddress, int servoPin, int sonarEchoPin, int sona
 			fDistance(0),
 			cDist(0),
 			slowMotionFirstDetected(0),
+			yawZeroFirstDetected(0),
 			calibrateStarted(0),
 			leftTurnCalibrate(false),
 			storeCalibrateRatio(false),
@@ -63,7 +64,7 @@ void MoveDriver::Compute() {
 };
 
 void MoveDriver::Forward(Drive_command_complete_t * commadCompleteCallback, float distance) {
-	mpu->MPUReset();
+//	mpu->MPUReset();
 	state  = FORWARD;
 	callback = commadCompleteCallback;
 	fDistance = distance;
@@ -92,7 +93,7 @@ void MoveDriver::Stop(bool keep) {
 };
 
 void MoveDriver::TurnLeft(Drive_command_complete_t * commadCompleteCallback) {
-	mpu->MPUReset();
+//	mpu->MPUReset();
 	state = TURN_LEFT;
 	callback = commadCompleteCallback;
 	wheelBasePower = 0;
@@ -102,7 +103,7 @@ void MoveDriver::TurnLeft(Drive_command_complete_t * commadCompleteCallback) {
 };
 
 void MoveDriver::TurnRight(Drive_command_complete_t * commadCompleteCallback) {
-	mpu->MPUReset();
+//	mpu->MPUReset();
 	state = TURN_RIGHT;
 	callback = commadCompleteCallback;
 	wheelBasePower = 0;
@@ -195,6 +196,15 @@ void MoveDriver::writeWheelPowerFactor() {
 void MoveDriver::TurnCompute() {
 	float offset = abs(orientator->getYawOffset());
 	long ct = millis();
+	if (isYawZero())  {
+		if (yawZeroFirstDetected == 0) {
+			yawZeroFirstDetected = ct;
+		}
+	} else {
+		if (yawZeroFirstDetected > 0) {
+			yawZeroFirstDetected  = 0;
+		}
+	}
 	if (mpu->getYawVelocity() >= SLOW_MOTION_THRESHOLD) {
 		if (offset > SLOW_MOTION_PID_THRESHOLD) {
 			pidConstants.applyTunings(PIDConstants::PID_FAST,(PIDControlable *)orientator);
@@ -212,10 +222,12 @@ void MoveDriver::TurnCompute() {
 			slowMotionFirstDetected = 0;
 		}
 	}
-	if (offset < ACCEPT_TURN_THRESHOLD && mpu->getYawVelocity() == 0.0) {
-		Stop(false);
-		if (callback) {
-			callback();
+	if (offset < ACCEPT_TURN_THRESHOLD && yawZeroFirstDetected > 0) {
+		if ((ct - yawZeroFirstDetected) >= YAW_ZERO_DETECT_DURATION) {
+			Stop(false);
+			if (callback) {
+				callback();
+			}
 		}
 	}
 
@@ -245,7 +257,13 @@ void MoveDriver::printCalibratedValues() {
 	sonar.printCalibratedValues();
 };
 
-
+bool MoveDriver::isYawZero() {
+	if (abs(mpu->getYawVelocity()) <= YAW_ZERO_THRESHOLD) {
+		return true;
+	} else {
+		return false;
+	}
+};
 
 /*
  * OrientationDriver implementation
@@ -274,6 +292,7 @@ void OrientationDriver::keepOrientation(float angel) {
 
 void OrientationDriver::keepOrientation() {
 	operating = true;
+	pid->reset();
 };
 
 void OrientationDriver::stopOrientation() {
@@ -336,3 +355,4 @@ float OrientationDriver::angelTranslateToPositive(float a) {
 	result = ( a >= 0) ? a : 360+a;
 	return result;
 };
+

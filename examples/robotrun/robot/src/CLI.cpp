@@ -61,13 +61,22 @@ bool Command::act(char symbol) {
 
 
 void CLI::Compute() {
+	char inChar = 0;
+	if (Serial.available()) {
+		inChar = (char)Serial.read();
+		if (inChar == 's') {
+			commandComplete();
+			//if inChar have 's' in pass next if and process as Stop command.
+		}
+	}
 	if ((currentCommand != NULL)
 			|| (_commands == NULL)){
 		return;
 	}
-	if (Serial.available()) {
+	if (Serial.available() || inChar > 0) {
 	    // get the new byte:
-	    char inChar = (char)Serial.read();
+		if (inChar == 0)
+			inChar = (char)Serial.read();
 	    Command * c = _commands;
 	    while(c != NULL) {
 	    	currentCommand = c;
@@ -83,6 +92,10 @@ void CLI::Compute() {
 
 void CLI::addAction(const char commandSymbol, Command_actions_t * actions) {
 	Command * newCommand = new Command(commandSymbol,actions);
+	if (newCommand == NULL) {
+		Serial.print(commandSymbol); Serial.println(" Failed.");
+		return;
+	}
 	Serial.print(commandSymbol); Serial.print(",");
 	if (_commands == NULL) {
 		_commands = newCommand;

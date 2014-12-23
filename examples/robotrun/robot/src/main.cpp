@@ -206,6 +206,11 @@ void verbousOutput() {
 	cliInterface->commandComplete();
 }
 
+void mpuVerbous() {
+	Serial.print("yaw="); Serial.println(driver.getMPU()->getYaw());
+	cliInterface->commandComplete();
+}
+
 void testLeftWheelAction() {
 	driver.WheelCalibrate(true,false);
 	cliInterface->commandComplete();
@@ -235,6 +240,7 @@ CLI * initCliInterface() {
 	CLI * c = new CLI();
 	c->addAction('k', keepAliveAction);
 	c->addAction('v', verbousOutput);
+	c->addAction('y', mpuVerbous);
 #ifndef CALIBRATE_CODE
 	c->addAction('f',forwardAction);
 	c->addAction('F',forwardAction);

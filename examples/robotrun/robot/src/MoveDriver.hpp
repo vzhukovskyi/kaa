@@ -39,14 +39,19 @@
 #define SLOW_MOTION_PID_THRESHOLD 10.0 //degree
 #define SLOW_MOTION_DETECT_DURATION 2000 //msec
 #define ACCEPT_TURN_THRESHOLD 0.5 //degree
+#define YAW_ZERO_THRESHOLD 0.1 // degree/per second
+#define YAW_ZERO_DETECT_DURATION 200 //msec
 
 #define TURN_LEFT_ANGEL -90
 #define TURN_RIGHT_ANGEL 90
 
 //PID Constants
-#define TURN_FAST_KP 23
+//#define TURN_FAST_KP 23
+//#define TURN_FAST_KI 7
+//#define TURN_FAST_KD 2
+#define TURN_FAST_KP 19
 #define TURN_FAST_KI 7
-#define TURN_FAST_KD 2
+#define TURN_FAST_KD 2.5
 
 #define TURN_SLOW_KP 27
 #define TURN_SLOW_KI 120
@@ -232,6 +237,7 @@ class MoveDriver {
 		float cDist;
 
 		long slowMotionFirstDetected;
+		long yawZeroFirstDetected;
 
 		long calibrateStarted;
 		bool leftTurnCalibrate;
@@ -305,6 +311,7 @@ class MoveDriver {
 
 		void ForwardCompute();
 
+		bool isYawZero();
 };
 
 

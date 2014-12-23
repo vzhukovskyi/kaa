@@ -312,9 +312,9 @@ bool Accelgyro::Compute() {
 			prevYaw = getYaw();
 		}
 	}
-	if ((mpuIntStatus & (0x01<<MPU6050_INTERRUPT_FIFO_OFLOW_BIT)) || fifoCount == 1024) {
+	if ((mpuIntStatus & (0x01<<MPU6050_INTERRUPT_FIFO_OFLOW_BIT)) || fifoCount == 512) {
 		MPUReset();
-		//Serial.println("ERROR: MPU FIFO overflow");
+		Serial.println("ERROR: MPU FIFO overflow");
 	}
 	return dataUpdated;
 };

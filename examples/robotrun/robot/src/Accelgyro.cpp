@@ -307,9 +307,10 @@ bool Accelgyro::Compute() {
 			mpu->getMotion6(&ac[X], &ac[Y], &ac[Z], &gy[X], &gy[Y], &gy[Z]);
 			long ctime = micros();
 			double dt = ((double)(ctime - prevYawMicros))/(double)1000000;
-			yawVelocity = ((double)(prevYaw - getYaw()))/dt;
+			float cYaw = getYaw();
+			yawVelocity = ((double)(prevYaw - cYaw))/dt;
 			prevYawMicros = ctime;
-			prevYaw = getYaw();
+			prevYaw = cYaw;
 		}
 	}
 	if ((mpuIntStatus & (0x01<<MPU6050_INTERRUPT_FIFO_OFLOW_BIT)) || fifoCount == 512) {

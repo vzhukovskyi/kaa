@@ -24,6 +24,7 @@ import org.kaaproject.kaa.client.profile.AbstractProfileContainer;
 import org.kaaproject.kaa.examples.robotrun.controller.Controller.ControllerCallback;
 import org.kaaproject.kaa.examples.robotrun.controller.configuration.ConfigurationManager;
 import org.kaaproject.kaa.examples.robotrun.controller.configuration.DefaultConfigurationManager;
+import org.kaaproject.kaa.examples.robotrun.controller.configuration.LabyrinthUpdateListener;
 import org.kaaproject.kaa.examples.robotrun.controller.events.DefaultEventManager;
 import org.kaaproject.kaa.examples.robotrun.controller.log.DefaultLogManager;
 import org.kaaproject.kaa.examples.robotrun.controller.path.DepthFirstSearchAlgorithm;
@@ -51,7 +52,15 @@ public abstract class Launcher implements StateCallback, ControllerCallback, Err
 
     private boolean startPending = false;
     private boolean connected = false;
+    
+    private final int startX;
+    
 
+    private final int startY;
+    private final Direction startDirection;
+    private boolean started;
+
+    
     public Launcher(Kaa kaa,
             LauncherCallback callback,
             Drivable drivable,
@@ -62,12 +71,28 @@ public abstract class Launcher implements StateCallback, ControllerCallback, Err
         this.kaa = kaa;
         this.callback = callback;
         this.entityName = name;
+        this.startX = startX;
+        this.startY = startY;
+        this.startDirection = startDirection;
+        this.started = false;
         drivable.registerStateCallback(this);
         drivable.registerErrorCallback(this);
         kaa.getClient().getProfileManager().setProfileContainer(new BasicProfileContainer());
         final Context context = new Context();
         final ConfigurationManager configurationManager = new DefaultConfigurationManager(kaa.getClient());
-        configurationManager.setStartPosition(startX, startY, startDirection);
+        configurationManager.addListener(new LabyrinthUpdateListener() {
+            
+            @Override
+            public void onLabyrinthUpdate(Labyrinth labyrinth) {
+                LOG.info("Labyrinth updated: new dimensions {}:{}",labyrinth.getHeight(),labyrinth.getWidth());
+                if (!isStarted()) {
+                    configurationManager.setStartPosition(getStartX(),getStartY(),getStartDirection());
+                    setStarted(true);
+                }
+                
+            }
+        });
+        //configurationManager.setStartPosition(startX, startY, startDirection);
         context.setConfigurationManager(configurationManager);
         context.setEventManager(new DefaultEventManager(kaa.getClient(), EntityType.ROBOT,
             new DefaultEventManager.EventManagerDataProvider() {
@@ -178,6 +203,41 @@ public abstract class Launcher implements StateCallback, ControllerCallback, Err
             return new Profile();
         }
 
+    }
+
+    /**
+     * @return the startX
+     */
+    public int getStartX() {
+        return startX;
+    }
+
+    /**
+     * @return the startY
+     */
+    public int getStartY() {
+        return startY;
+    }
+
+    /**
+     * @return the startDirection
+     */
+    public Direction getStartDirection() {
+        return startDirection;
+    }
+
+    /**
+     * @param started the started to set
+     */
+    public void setStarted(boolean started) {
+        this.started = started;
+    }
+
+    /**
+     * @return the started
+     */
+    public boolean isStarted() {
+        return started;
     }
 
     public interface LauncherCallback {

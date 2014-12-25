@@ -66,19 +66,22 @@ public class Bot implements Drivable,BTManageable {
     private final static String COMMAND_BUSY = ".*u.*";
     private final static String COMMAND_INVALID = ".*i.*";
     private final static String SEND_COMMAND_TURN_LEFT = "l";
-    private final static String COMMAND_TURN_LEFT = ".*l.*";
+    private final static String COMMAND_TURN_LEFT = ".*l.*\\s+";
     private final static String SEND_COMMAND_TURN_RIGHT = "r";
-    private final static String COMMAND_TURN_RIGHT = ".*r.*";
+    private final static String COMMAND_TURN_RIGHT = ".*r.*\\s+";
     private final static String SEND_COMMAND_MOVE_FORWARD = "f";
     private final static String SEND_COMMAND_MOVE_FORWARD_CLBR = "F";
-    private final static String COMMAND_MOVE_FORWARD = ".*f.*";
+    private final static String COMMAND_MOVE_FORWARD = ".*f.*\\s+";
     private final static String SEND_COMMAND_PING_LEFT = "b";
     private final static String SEND_COMMAND_PING_FRONT = "n";
     private final static String SEND_COMMAND_PING_RIGHT = "m";
     private final static String COMMAND_PING = ".*p([0-9]+).*";
+    private final static String COMMAND_PING_COMPLETE = "\\s*.*p([0-9]+).*\\s+";
+    private final static String SEND_COMMAND_KEEP_ALIVE = "k";
+    private final static String COMMAND_KEEP_ALIVE = "\\s*k\\s+";
     
     /** Default distance, if less - mean WALL if more - mean EMPTY */
-    private final static int DISTANCE_TO_WALL = 10;
+    private final static int DISTANCE_TO_WALL = 30;
     
     /** Constant logger */
     private static final Logger LOG = LoggerFactory.getLogger(Bot.class);
@@ -93,6 +96,7 @@ public class Bot implements Drivable,BTManageable {
     private ErrorCallback errorCallback;
     private StateCallback stateCallback;
     
+    private boolean operated;
     
     /** current wait response */
     private String waitResponse;
@@ -135,7 +139,32 @@ public class Bot implements Drivable,BTManageable {
     @Override
     public void start() throws Exception {
         driver.connect();
-        LOG.info("Bot: start complete.");
+        final Object sync = new Object();
+        setOperated(false);
+        Runner run = new Runner(SEND_COMMAND_KEEP_ALIVE, COMMAND_KEEP_ALIVE, new OperationCallback() {
+            @Override
+            public void complete(OperationStatus status) {
+                if (status == OperationStatus.SUCESSFULL) {
+                    setOperated(true);
+                } else {
+                    setOperated(false);
+                }
+                synchronized (sync) {
+                    sync.notify();
+                }
+            }
+        });
+        executor.execute(run);
+        
+        synchronized (sync) {
+            sync.wait(60000);
+        }
+        if (isOperated()) {
+            LOG.info("Bot: start complete.");
+        } else {
+            LOG.error("Bot: start failed.");
+            throw new BotException("Error initialize robot keep alive command failed");
+        }
     }
     
     /**
@@ -187,22 +216,23 @@ public class Bot implements Drivable,BTManageable {
             waitConnected();
             try {
                 getDriver().sendCommand(pingCommand);
-                status = waitResponse(COMMAND_PING);
+                status = waitResponse(COMMAND_PING_COMPLETE);
                 if (status == OperationStatus.SUCESSFULL) {
                     LOG.trace("Ping response sucessfull");
                     if (pingCallback != null) {
                         if (recivedResponse != null) {
-                            LOG.trace("Ping response: "+recivedResponse);
+
+                            LOG.info("Ping response: "+recivedResponse);
                             Pattern p = Pattern.compile(COMMAND_PING);
-                            Matcher m = p.matcher(recivedResponse);
+                            Matcher m = p.matcher(recivedResponse.trim());
                             if (m.matches()) {
                                 String ls = m.group(1);
                                 int l = Integer.parseInt(ls);
                                 if (l >= DISTANCE_TO_WALL) {
-                                    LOG.trace("Ping response: "+recivedResponse+" status EMPTY");
+                                    LOG.info("Ping response: "+recivedResponse+" status EMPTY");
                                     pingCallback.pong(PongStatus.EMPTY);
                                 } else {
-                                    LOG.trace("Ping response: "+recivedResponse+" status WALL");
+                                    LOG.info("Ping response: "+recivedResponse+" status WALL");
                                     pingCallback.pong(PongStatus.WALL);
                                 }
                             } else {
@@ -211,7 +241,7 @@ public class Bot implements Drivable,BTManageable {
                                     errorCallback.error(new BotException("Ping: recivedResponse don't matches to "+COMMAND_PING));
                                 }
                             }
-                            
+
                         } else {
                             LOG.error("Send command Ping: recived response not initialized");
                             if (errorCallback != null) {
@@ -425,12 +455,13 @@ public class Bot implements Drivable,BTManageable {
                 if (!recivedResponseBuffer.isEmpty()) {
                     if (recivedResponseBuffer.matches(waitResponse)) {
                         waitStatus = OperationStatus.SUCESSFULL;
+                        LOG.info("Bot: onMessage({}: sucessfull)",recivedResponseBuffer);
                         flushResponseBuffer();
-                    } else if (recivedResponseBuffer.matches(COMMAND_BUSY)){
+                    } else if (recivedResponseBuffer.trim().matches(COMMAND_BUSY)){
                         waitStatus = OperationStatus.FAILED;
                         LOG.info("Bot: onMessage({}: robot busy)",recivedResponseBuffer);
                         flushResponseBuffer();
-                    } else if (recivedResponseBuffer.matches(COMMAND_INVALID)){
+                    } else if (recivedResponseBuffer.trim().matches(COMMAND_INVALID)){
                         waitStatus = OperationStatus.FAILED;
                         LOG.info("Bot: onMessage({}: command invalid)",recivedResponseBuffer);
                         flushResponseBuffer();
@@ -503,6 +534,20 @@ public class Bot implements Drivable,BTManageable {
     @Override
     public void registerStateCallback(StateCallback callback) {
         this.stateCallback = callback;
+    }
+
+    /**
+     * @return the operated
+     */
+    public boolean isOperated() {
+        return operated;
+    }
+
+    /**
+     * @param operated the operated to set
+     */
+    public void setOperated(boolean operated) {
+        this.operated = operated;
     }
 
 }

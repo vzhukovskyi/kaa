@@ -32,7 +32,8 @@
  * External constructors and destructors from around the Kaa SDK
  */
 extern kaa_error_t kaa_user_manager_create(kaa_user_manager_t **user_manager_p, kaa_status_t *status
-        , kaa_channel_manager_t *channel_manager);
+        , kaa_channel_manager_t *channel_manager, kaa_logger_t *logger);
+
 extern void        kaa_user_manager_destroy(kaa_user_manager_t *user_manager);
 
 extern kaa_error_t kaa_status_create(kaa_status_t **kaa_status_p);
@@ -45,13 +46,17 @@ extern void        kaa_profile_manager_destroy(kaa_profile_manager_t *self);
 extern kaa_error_t kaa_channel_manager_create(kaa_channel_manager_t **channel_manager_p, kaa_logger_t *logger);
 extern void        kaa_channel_manager_destroy(kaa_channel_manager_t *self);
 
+#ifndef KAA_DISABLE_FEATURE_EVENTS
 extern kaa_error_t kaa_event_manager_create(kaa_event_manager_t **event_manager_p, kaa_status_t *status
         , kaa_channel_manager_t *channel_manager, kaa_logger_t *logger);
 extern void        kaa_event_manager_destroy(kaa_event_manager_t *self);
+#endif
 
+#ifndef KAA_DISABLE_FEATURE_LOGGING
 extern kaa_error_t kaa_log_collector_create(kaa_log_collector_t ** log_collector_p, kaa_status_t *status
         , kaa_channel_manager_t *channel_manager, kaa_logger_t *logger);
 extern void        kaa_log_collector_destroy(kaa_log_collector_t *self);
+#endif
 
 extern kaa_error_t kaa_bootstrap_manager_create(kaa_bootstrap_manager_t **bootstrap_manager_p, kaa_logger_t *logger);
 extern void        kaa_bootstrap_manager_destroy(kaa_bootstrap_manager_t *self);
@@ -101,7 +106,7 @@ static kaa_error_t kaa_context_create(kaa_context_t **context_p, kaa_logger_t *l
 
     if (!error)
         error = kaa_user_manager_create(&((*context_p)->user_manager)
-                , (*context_p)->status, (*context_p)->channel_manager);
+                , (*context_p)->status, (*context_p)->channel_manager, (*context_p)->logger);
 
     if (!error)
         error = kaa_platform_protocol_create(&((*context_p)->platfrom_protocol), *context_p, (*context_p)->logger);

@@ -13,28 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.kaaproject.kaa.server.transport;
 
-package org.kaaproject.kaa.server.common;
-
-/*
- * This code is automatically generated. In order to change content of this class edit Version.template file 
- */
+import java.util.Properties;
 
 /**
- * The Class Version provides access to useful project version information.
- * This information is populated during pre-compilation phase.
+ * Stores common properties for all transports. Majority of this properties are
+ * related to runtime environment or host specific.
+ * 
+ * @author Andrew Shvayka
+ *
  */
-public final class Version {
-
-    /** The Constant PROJECT_VERSION. */
-    public static final String PROJECT_VERSION = "0.7.0-SNAPSHOT";
-    
-    /** The Constant COMMIT_HASH. */
-    public static final String COMMIT_HASH = "N/A";
+public class TransportProperties extends Properties {
 
     /**
-     * Instantiates a new version.
+     * 
      */
-    private Version(){
-    }
+    private static final long serialVersionUID = -3398931583634951967L;
+
 }

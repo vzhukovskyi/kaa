@@ -13,28 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.kaaproject.kaa.server.transport;
 
-package org.kaaproject.kaa.server.common;
-
-/*
- * This code is automatically generated. In order to change content of this class edit Version.template file 
- */
+import org.apache.avro.Schema;
 
 /**
- * The Class Version provides access to useful project version information.
- * This information is populated during pre-compilation phase.
+ * A configuration of particular {@link Transport}.
+ * 
+ * @author Andrew Shvayka
+ *
  */
-public final class Version {
+public interface TransportConfig {
 
-    /** The Constant PROJECT_VERSION. */
-    public static final String PROJECT_VERSION = "0.7.0-SNAPSHOT";
-    
-    /** The Constant COMMIT_HASH. */
-    public static final String COMMIT_HASH = "N/A";
+    int getId();
 
-    /**
-     * Instantiates a new version.
-     */
-    private Version(){
-    }
+    String getName();
+
+    String getTransportClass();
+
+    Schema getConfigSchema();
+
 }

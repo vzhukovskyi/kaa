@@ -13,28 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.kaaproject.kaa.server.transport;
 
-package org.kaaproject.kaa.server.common;
-
-/*
- * This code is automatically generated. In order to change content of this class edit Version.template file 
- */
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * The Class Version provides access to useful project version information.
- * This information is populated during pre-compilation phase.
+ * An marker annotation for {@link TransportConfig}.
+ * 
+ * @author Andrew Shvayka
+ *
  */
-public final class Version {
 
-    /** The Constant PROJECT_VERSION. */
-    public static final String PROJECT_VERSION = "0.7.0-SNAPSHOT";
-    
-    /** The Constant COMMIT_HASH. */
-    public static final String COMMIT_HASH = "N/A";
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.TYPE) 
+public @interface KaaTransportConfig {
 
-    /**
-     * Instantiates a new version.
-     */
-    private Version(){
-    }
 }

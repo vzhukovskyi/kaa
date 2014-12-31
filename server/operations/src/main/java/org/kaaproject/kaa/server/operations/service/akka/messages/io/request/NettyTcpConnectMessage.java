@@ -15,22 +15,21 @@
  */
 package org.kaaproject.kaa.server.operations.service.akka.messages.io.request;
 
-import io.netty.channel.ChannelHandlerContext;
-
 import java.util.UUID;
 
 import org.kaaproject.kaa.common.channels.protocols.kaatcp.messages.Connect;
+import org.kaaproject.kaa.server.operations.service.akka.messages.io.ChannelContext;
 import org.kaaproject.kaa.server.operations.service.http.commands.ChannelType;
-import org.kaaproject.kaa.server.operations.service.netty.SessionCreateListener;
 import org.kaaproject.kaa.server.operations.service.netty.NettySessionInfo;
+import org.kaaproject.kaa.server.operations.service.netty.SessionCreateListener;
 
-public class NettyTcpConnectMessage extends AbstractRequestMessage implements SessionInitRequest {
+public class NettyTcpConnectMessage extends AbstractRequestMessage implements SessionInitMessage {
 
     private final Connect command;
     private final SessionCreateListener sessionAware;
 
-    public NettyTcpConnectMessage(UUID uuid, ChannelHandlerContext channelContext, Connect command,
-            ChannelType channelType, SessionCreateListener sessionAware, ResponseBuilder responseConverter, ErrorBuilder errorConverter,
+    public NettyTcpConnectMessage(UUID uuid, ChannelContext channelContext, Connect command,
+            ChannelType channelType, SessionCreateListener sessionAware, MessageBuilder responseConverter, ErrorBuilder errorConverter,
             SyncStatistics syncStatistics) {
         super(uuid, command.getNextProtocolId(), channelContext, channelType, responseConverter, errorConverter, syncStatistics);
         this.command = command;
@@ -43,7 +42,7 @@ public class NettyTcpConnectMessage extends AbstractRequestMessage implements Se
     }
 
     @Override
-    public byte[] getEncodedRequestData() {
+    public byte[] getEncodedMessageData() {
         return command.getSyncRequest();
     }
 

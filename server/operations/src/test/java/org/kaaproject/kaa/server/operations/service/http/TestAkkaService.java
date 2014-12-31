@@ -24,7 +24,7 @@ import org.kaaproject.kaa.server.common.thrift.gen.operations.RedirectionRule;
 import org.kaaproject.kaa.server.operations.service.OperationsService;
 import org.kaaproject.kaa.server.operations.service.akka.AkkaService;
 import org.kaaproject.kaa.server.operations.service.akka.messages.io.request.SessionAware;
-import org.kaaproject.kaa.server.operations.service.akka.messages.io.request.SessionInitRequest;
+import org.kaaproject.kaa.server.operations.service.akka.messages.io.request.SessionInitMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,7 +45,7 @@ public class TestAkkaService extends Thread implements AkkaService {
     private boolean operate = true;
 
     /** List of commands queue */
-    private final List<SessionInitRequest> commands;
+    private final List<SessionInitMessage> commands;
 
     /**
      * Constructor
@@ -89,7 +89,7 @@ public class TestAkkaService extends Thread implements AkkaService {
         logger.info("Test Akka Service started: ");
         setName("Test_Service:");
         while(operate) {
-            SessionInitRequest command = null;
+            SessionInitMessage command = null;
             try {
                 synchronized (commands) {
                     if (commands.size() > 0) {
@@ -128,7 +128,7 @@ public class TestAkkaService extends Thread implements AkkaService {
      * Add command to queue
      * @param command NettyEncodedRequestMessage
      */
-    public void addCommand(SessionInitRequest command) {
+    public void addCommand(SessionInitMessage command) {
         synchronized (commands) {
             commands.add(command);
             commands.notify();
@@ -140,7 +140,7 @@ public class TestAkkaService extends Thread implements AkkaService {
      * @param command NettyEncodedRequestMessage
      */
     @Override
-    public void process(SessionInitRequest command) {
+    public void process(SessionInitMessage command) {
     }
 
     @Override

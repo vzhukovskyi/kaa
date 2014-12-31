@@ -15,8 +15,6 @@
  */
 package org.kaaproject.kaa.server.operations.service.akka.actors.io;
 
-import io.netty.channel.ChannelHandlerContext;
-
 import java.security.GeneralSecurityException;
 import java.security.KeyPair;
 import java.security.PublicKey;
@@ -36,12 +34,13 @@ import org.kaaproject.kaa.server.operations.pojo.sync.SyncStatus;
 import org.kaaproject.kaa.server.operations.service.akka.actors.io.platform.PlatformEncDec;
 import org.kaaproject.kaa.server.operations.service.akka.actors.io.platform.PlatformEncDecException;
 import org.kaaproject.kaa.server.operations.service.akka.messages.core.endpoint.SyncRequestMessage;
+import org.kaaproject.kaa.server.operations.service.akka.messages.io.ChannelContext;
 import org.kaaproject.kaa.server.operations.service.akka.messages.io.request.ErrorBuilder;
-import org.kaaproject.kaa.server.operations.service.akka.messages.io.request.Request;
-import org.kaaproject.kaa.server.operations.service.akka.messages.io.request.ResponseBuilder;
+import org.kaaproject.kaa.server.operations.service.akka.messages.io.request.Message;
+import org.kaaproject.kaa.server.operations.service.akka.messages.io.request.MessageBuilder;
 import org.kaaproject.kaa.server.operations.service.akka.messages.io.request.SessionAware;
-import org.kaaproject.kaa.server.operations.service.akka.messages.io.request.SessionAwareRequest;
-import org.kaaproject.kaa.server.operations.service.akka.messages.io.request.SessionInitRequest;
+import org.kaaproject.kaa.server.operations.service.akka.messages.io.request.SessionAwareMessage;
+import org.kaaproject.kaa.server.operations.service.akka.messages.io.request.SessionInitMessage;
 import org.kaaproject.kaa.server.operations.service.akka.messages.io.response.NettySessionResponseMessage;
 import org.kaaproject.kaa.server.operations.service.akka.messages.io.response.SessionResponse;
 import org.kaaproject.kaa.server.operations.service.cache.CacheService;
@@ -106,7 +105,7 @@ public class EncDecActorMessageProcessor {
         return platformEncDecMap;
     }
 
-    void decodeAndForward(ActorContext context, SessionInitRequest message) {
+    void decodeAndForward(ActorContext context, SessionInitMessage message) {
         try {
             sessionInitMeter.mark();
             processSignedRequest(context, message);
@@ -115,7 +114,7 @@ public class EncDecActorMessageProcessor {
         }
     }
 
-    void decodeAndForward(ActorContext context, SessionAwareRequest message) {
+    void decodeAndForward(ActorContext context, SessionAwareMessage message) {
         try {
             sessionRequestMeter.mark();
             processSessionRequest(context, message);
@@ -138,7 +137,7 @@ public class EncDecActorMessageProcessor {
         this.opsActor.tell(message, context.self());
     }
 
-    void redirect(RedirectionRule redirection, SessionInitRequest message) {
+    void redirect(RedirectionRule redirection, SessionInitMessage message) {
         try {
             redirectMeter.mark();
             ClientSync request = decodeRequest(message);
@@ -149,7 +148,7 @@ public class EncDecActorMessageProcessor {
             NettySessionInfo sessionInfo = new NettySessionInfo(message.getChannelUuid(), message.getPlatformId(),
                     message.getChannelContext(), message.getChannelType(), crypt.getSessionCipherPair(), key, appToken,
                     message.getKeepAlive(), message.isEncrypted());
-            SessionResponse responseMessage = new NettySessionResponseMessage(sessionInfo, response, message.getResponseBuilder(),
+            SessionResponse responseMessage = new NettySessionResponseMessage(sessionInfo, response, message.getMessageBuilder(),
                     message.getErrorBuilder());
             LOG.debug("Redirect Response: {}", response);
             processSessionResponse(responseMessage);
@@ -158,14 +157,14 @@ public class EncDecActorMessageProcessor {
         }
     }
 
-    void redirect(RedirectionRule redirection, SessionAwareRequest message) {
+    void redirect(RedirectionRule redirection, SessionAwareMessage message) {
         try {
             redirectMeter.mark();
             ClientSync request = decodeRequest(message);
             ServerSync response = buildRedirectionResponse(redirection, request);
 
             NettySessionInfo sessionInfo = message.getSessionInfo();
-            SessionResponse responseMessage = new NettySessionResponseMessage(sessionInfo, response, message.getResponseBuilder(),
+            SessionResponse responseMessage = new NettySessionResponseMessage(sessionInfo, response, message.getMessageBuilder(),
                     message.getErrorBuilder());
             LOG.debug("Redirect Response: {}", response);
             processSessionResponse(responseMessage);
@@ -183,7 +182,7 @@ public class EncDecActorMessageProcessor {
         return response;
     }
 
-    private void processSignedRequest(ActorContext context, SessionInitRequest message) throws GeneralSecurityException,
+    private void processSignedRequest(ActorContext context, SessionInitMessage message) throws GeneralSecurityException,
             PlatformEncDecException {
         ClientSync request = decodeRequest(message);
         EndpointObjectHash key = getEndpointObjectHash(request);
@@ -194,13 +193,13 @@ public class EncDecActorMessageProcessor {
         forwardToOpsActor(context, session, request, message);
     }
 
-    private void processSessionRequest(ActorContext context, SessionAwareRequest message) throws GeneralSecurityException,
+    private void processSessionRequest(ActorContext context, SessionAwareMessage message) throws GeneralSecurityException,
             PlatformEncDecException {
         ClientSync request = decodeRequest(message);
         forwardToOpsActor(context, message.getSessionInfo(), request, message);
     }
 
-    private void forwardToOpsActor(ActorContext context, NettySessionInfo session, ClientSync request, Request requestMessage) {
+    private void forwardToOpsActor(ActorContext context, NettySessionInfo session, ClientSync request, Message requestMessage) {
         SyncRequestMessage message = new SyncRequestMessage(session, request, requestMessage, context.self());
         this.opsActor.tell(message, context.self());
     }
@@ -215,8 +214,8 @@ public class EncDecActorMessageProcessor {
             responseData = crypt.encodeData(responseData);
             LOG.trace("Response data crypted");
         }
-        ChannelHandlerContext context = message.getSessionInfo().getCtx();
-        ResponseBuilder converter = message.getResponseConverter();
+        ChannelContext context = message.getSessionInfo().getCtx();
+        MessageBuilder converter = message.getResponseConverter();
         Object[] objects = converter.build(responseData, session.isEncrypted());
         if (objects != null && objects.length > 0) {
             for (Object object : objects) {
@@ -226,7 +225,7 @@ public class EncDecActorMessageProcessor {
         }
     }
 
-    private ClientSync decodeRequest(SessionInitRequest message) throws GeneralSecurityException, PlatformEncDecException {
+    private ClientSync decodeRequest(SessionInitMessage message) throws GeneralSecurityException, PlatformEncDecException {
         ClientSync syncRequest = null;
         if (message.isEncrypted()) {
             syncRequest = decodeEncryptedRequest(message);
@@ -239,8 +238,8 @@ public class EncDecActorMessageProcessor {
         return syncRequest;
     }
 
-    private ClientSync decodeEncryptedRequest(SessionInitRequest message) throws GeneralSecurityException, PlatformEncDecException {
-        byte[] requestRaw = crypt.decodeData(message.getEncodedRequestData(), message.getEncodedSessionKey());
+    private ClientSync decodeEncryptedRequest(SessionInitMessage message) throws GeneralSecurityException, PlatformEncDecException {
+        byte[] requestRaw = crypt.decodeData(message.getEncodedMessageData(), message.getEncodedSessionKey());
         LOG.trace("Request data decrypted");
         ClientSync request = decodePlatformLevelData(message.getPlatformId(), requestRaw);
         LOG.trace("Request data deserialized");
@@ -261,8 +260,8 @@ public class EncDecActorMessageProcessor {
         return request;
     }
 
-    private ClientSync decodeUnencryptedRequest(SessionInitRequest message) throws GeneralSecurityException, PlatformEncDecException {
-        byte[] requestRaw = message.getEncodedRequestData();
+    private ClientSync decodeUnencryptedRequest(SessionInitMessage message) throws GeneralSecurityException, PlatformEncDecException {
+        byte[] requestRaw = message.getEncodedMessageData();
         LOG.trace("Try to convert raw data to SynRequest object");
         ClientSync request = decodePlatformLevelData(message.getPlatformId(), requestRaw);
         LOG.trace("Request data deserialized");
@@ -276,7 +275,7 @@ public class EncDecActorMessageProcessor {
         return request;
     }
 
-    private ClientSync decodeEncryptedRequest(SessionAwareRequest message) throws GeneralSecurityException, PlatformEncDecException {
+    private ClientSync decodeEncryptedRequest(SessionAwareMessage message) throws GeneralSecurityException, PlatformEncDecException {
         NettySessionInfo session = message.getSessionInfo();
         crypt.setSessionCipherPair(session.getCipherPair());
         byte[] requestRaw = crypt.decodeData(message.getEncodedRequestData());
@@ -286,7 +285,7 @@ public class EncDecActorMessageProcessor {
         return request;
     }
 
-    private ClientSync decodeUnencryptedRequest(SessionAwareRequest message) throws PlatformEncDecException {
+    private ClientSync decodeUnencryptedRequest(SessionAwareMessage message) throws PlatformEncDecException {
         byte[] requestRaw = message.getEncodedRequestData();
         ClientSync request = decodePlatformLevelData(message.getPlatformId(), requestRaw);
         LOG.trace("Request data deserialized");
@@ -311,7 +310,7 @@ public class EncDecActorMessageProcessor {
         }
     }
 
-    private ClientSync decodeRequest(SessionAwareRequest message) throws GeneralSecurityException, PlatformEncDecException {
+    private ClientSync decodeRequest(SessionAwareMessage message) throws GeneralSecurityException, PlatformEncDecException {
         ClientSync syncRequest = null;
         if (message.isEncrypted()) {
             syncRequest = decodeEncryptedRequest(message);
@@ -337,7 +336,7 @@ public class EncDecActorMessageProcessor {
         return endpointKey;
     }
 
-    private void processErrors(ChannelHandlerContext ctx, ErrorBuilder converter, Exception e) {
+    private void processErrors(ChannelContext ctx, ErrorBuilder converter, Exception e) {
         LOG.trace("Request processing failed", e);
         errorMeter.mark();
         Object[] responses = converter.build(e);

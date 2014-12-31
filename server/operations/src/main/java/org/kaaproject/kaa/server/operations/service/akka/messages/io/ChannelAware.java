@@ -15,8 +15,6 @@
  */
 package org.kaaproject.kaa.server.operations.service.akka.messages.io;
 
-import io.netty.channel.ChannelHandlerContext;
-
 import java.util.UUID;
 
 import org.kaaproject.kaa.server.operations.service.http.commands.ChannelType;
@@ -25,5 +23,5 @@ public interface ChannelAware {
 
     UUID getChannelUuid();
     ChannelType getChannelType();
-    ChannelHandlerContext getChannelContext();
+    ChannelContext getChannelContext();
 }

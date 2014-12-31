@@ -25,16 +25,17 @@ import org.kaaproject.kaa.server.common.server.http.AbstractCommand;
 import org.kaaproject.kaa.server.common.server.http.DefaultHandler;
 import org.kaaproject.kaa.server.operations.service.akka.AkkaService;
 import org.kaaproject.kaa.server.operations.service.akka.messages.io.request.ErrorBuilder;
+import org.kaaproject.kaa.server.operations.service.akka.messages.io.request.MessageBuilder;
 import org.kaaproject.kaa.server.operations.service.akka.messages.io.request.NettyHttpSyncMessage;
-import org.kaaproject.kaa.server.operations.service.akka.messages.io.request.ResponseBuilder;
 import org.kaaproject.kaa.server.operations.service.http.commands.AbstractHttpSyncCommand;
+import org.kaaproject.kaa.server.operations.service.netty.NettyChannelContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * The Class AkkaHandler.
  */
-public class AkkaHttpHandler extends DefaultHandler implements ResponseBuilder, ErrorBuilder{
+public class AkkaHttpHandler extends DefaultHandler implements MessageBuilder, ErrorBuilder{
 
     /** The Constant LOG. */
     private static final Logger LOG = LoggerFactory.getLogger(AkkaHttpHandler.class);
@@ -74,7 +75,7 @@ public class AkkaHttpHandler extends DefaultHandler implements ResponseBuilder, 
     @Override
     protected void channelRead0(final ChannelHandlerContext ctx, final AbstractCommand msg) throws Exception {
         this.command = (AbstractHttpSyncCommand) msg;
-        NettyHttpSyncMessage message = new NettyHttpSyncMessage(uuid, msg.getNextProtocol(), ctx, command.getChannelType(), command , this, this, command);
+        NettyHttpSyncMessage message = new NettyHttpSyncMessage(uuid, msg.getNextProtocol(), new NettyChannelContext(ctx), command.getChannelType(), command , this, this, command);
         LOG.trace("Forwarding {} to akka", message);
         akkaService.process(message);
     }

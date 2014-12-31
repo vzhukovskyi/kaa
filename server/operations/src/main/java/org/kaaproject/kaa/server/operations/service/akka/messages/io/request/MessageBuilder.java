@@ -17,7 +17,7 @@ package org.kaaproject.kaa.server.operations.service.akka.messages.io.request;
 
 
 
-public interface ResponseBuilder {
+public interface MessageBuilder {
 
-    Object[] build(byte[] responseData, boolean isEncrypted);
+    Object[] build(byte[] messageData, boolean isEncrypted);
 }

@@ -16,8 +16,6 @@
 
 package org.kaaproject.kaa.server.operations.service.akka.actors.core;
 
-import io.netty.channel.ChannelHandlerContext;
-
 import java.util.UUID;
 
 import org.junit.Assert;
@@ -26,8 +24,8 @@ import org.kaaproject.kaa.common.Constants;
 import org.kaaproject.kaa.server.operations.pojo.sync.ClientSync;
 import org.kaaproject.kaa.server.operations.pojo.sync.ClientSyncMetaData;
 import org.kaaproject.kaa.server.operations.service.akka.actors.core.ChannelMap.ChannelMetaData;
-import org.kaaproject.kaa.server.operations.service.akka.actors.io.platform.AvroEncDec;
 import org.kaaproject.kaa.server.operations.service.akka.messages.core.endpoint.SyncRequestMessage;
+import org.kaaproject.kaa.server.operations.service.akka.messages.io.ChannelContext;
 import org.kaaproject.kaa.server.operations.service.http.commands.ChannelType;
 import org.kaaproject.kaa.server.operations.service.netty.NettySessionInfo;
 import org.mockito.Mockito;
@@ -38,7 +36,7 @@ public class ChannelMapTest {
     public void testGetRequestById() {
         ChannelMap map = new ChannelMap("endpointKey", "actorKey");
         Assert.assertNull(map.getByRequestId(UUID.randomUUID()));
-        ChannelHandlerContext ctxMock = Mockito.mock(ChannelHandlerContext.class);
+        ChannelContext ctxMock = Mockito.mock(ChannelContext.class);
         NettySessionInfo session = new NettySessionInfo(UUID.randomUUID(), Constants.KAA_PLATFORM_PROTOCOL_AVRO_ID, ctxMock, ChannelType.HTTP, null,
                 null, "applicationToken", 0, true);
         SyncRequestMessage message = new SyncRequestMessage(session, null, null, null);
@@ -52,7 +50,7 @@ public class ChannelMapTest {
         ClientSync request = new ClientSync();
         request.setClientSyncMetaData(new ClientSyncMetaData());
         UUID sameUid = UUID.randomUUID();
-        ChannelHandlerContext ctxMock = Mockito.mock(ChannelHandlerContext.class);
+        ChannelContext ctxMock = Mockito.mock(ChannelContext.class);
         NettySessionInfo session = new NettySessionInfo(sameUid, Constants.KAA_PLATFORM_PROTOCOL_AVRO_ID, ctxMock, ChannelType.HTTP, null, null,
                 "applicationToken", 0, true);
         SyncRequestMessage message = new SyncRequestMessage(session, request, null, null);

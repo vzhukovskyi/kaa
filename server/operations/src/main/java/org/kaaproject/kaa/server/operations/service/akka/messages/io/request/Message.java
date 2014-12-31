@@ -18,11 +18,10 @@ package org.kaaproject.kaa.server.operations.service.akka.messages.io.request;
 import org.kaaproject.kaa.server.operations.service.akka.messages.io.ChannelAware;
 import org.kaaproject.kaa.server.operations.service.akka.messages.io.PlatformAware;
 
-public interface Request extends ChannelAware, PlatformAware{
+public interface Message extends ChannelAware, PlatformAware{
 
-    ResponseBuilder getResponseBuilder();
+    MessageBuilder getMessageBuilder();
     ErrorBuilder getErrorBuilder();
-    SyncStatistics getSyncStatistics();
     boolean isEncrypted();
 
 }

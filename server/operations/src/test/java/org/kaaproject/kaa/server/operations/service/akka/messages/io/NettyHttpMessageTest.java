@@ -15,17 +15,14 @@
  */
 package org.kaaproject.kaa.server.operations.service.akka.messages.io;
 
-import io.netty.channel.ChannelHandlerContext;
-
 import java.util.UUID;
 
 import org.junit.Assert;
 import org.junit.Test;
 import org.kaaproject.kaa.common.Constants;
-import org.kaaproject.kaa.server.operations.service.akka.actors.io.platform.AvroEncDec;
 import org.kaaproject.kaa.server.operations.service.akka.messages.io.request.ErrorBuilder;
+import org.kaaproject.kaa.server.operations.service.akka.messages.io.request.MessageBuilder;
 import org.kaaproject.kaa.server.operations.service.akka.messages.io.request.NettyHttpSyncMessage;
-import org.kaaproject.kaa.server.operations.service.akka.messages.io.request.ResponseBuilder;
 import org.kaaproject.kaa.server.operations.service.akka.messages.io.request.SyncStatistics;
 import org.kaaproject.kaa.server.operations.service.http.commands.ChannelType;
 import org.kaaproject.kaa.server.operations.service.http.commands.SyncCommand;
@@ -36,14 +33,14 @@ public class NettyHttpMessageTest {
     @Test
     public void connectTest(){
         UUID channelId = UUID.randomUUID();
-        ChannelHandlerContext ctx = Mockito.mock(ChannelHandlerContext.class);
+        ChannelContext ctx = Mockito.mock(ChannelContext.class);
         ChannelType channelType = ChannelType.TCP;
 
         SyncCommand command = Mockito.mock(SyncCommand.class);
         Mockito.when(command.getRequestData()).thenReturn("syncRequest".getBytes());
         Mockito.when(command.getRequestkey()).thenReturn("aesSessionKey".getBytes());
         Mockito.when(command.getRequestSignature()).thenReturn("signature".getBytes());
-        ResponseBuilder responseBuilder = Mockito.mock(ResponseBuilder.class);
+        MessageBuilder responseBuilder = Mockito.mock(MessageBuilder.class);
         ErrorBuilder errorBuilder = Mockito.mock(ErrorBuilder.class);
         SyncStatistics stats = Mockito.mock(SyncStatistics.class);
 
@@ -53,11 +50,11 @@ public class NettyHttpMessageTest {
         Assert.assertEquals(channelType, message.getChannelType());
         Assert.assertEquals(ctx, message.getChannelContext());
 
-        Assert.assertEquals(responseBuilder, message.getResponseBuilder());
+        Assert.assertEquals(responseBuilder, message.getMessageBuilder());
         Assert.assertEquals(errorBuilder, message.getErrorBuilder());
         Assert.assertEquals(stats, message.getSyncStatistics());
 
-        Assert.assertArrayEquals("syncRequest".getBytes(), message.getEncodedRequestData());
+        Assert.assertArrayEquals("syncRequest".getBytes(), message.getEncodedMessageData());
         Assert.assertArrayEquals("aesSessionKey".getBytes(), message.getEncodedSessionKey());
         Assert.assertArrayEquals("signature".getBytes(), message.getSessionKeySignature());
         Assert.assertNotNull(message.toString());

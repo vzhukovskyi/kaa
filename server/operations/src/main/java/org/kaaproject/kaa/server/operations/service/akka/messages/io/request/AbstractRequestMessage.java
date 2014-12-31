@@ -15,23 +15,22 @@
  */
 package org.kaaproject.kaa.server.operations.service.akka.messages.io.request;
 
-import io.netty.channel.ChannelHandlerContext;
-
 import java.util.UUID;
 
+import org.kaaproject.kaa.server.operations.service.akka.messages.io.ChannelContext;
 import org.kaaproject.kaa.server.operations.service.akka.messages.io.PlatformAware;
 import org.kaaproject.kaa.server.operations.service.http.commands.ChannelType;
 
-public class AbstractRequestMessage implements PlatformAware{
+public abstract class AbstractRequestMessage implements PlatformAware{
     private final UUID uuid;
     private final int platformId;
-    private final ChannelHandlerContext channelContext;
+    private final ChannelContext channelContext;
     private final ChannelType channelType;
-    private final ResponseBuilder responseConverter;
+    private final MessageBuilder responseConverter;
     private final ErrorBuilder errorConverter;
     private final SyncStatistics syncStatistics;
 
-    protected AbstractRequestMessage(UUID uuid, Integer platformId, ChannelHandlerContext channelContext, ChannelType channelType, ResponseBuilder responseConverter,
+    protected AbstractRequestMessage(UUID uuid, Integer platformId, ChannelContext channelContext, ChannelType channelType, MessageBuilder responseConverter,
             ErrorBuilder errorConverter, SyncStatistics syncStatistics) {
         super();
         this.uuid = uuid;
@@ -47,7 +46,7 @@ public class AbstractRequestMessage implements PlatformAware{
         return uuid;
     }
 
-    public ChannelHandlerContext getChannelContext() {
+    public ChannelContext getChannelContext() {
         return channelContext;
     }
 
@@ -55,7 +54,7 @@ public class AbstractRequestMessage implements PlatformAware{
         return channelType;
     }
 
-    public ResponseBuilder getResponseBuilder() {
+    public MessageBuilder getMessageBuilder() {
         return responseConverter;
     }
 

@@ -15,8 +15,6 @@
  */
 package org.kaaproject.kaa.server.operations.service.akka.actors.core;
 
-import io.netty.channel.ChannelHandlerContext;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -27,6 +25,7 @@ import org.kaaproject.kaa.common.TransportType;
 import org.kaaproject.kaa.server.operations.pojo.SyncResponseHolder;
 import org.kaaproject.kaa.server.operations.pojo.sync.ClientSync;
 import org.kaaproject.kaa.server.operations.service.akka.messages.core.endpoint.SyncRequestMessage;
+import org.kaaproject.kaa.server.operations.service.akka.messages.io.ChannelContext;
 import org.kaaproject.kaa.server.operations.service.http.commands.ChannelType;
 import org.kaaproject.kaa.server.operations.service.netty.NettySessionInfo;
 import org.slf4j.Logger;
@@ -116,7 +115,7 @@ public class ChannelMap {
             return session.getChannelType();
         }
 
-        public ChannelHandlerContext getContext() {
+        public ChannelContext getContext() {
             return session.getCtx();
         }
 

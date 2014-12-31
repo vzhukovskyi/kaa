@@ -15,8 +15,6 @@
  */
 package org.kaaproject.kaa.server.operations.service.akka.messages.io;
 
-import io.netty.channel.ChannelHandlerContext;
-
 import java.util.UUID;
 
 import org.junit.Assert;
@@ -27,11 +25,11 @@ import org.kaaproject.kaa.common.channels.protocols.kaatcp.messages.SyncRequest;
 import org.kaaproject.kaa.common.endpoint.security.MessageEncoderDecoder.CipherPair;
 import org.kaaproject.kaa.common.hash.EndpointObjectHash;
 import org.kaaproject.kaa.server.operations.service.akka.messages.io.request.ErrorBuilder;
+import org.kaaproject.kaa.server.operations.service.akka.messages.io.request.MessageBuilder;
 import org.kaaproject.kaa.server.operations.service.akka.messages.io.request.NettyTcpConnectMessage;
 import org.kaaproject.kaa.server.operations.service.akka.messages.io.request.NettyTcpDisconnectMessage;
 import org.kaaproject.kaa.server.operations.service.akka.messages.io.request.NettyTcpPingMessage;
 import org.kaaproject.kaa.server.operations.service.akka.messages.io.request.NettyTcpSyncMessage;
-import org.kaaproject.kaa.server.operations.service.akka.messages.io.request.ResponseBuilder;
 import org.kaaproject.kaa.server.operations.service.akka.messages.io.request.SyncStatistics;
 import org.kaaproject.kaa.server.operations.service.http.commands.ChannelType;
 import org.kaaproject.kaa.server.operations.service.netty.NettySessionInfo;
@@ -43,7 +41,7 @@ public class NettyTcpMessageTest {
     @Test
     public void connectTest() {
         UUID channelId = UUID.randomUUID();
-        ChannelHandlerContext ctx = Mockito.mock(ChannelHandlerContext.class);
+        ChannelContext ctx = Mockito.mock(ChannelContext.class);
         ChannelType channelType = ChannelType.TCP;
         CipherPair sessionKey = Mockito.mock(CipherPair.class);
         EndpointObjectHash key = EndpointObjectHash.fromSHA1("key");
@@ -55,7 +53,7 @@ public class NettyTcpMessageTest {
 
         Connect command = new Connect(keepAlive, Constants.KAA_PLATFORM_PROTOCOL_AVRO_ID, "aesSessionKey".getBytes(), "syncRequest".getBytes(), "signature".getBytes());
         SessionCreateListener listener = Mockito.mock(SessionCreateListener.class);
-        ResponseBuilder responseBuilder = Mockito.mock(ResponseBuilder.class);
+        MessageBuilder responseBuilder = Mockito.mock(MessageBuilder.class);
         ErrorBuilder errorBuilder = Mockito.mock(ErrorBuilder.class);
         SyncStatistics stats = Mockito.mock(SyncStatistics.class);
         NettyTcpConnectMessage message = new NettyTcpConnectMessage(channelId, ctx, command, channelType,
@@ -65,11 +63,11 @@ public class NettyTcpMessageTest {
         Assert.assertEquals(channelType, message.getChannelType());
         Assert.assertEquals(ctx, message.getChannelContext());
 
-        Assert.assertEquals(responseBuilder, message.getResponseBuilder());
+        Assert.assertEquals(responseBuilder, message.getMessageBuilder());
         Assert.assertEquals(errorBuilder, message.getErrorBuilder());
         Assert.assertEquals(stats, message.getSyncStatistics());
 
-        Assert.assertArrayEquals("syncRequest".getBytes(), message.getEncodedRequestData());
+        Assert.assertArrayEquals("syncRequest".getBytes(), message.getEncodedMessageData());
         Assert.assertArrayEquals("aesSessionKey".getBytes(), message.getEncodedSessionKey());
         Assert.assertArrayEquals("signature".getBytes(), message.getSessionKeySignature());
         message.onSessionCreated(session);
@@ -80,7 +78,7 @@ public class NettyTcpMessageTest {
     @Test
     public void syncTest() {
         UUID channelId = UUID.randomUUID();
-        ChannelHandlerContext ctx = Mockito.mock(ChannelHandlerContext.class);
+        ChannelContext ctx = Mockito.mock(ChannelContext.class);
         ChannelType channelType = ChannelType.TCP;
         CipherPair sessionKey = Mockito.mock(CipherPair.class);
         EndpointObjectHash key = EndpointObjectHash.fromSHA1("key");
@@ -102,7 +100,7 @@ public class NettyTcpMessageTest {
     @Test
     public void disconnectTest() {
         UUID channelId = UUID.randomUUID();
-        ChannelHandlerContext ctx = Mockito.mock(ChannelHandlerContext.class);
+        ChannelContext ctx = Mockito.mock(ChannelContext.class);
         ChannelType channelType = ChannelType.TCP;
         CipherPair sessionKey = Mockito.mock(CipherPair.class);
         EndpointObjectHash key = EndpointObjectHash.fromSHA1("key");
@@ -123,7 +121,7 @@ public class NettyTcpMessageTest {
     @Test
     public void pingTest() {
         UUID channelId = UUID.randomUUID();
-        ChannelHandlerContext ctx = Mockito.mock(ChannelHandlerContext.class);
+        ChannelContext ctx = Mockito.mock(ChannelContext.class);
         ChannelType channelType = ChannelType.TCP;
         CipherPair sessionKey = Mockito.mock(CipherPair.class);
         EndpointObjectHash key = EndpointObjectHash.fromSHA1("key");

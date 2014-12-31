@@ -15,9 +15,13 @@
  */
 package org.kaaproject.kaa.server.operations.service.akka.messages.io.request;
 
+import org.kaaproject.kaa.server.operations.service.netty.SessionCreateListener;
 
-public interface SessionAwareRequest extends Request, SessionAware{
+public interface SessionInitMessage extends Message, SessionCreateListener{
 
-    byte[] getEncodedRequestData();
+    byte[] getEncodedMessageData();
+    byte[] getEncodedSessionKey();
+    byte[] getSessionKeySignature();
+    int getKeepAlive();
 
 }

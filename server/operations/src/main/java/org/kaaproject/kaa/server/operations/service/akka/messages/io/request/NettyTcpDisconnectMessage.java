@@ -17,10 +17,9 @@ package org.kaaproject.kaa.server.operations.service.akka.messages.io.request;
 
 import java.util.UUID;
 
-import io.netty.channel.ChannelHandlerContext;
-
 import org.kaaproject.kaa.server.operations.service.akka.messages.core.endpoint.EndpointAwareMessage;
 import org.kaaproject.kaa.server.operations.service.akka.messages.io.ChannelAware;
+import org.kaaproject.kaa.server.operations.service.akka.messages.io.ChannelContext;
 import org.kaaproject.kaa.server.operations.service.http.commands.ChannelType;
 import org.kaaproject.kaa.server.operations.service.netty.NettySessionInfo;
 
@@ -51,7 +50,7 @@ public class NettyTcpDisconnectMessage extends EndpointAwareMessage implements S
     }
 
     @Override
-    public ChannelHandlerContext getChannelContext() {
+    public ChannelContext getChannelContext() {
         return session.getCtx();
     }
 

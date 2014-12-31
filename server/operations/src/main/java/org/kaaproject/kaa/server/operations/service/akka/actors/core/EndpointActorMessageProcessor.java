@@ -78,7 +78,6 @@ import org.kaaproject.kaa.server.operations.service.akka.messages.core.user.Endp
 import org.kaaproject.kaa.server.operations.service.akka.messages.core.user.EndpointUserDetachMessage;
 import org.kaaproject.kaa.server.operations.service.akka.messages.core.user.EndpointUserDisconnectMessage;
 import org.kaaproject.kaa.server.operations.service.akka.messages.io.ChannelAware;
-import org.kaaproject.kaa.server.operations.service.akka.messages.io.request.SyncStatistics;
 import org.kaaproject.kaa.server.operations.service.akka.messages.io.response.NettySessionResponseMessage;
 import org.kaaproject.kaa.server.operations.service.event.EventClassFamilyVersion;
 import org.kaaproject.kaa.server.operations.service.http.commands.ChannelType;
@@ -113,9 +112,6 @@ public class EndpointActorMessageProcessor {
 
     /** The actor key. */
     private final String endpointKey;
-
-    /** The sync time. */
-    private long syncTime;
 
     private long lastActivityTime;
 
@@ -278,7 +274,6 @@ public class EndpointActorMessageProcessor {
                 LOG.warn("[{}][{}] Endpoint profile is not set after request processing!", endpointKey, actorKey);
             }
 
-            this.syncTime += System.currentTimeMillis() - start;
             LOG.debug("[{}][{}] SyncResponseHolder {}", endpointKey, actorKey, responseHolder);
 
             if (channelType.isAsync()) {
@@ -561,15 +556,10 @@ public class EndpointActorMessageProcessor {
             ServerSync syncResponse) {
         LOG.debug("[{}] response: {}", actorKey, syncResponse);
 
-        SyncStatistics stats = request.getCommand().getSyncStatistics();
-        if (stats != null) {
-            stats.reportSyncTime(syncTime);
-        }
-
         ServerSync copy = deepCopy(syncResponse);
         
         NettySessionResponseMessage response = new NettySessionResponseMessage(request.getSession(), copy, request
-                .getCommand().getResponseBuilder(), request.getCommand().getErrorBuilder());
+                .getCommand().getMessageBuilder(), request.getCommand().getErrorBuilder());
 
         tellActor(context, request.getOriginator(), response);
         scheduleActorTimeout(context);

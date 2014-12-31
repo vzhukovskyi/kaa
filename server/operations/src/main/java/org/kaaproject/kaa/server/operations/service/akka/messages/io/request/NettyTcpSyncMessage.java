@@ -18,13 +18,13 @@ package org.kaaproject.kaa.server.operations.service.akka.messages.io.request;
 import org.kaaproject.kaa.common.channels.protocols.kaatcp.messages.SyncRequest;
 import org.kaaproject.kaa.server.operations.service.netty.NettySessionInfo;
 
-public class NettyTcpSyncMessage extends AbstractRequestMessage implements SessionAwareRequest {
+public class NettyTcpSyncMessage extends AbstractRequestMessage implements SessionAwareMessage {
 
     private final SyncRequest command;
     private final NettySessionInfo sessionInfo;
 
     public NettyTcpSyncMessage(SyncRequest command, NettySessionInfo sessionInfo,
-            ResponseBuilder responseConverter, ErrorBuilder errorConverter, SyncStatistics syncStatistics) {
+            MessageBuilder responseConverter, ErrorBuilder errorConverter, SyncStatistics syncStatistics) {
         super(sessionInfo.getUuid(), sessionInfo.getPlatformId(), sessionInfo.getCtx(), sessionInfo.getChannelType(), responseConverter, errorConverter, syncStatistics);
         this.command = command;
         this.sessionInfo = sessionInfo;

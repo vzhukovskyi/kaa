@@ -16,10 +16,9 @@
 
 package org.kaaproject.kaa.server.operations.service.akka.messages.io.request;
 
-import io.netty.channel.ChannelHandlerContext;
-
 import java.util.UUID;
 
+import org.kaaproject.kaa.server.operations.service.akka.messages.io.ChannelContext;
 import org.kaaproject.kaa.server.operations.service.http.commands.AbstractHttpSyncCommand;
 import org.kaaproject.kaa.server.operations.service.http.commands.ChannelType;
 import org.kaaproject.kaa.server.operations.service.netty.NettySessionInfo;
@@ -27,12 +26,12 @@ import org.kaaproject.kaa.server.operations.service.netty.NettySessionInfo;
 /**
  * The Class NettyCommandAwareMessage.
  */
-public class NettyHttpSyncMessage extends AbstractRequestMessage implements SessionInitRequest {
+public class NettyHttpSyncMessage extends AbstractRequestMessage implements SessionInitMessage {
 
     private final AbstractHttpSyncCommand command;
 
-    public NettyHttpSyncMessage(UUID uuid, Integer platformId, ChannelHandlerContext channelContext, ChannelType channelType, AbstractHttpSyncCommand command,
-            ResponseBuilder responseConverter, ErrorBuilder errorConverter, SyncStatistics syncStatistics) {
+    public NettyHttpSyncMessage(UUID uuid, Integer platformId, ChannelContext channelContext, ChannelType channelType, AbstractHttpSyncCommand command,
+            MessageBuilder responseConverter, ErrorBuilder errorConverter, SyncStatistics syncStatistics) {
         super(uuid, platformId, channelContext, channelType, responseConverter, errorConverter, syncStatistics);
         this.command = command;
     }
@@ -47,7 +46,7 @@ public class NettyHttpSyncMessage extends AbstractRequestMessage implements Sess
     }
 
     @Override
-    public byte[] getEncodedRequestData() {
+    public byte[] getEncodedMessageData() {
         return getCommand().getRequestData();
     }
 

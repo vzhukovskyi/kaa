@@ -33,7 +33,7 @@ import org.kaaproject.kaa.server.operations.service.akka.actors.io.EncDecActor;
 import org.kaaproject.kaa.server.operations.service.akka.actors.io.platform.KaaPlatformProtocol;
 import org.kaaproject.kaa.server.operations.service.akka.messages.core.notification.ThriftNotificationMessage;
 import org.kaaproject.kaa.server.operations.service.akka.messages.io.request.SessionAware;
-import org.kaaproject.kaa.server.operations.service.akka.messages.io.request.SessionInitRequest;
+import org.kaaproject.kaa.server.operations.service.akka.messages.io.request.SessionInitMessage;
 import org.kaaproject.kaa.server.operations.service.cache.CacheService;
 import org.kaaproject.kaa.server.operations.service.event.EventService;
 import org.kaaproject.kaa.server.operations.service.logs.LogAppenderService;
@@ -208,7 +208,7 @@ public class DefaultAkkaService implements AkkaService {
     }
 
     @Override
-    public void process(SessionInitRequest message) {
+    public void process(SessionInitMessage message) {
         ioRouter.tell(message, ActorRef.noSender());
     }
 }

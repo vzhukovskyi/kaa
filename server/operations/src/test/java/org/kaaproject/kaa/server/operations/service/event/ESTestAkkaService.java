@@ -20,7 +20,7 @@ import org.kaaproject.kaa.server.common.thrift.gen.operations.Notification;
 import org.kaaproject.kaa.server.common.thrift.gen.operations.RedirectionRule;
 import org.kaaproject.kaa.server.operations.service.akka.AkkaService;
 import org.kaaproject.kaa.server.operations.service.akka.messages.io.request.SessionAware;
-import org.kaaproject.kaa.server.operations.service.akka.messages.io.request.SessionInitRequest;
+import org.kaaproject.kaa.server.operations.service.akka.messages.io.request.SessionInitMessage;
 
 import akka.actor.ActorSystem;
 
@@ -46,7 +46,7 @@ public class ESTestAkkaService implements AkkaService {
     }
 
     @Override
-    public void process(SessionInitRequest message) {
+    public void process(SessionInitMessage message) {
         // TODO Auto-generated method stub
 
     }

@@ -16,8 +16,6 @@
 
 package org.kaaproject.kaa.server.operations.service.tcp.handler;
 
-import io.netty.channel.ChannelHandlerContext;
-
 import java.security.GeneralSecurityException;
 import java.util.UUID;
 
@@ -39,13 +37,13 @@ import org.kaaproject.kaa.server.common.server.kaatcp.AbstractKaaTcpCommandProce
 import org.kaaproject.kaa.server.common.thrift.gen.operations.Notification;
 import org.kaaproject.kaa.server.common.thrift.gen.operations.RedirectionRule;
 import org.kaaproject.kaa.server.operations.service.akka.AkkaService;
-import org.kaaproject.kaa.server.operations.service.akka.actors.io.platform.AvroEncDec;
+import org.kaaproject.kaa.server.operations.service.akka.messages.io.ChannelContext;
 import org.kaaproject.kaa.server.operations.service.akka.messages.io.request.NettyTcpConnectMessage;
 import org.kaaproject.kaa.server.operations.service.akka.messages.io.request.NettyTcpDisconnectMessage;
 import org.kaaproject.kaa.server.operations.service.akka.messages.io.request.NettyTcpSyncMessage;
 import org.kaaproject.kaa.server.operations.service.akka.messages.io.request.SessionAware;
-import org.kaaproject.kaa.server.operations.service.akka.messages.io.request.SessionAwareRequest;
-import org.kaaproject.kaa.server.operations.service.akka.messages.io.request.SessionInitRequest;
+import org.kaaproject.kaa.server.operations.service.akka.messages.io.request.SessionAwareMessage;
+import org.kaaproject.kaa.server.operations.service.akka.messages.io.request.SessionInitMessage;
 import org.kaaproject.kaa.server.operations.service.http.commands.ChannelType;
 import org.kaaproject.kaa.server.operations.service.netty.NettySessionInfo;
 import org.mockito.Mockito;
@@ -57,8 +55,8 @@ public class AkkaKaaTcpHandlerTest {
     AkkaService akkaService = new AkkaService() {
 
         @Override
-        public void process(SessionInitRequest message) {
-            Object[] response = message.getResponseBuilder().build("response".getBytes(), false);
+        public void process(SessionInitMessage message) {
+            Object[] response = message.getMessageBuilder().build("response".getBytes(), false);
             Assert.assertEquals(2, response.length);
             Assert.assertTrue(response[0] instanceof ConnAck);
             Assert.assertTrue(response[1] instanceof KaaSync);
@@ -70,8 +68,8 @@ public class AkkaKaaTcpHandlerTest {
 
         @Override
         public void process(SessionAware message) {
-            if (message instanceof SessionAwareRequest) {
-                SessionAwareRequest request = (SessionAwareRequest) message;
+            if (message instanceof SessionAwareMessage) {
+                SessionAwareMessage request = (SessionAwareMessage) message;
                 Object[] response;
                 response = request.getErrorBuilder().build(Mockito.mock(GeneralSecurityException.class));
                 Assert.assertTrue(response[0] instanceof Disconnect);
@@ -205,11 +203,11 @@ public class AkkaKaaTcpHandlerTest {
         handler.onSessionCreated(buildSessionInfo(uuid));
         handler.channelRead0(null, msg);
         Mockito.verify(akkaService, Mockito.never()).process(Mockito.any(SessionAware.class));
-        Mockito.verify(akkaService, Mockito.never()).process(Mockito.any(SessionInitRequest.class));
+        Mockito.verify(akkaService, Mockito.never()).process(Mockito.any(SessionInitMessage.class));
     }
 
     protected NettySessionInfo buildSessionInfo(UUID uuid) {
-        return new NettySessionInfo(uuid, Constants.KAA_PLATFORM_PROTOCOL_AVRO_ID, Mockito.mock(ChannelHandlerContext.class), ChannelType.TCP, Mockito.mock(CipherPair.class),
+        return new NettySessionInfo(uuid, Constants.KAA_PLATFORM_PROTOCOL_AVRO_ID, Mockito.mock(ChannelContext.class), ChannelType.TCP, Mockito.mock(CipherPair.class),
                 EndpointObjectHash.fromSHA1("test"), "applicationToken", 100, true);
     }
 }

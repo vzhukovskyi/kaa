@@ -16,13 +16,12 @@
 
 package org.kaaproject.kaa.server.operations.service.akka.messages.io.response;
 
-import io.netty.channel.ChannelHandlerContext;
-
 import java.util.UUID;
 
 import org.kaaproject.kaa.server.operations.pojo.sync.ServerSync;
+import org.kaaproject.kaa.server.operations.service.akka.messages.io.ChannelContext;
 import org.kaaproject.kaa.server.operations.service.akka.messages.io.request.ErrorBuilder;
-import org.kaaproject.kaa.server.operations.service.akka.messages.io.request.ResponseBuilder;
+import org.kaaproject.kaa.server.operations.service.akka.messages.io.request.MessageBuilder;
 import org.kaaproject.kaa.server.operations.service.http.commands.ChannelType;
 import org.kaaproject.kaa.server.operations.service.netty.NettySessionInfo;
 
@@ -33,10 +32,10 @@ public class NettySessionResponseMessage implements SessionResponse{
 
     private final NettySessionInfo sessionInfo;
     private final ServerSync syncResponse;
-    private final ResponseBuilder responseConverter;
+    private final MessageBuilder responseConverter;
     private final ErrorBuilder errorConverter;
 
-    public NettySessionResponseMessage(NettySessionInfo sessionInfo, ServerSync syncResponse, ResponseBuilder responseConverter, ErrorBuilder errorConverter){
+    public NettySessionResponseMessage(NettySessionInfo sessionInfo, ServerSync syncResponse, MessageBuilder responseConverter, ErrorBuilder errorConverter){
         this.sessionInfo = sessionInfo;
         this.syncResponse = syncResponse;
         this.responseConverter = responseConverter;
@@ -63,7 +62,7 @@ public class NettySessionResponseMessage implements SessionResponse{
     }
 
     @Override
-    public ChannelHandlerContext getChannelContext() {
+    public ChannelContext getChannelContext() {
         return sessionInfo.getCtx();
     }
 
@@ -73,7 +72,7 @@ public class NettySessionResponseMessage implements SessionResponse{
     }
 
     @Override
-    public ResponseBuilder getResponseConverter() {
+    public MessageBuilder getResponseConverter() {
         return responseConverter;
     }
 

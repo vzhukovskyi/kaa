@@ -44,6 +44,7 @@ import org.kaaproject.kaa.server.common.server.BadRequestException;
 import org.kaaproject.kaa.server.common.server.http.AbstractCommand;
 import org.kaaproject.kaa.server.operations.pojo.exceptions.GetDeltaException;
 import org.kaaproject.kaa.server.operations.service.akka.messages.io.request.SyncStatistics;
+import org.kaaproject.kaa.server.transport.channel.ChannelType;
 
 /**
  * The Class AbstractOperationsCommand.

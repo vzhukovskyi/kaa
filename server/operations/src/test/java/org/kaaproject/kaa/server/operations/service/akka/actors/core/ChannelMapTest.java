@@ -25,9 +25,9 @@ import org.kaaproject.kaa.server.operations.pojo.sync.ClientSync;
 import org.kaaproject.kaa.server.operations.pojo.sync.ClientSyncMetaData;
 import org.kaaproject.kaa.server.operations.service.akka.actors.core.ChannelMap.ChannelMetaData;
 import org.kaaproject.kaa.server.operations.service.akka.messages.core.endpoint.SyncRequestMessage;
-import org.kaaproject.kaa.server.operations.service.akka.messages.io.ChannelContext;
-import org.kaaproject.kaa.server.operations.service.http.commands.ChannelType;
-import org.kaaproject.kaa.server.operations.service.netty.NettySessionInfo;
+import org.kaaproject.kaa.server.transport.channel.ChannelContext;
+import org.kaaproject.kaa.server.transport.channel.ChannelType;
+import org.kaaproject.kaa.server.transport.session.SessionInfo;
 import org.mockito.Mockito;
 
 public class ChannelMapTest {
@@ -37,7 +37,7 @@ public class ChannelMapTest {
         ChannelMap map = new ChannelMap("endpointKey", "actorKey");
         Assert.assertNull(map.getByRequestId(UUID.randomUUID()));
         ChannelContext ctxMock = Mockito.mock(ChannelContext.class);
-        NettySessionInfo session = new NettySessionInfo(UUID.randomUUID(), Constants.KAA_PLATFORM_PROTOCOL_AVRO_ID, ctxMock, ChannelType.HTTP, null,
+        SessionInfo session = new SessionInfo(UUID.randomUUID(), Constants.KAA_PLATFORM_PROTOCOL_AVRO_ID, ctxMock, ChannelType.HTTP, null,
                 null, "applicationToken", 0, true);
         SyncRequestMessage message = new SyncRequestMessage(session, null, null, null);
         map.addChannel(new ChannelMetaData(message));
@@ -51,7 +51,7 @@ public class ChannelMapTest {
         request.setClientSyncMetaData(new ClientSyncMetaData());
         UUID sameUid = UUID.randomUUID();
         ChannelContext ctxMock = Mockito.mock(ChannelContext.class);
-        NettySessionInfo session = new NettySessionInfo(sameUid, Constants.KAA_PLATFORM_PROTOCOL_AVRO_ID, ctxMock, ChannelType.HTTP, null, null,
+        SessionInfo session = new SessionInfo(sameUid, Constants.KAA_PLATFORM_PROTOCOL_AVRO_ID, ctxMock, ChannelType.HTTP, null, null,
                 "applicationToken", 0, true);
         SyncRequestMessage message = new SyncRequestMessage(session, request, null, null);
         ChannelMetaData md1 = new ChannelMetaData(message);

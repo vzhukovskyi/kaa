@@ -84,12 +84,7 @@ import org.kaaproject.kaa.server.operations.pojo.sync.ServerSync;
 import org.kaaproject.kaa.server.operations.pojo.sync.UserServerSync;
 import org.kaaproject.kaa.server.operations.service.OperationsService;
 import org.kaaproject.kaa.server.operations.service.akka.actors.io.platform.AvroEncDec;
-import org.kaaproject.kaa.server.operations.service.akka.messages.io.ChannelContext;
-import org.kaaproject.kaa.server.operations.service.akka.messages.io.request.ErrorBuilder;
-import org.kaaproject.kaa.server.operations.service.akka.messages.io.request.MessageBuilder;
 import org.kaaproject.kaa.server.operations.service.akka.messages.io.request.NettyTcpSyncMessage;
-import org.kaaproject.kaa.server.operations.service.akka.messages.io.request.SessionAwareMessage;
-import org.kaaproject.kaa.server.operations.service.akka.messages.io.request.SessionInitMessage;
 import org.kaaproject.kaa.server.operations.service.cache.CacheService;
 import org.kaaproject.kaa.server.operations.service.cache.EventClassFqnKey;
 import org.kaaproject.kaa.server.operations.service.event.EndpointEvent;
@@ -102,13 +97,18 @@ import org.kaaproject.kaa.server.operations.service.event.RouteOperation;
 import org.kaaproject.kaa.server.operations.service.event.RouteTableAddress;
 import org.kaaproject.kaa.server.operations.service.event.RouteTableKey;
 import org.kaaproject.kaa.server.operations.service.event.UserRouteInfo;
-import org.kaaproject.kaa.server.operations.service.http.commands.ChannelType;
 import org.kaaproject.kaa.server.operations.service.logs.LogAppenderService;
 import org.kaaproject.kaa.server.operations.service.metrics.MeterClient;
 import org.kaaproject.kaa.server.operations.service.metrics.MetricsService;
-import org.kaaproject.kaa.server.operations.service.netty.NettySessionInfo;
 import org.kaaproject.kaa.server.operations.service.notification.NotificationDeltaService;
 import org.kaaproject.kaa.server.operations.service.security.KeyStoreService;
+import org.kaaproject.kaa.server.transport.channel.ChannelContext;
+import org.kaaproject.kaa.server.transport.channel.ChannelType;
+import org.kaaproject.kaa.server.transport.message.ErrorBuilder;
+import org.kaaproject.kaa.server.transport.message.MessageBuilder;
+import org.kaaproject.kaa.server.transport.message.SessionAwareMessage;
+import org.kaaproject.kaa.server.transport.message.SessionInitMessage;
+import org.kaaproject.kaa.server.transport.session.SessionInfo;
 import org.mockito.Mockito;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -317,7 +317,7 @@ public class DefaultAkkaServiceTest {
             }
 
             @Override
-            public void onSessionCreated(NettySessionInfo session) {
+            public void onSessionCreated(SessionInfo session) {
             }
 
             @Override
@@ -360,7 +360,7 @@ public class DefaultAkkaServiceTest {
     public void testDecodeSessionException() throws Exception {
         SessionAwareMessage message = Mockito.mock(SessionAwareMessage.class);
         ErrorBuilder errorBuilder = Mockito.mock(ErrorBuilder.class);
-        NettySessionInfo sessionInfo = new NettySessionInfo(UUID.randomUUID(), Constants.KAA_PLATFORM_PROTOCOL_AVRO_ID,
+        SessionInfo sessionInfo = new SessionInfo(UUID.randomUUID(), Constants.KAA_PLATFORM_PROTOCOL_AVRO_ID,
                 Mockito.mock(ChannelContext.class), ChannelType.TCP, Mockito.mock(CipherPair.class),
                 EndpointObjectHash.fromSHA1("test"), "applicationToken", 100, true);
         Mockito.when(message.getChannelContext()).thenReturn(Mockito.mock(ChannelContext.class));
@@ -768,7 +768,7 @@ public class DefaultAkkaServiceTest {
         AvroByteArrayConverter<SyncRequest> requestConverter = new AvroByteArrayConverter<>(SyncRequest.class);
         org.kaaproject.kaa.common.channels.protocols.kaatcp.messages.SyncRequest kaaSync = new org.kaaproject.kaa.common.channels.protocols.kaatcp.messages.SyncRequest(
                 crypt.encodeData(requestConverter.toByteArray(request)), false, true);
-        NettySessionInfo session = new NettySessionInfo(UUID.randomUUID(), Constants.KAA_PLATFORM_PROTOCOL_AVRO_ID, channelContextMock,
+        SessionInfo session = new SessionInfo(UUID.randomUUID(), Constants.KAA_PLATFORM_PROTOCOL_AVRO_ID, channelContextMock,
                 ChannelType.TCP, crypt.getSessionCipherPair(), EndpointObjectHash.fromBytes(clientPublicKey.array()), APP_TOKEN, 100, true);
 
         SessionAwareMessage message = new NettyTcpSyncMessage(kaaSync, session, responseBuilder, errorBuilder, null);

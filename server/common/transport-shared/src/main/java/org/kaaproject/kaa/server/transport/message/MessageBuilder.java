@@ -13,10 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kaaproject.kaa.server.operations.service.akka.messages.io.request;
+package org.kaaproject.kaa.server.transport.message;
 
-import org.kaaproject.kaa.server.operations.service.netty.NettySessionInfo;
+public interface MessageBuilder {
 
-public interface SessionAware {
-    NettySessionInfo getSessionInfo();
+    Object[] build(byte[] messageData, boolean isEncrypted);
 }

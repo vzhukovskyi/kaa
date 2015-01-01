@@ -13,15 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kaaproject.kaa.server.operations.service.akka.messages.io.request;
+package org.kaaproject.kaa.server.transport.session;
 
-import org.kaaproject.kaa.server.operations.service.netty.SessionCreateListener;
 
-public interface SessionInitMessage extends Message, SessionCreateListener{
-
-    byte[] getEncodedMessageData();
-    byte[] getEncodedSessionKey();
-    byte[] getSessionKeySignature();
-    int getKeepAlive();
-
+public interface SessionAware {
+    SessionInfo getSessionInfo();
 }

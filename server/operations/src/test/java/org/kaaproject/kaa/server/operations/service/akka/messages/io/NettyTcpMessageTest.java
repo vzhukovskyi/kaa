@@ -24,16 +24,17 @@ import org.kaaproject.kaa.common.channels.protocols.kaatcp.messages.Connect;
 import org.kaaproject.kaa.common.channels.protocols.kaatcp.messages.SyncRequest;
 import org.kaaproject.kaa.common.endpoint.security.MessageEncoderDecoder.CipherPair;
 import org.kaaproject.kaa.common.hash.EndpointObjectHash;
-import org.kaaproject.kaa.server.operations.service.akka.messages.io.request.ErrorBuilder;
-import org.kaaproject.kaa.server.operations.service.akka.messages.io.request.MessageBuilder;
 import org.kaaproject.kaa.server.operations.service.akka.messages.io.request.NettyTcpConnectMessage;
 import org.kaaproject.kaa.server.operations.service.akka.messages.io.request.NettyTcpDisconnectMessage;
 import org.kaaproject.kaa.server.operations.service.akka.messages.io.request.NettyTcpPingMessage;
 import org.kaaproject.kaa.server.operations.service.akka.messages.io.request.NettyTcpSyncMessage;
 import org.kaaproject.kaa.server.operations.service.akka.messages.io.request.SyncStatistics;
-import org.kaaproject.kaa.server.operations.service.http.commands.ChannelType;
-import org.kaaproject.kaa.server.operations.service.netty.NettySessionInfo;
-import org.kaaproject.kaa.server.operations.service.netty.SessionCreateListener;
+import org.kaaproject.kaa.server.transport.channel.ChannelContext;
+import org.kaaproject.kaa.server.transport.channel.ChannelType;
+import org.kaaproject.kaa.server.transport.message.ErrorBuilder;
+import org.kaaproject.kaa.server.transport.message.MessageBuilder;
+import org.kaaproject.kaa.server.transport.session.SessionCreateListener;
+import org.kaaproject.kaa.server.transport.session.SessionInfo;
 import org.mockito.Mockito;
 
 public class NettyTcpMessageTest {
@@ -48,7 +49,7 @@ public class NettyTcpMessageTest {
         String applicationToken = "AppToken";
         int keepAlive = 100;
 
-        NettySessionInfo session = new NettySessionInfo(channelId, Constants.KAA_PLATFORM_PROTOCOL_AVRO_ID, ctx, channelType, sessionKey, key,
+        SessionInfo session = new SessionInfo(channelId, Constants.KAA_PLATFORM_PROTOCOL_AVRO_ID, ctx, channelType, sessionKey, key,
                 applicationToken, keepAlive, true);
 
         Connect command = new Connect(keepAlive, Constants.KAA_PLATFORM_PROTOCOL_AVRO_ID, "aesSessionKey".getBytes(), "syncRequest".getBytes(), "signature".getBytes());
@@ -85,7 +86,7 @@ public class NettyTcpMessageTest {
         String applicationToken = "AppToken";
         int keepAlive = 100;
 
-        NettySessionInfo session = new NettySessionInfo(channelId, Constants.KAA_PLATFORM_PROTOCOL_AVRO_ID, ctx, channelType, sessionKey, key,
+        SessionInfo session = new SessionInfo(channelId, Constants.KAA_PLATFORM_PROTOCOL_AVRO_ID, ctx, channelType, sessionKey, key,
                 applicationToken, keepAlive, true);
 
         SyncRequest command = new SyncRequest("avroObject".getBytes(), false, false);
@@ -107,7 +108,7 @@ public class NettyTcpMessageTest {
         String applicationToken = "AppToken";
         int keepAlive = 100;
 
-        NettySessionInfo session = new NettySessionInfo(channelId, Constants.KAA_PLATFORM_PROTOCOL_AVRO_ID, ctx, channelType, sessionKey, key,
+        SessionInfo session = new SessionInfo(channelId, Constants.KAA_PLATFORM_PROTOCOL_AVRO_ID, ctx, channelType, sessionKey, key,
                 applicationToken, keepAlive, true);
 
         NettyTcpDisconnectMessage message = new NettyTcpDisconnectMessage(session);
@@ -128,7 +129,7 @@ public class NettyTcpMessageTest {
         String applicationToken = "AppToken";
         int keepAlive = 100;
 
-        NettySessionInfo session = new NettySessionInfo(channelId, Constants.KAA_PLATFORM_PROTOCOL_AVRO_ID, ctx, channelType, sessionKey, key,
+        SessionInfo session = new SessionInfo(channelId, Constants.KAA_PLATFORM_PROTOCOL_AVRO_ID, ctx, channelType, sessionKey, key,
                 applicationToken, keepAlive, true);
 
         NettyTcpPingMessage message = new NettyTcpPingMessage(session);

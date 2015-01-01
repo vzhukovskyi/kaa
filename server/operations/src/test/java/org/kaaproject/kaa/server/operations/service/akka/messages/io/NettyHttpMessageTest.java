@@ -20,12 +20,13 @@ import java.util.UUID;
 import org.junit.Assert;
 import org.junit.Test;
 import org.kaaproject.kaa.common.Constants;
-import org.kaaproject.kaa.server.operations.service.akka.messages.io.request.ErrorBuilder;
-import org.kaaproject.kaa.server.operations.service.akka.messages.io.request.MessageBuilder;
 import org.kaaproject.kaa.server.operations.service.akka.messages.io.request.NettyHttpSyncMessage;
 import org.kaaproject.kaa.server.operations.service.akka.messages.io.request.SyncStatistics;
-import org.kaaproject.kaa.server.operations.service.http.commands.ChannelType;
 import org.kaaproject.kaa.server.operations.service.http.commands.SyncCommand;
+import org.kaaproject.kaa.server.transport.channel.ChannelContext;
+import org.kaaproject.kaa.server.transport.channel.ChannelType;
+import org.kaaproject.kaa.server.transport.message.ErrorBuilder;
+import org.kaaproject.kaa.server.transport.message.MessageBuilder;
 import org.mockito.Mockito;
 
 public class NettyHttpMessageTest {

@@ -13,17 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kaaproject.kaa.server.operations.service.netty;
+package org.kaaproject.kaa.server.transport.session;
 
 import java.util.UUID;
 
 import org.kaaproject.kaa.common.endpoint.security.MessageEncoderDecoder.CipherPair;
 import org.kaaproject.kaa.common.hash.EndpointObjectHash;
-import org.kaaproject.kaa.server.operations.service.akka.messages.io.ChannelContext;
-import org.kaaproject.kaa.server.operations.service.akka.messages.io.PlatformAware;
-import org.kaaproject.kaa.server.operations.service.http.commands.ChannelType;
+import org.kaaproject.kaa.server.transport.channel.ChannelContext;
+import org.kaaproject.kaa.server.transport.channel.ChannelType;
+import org.kaaproject.kaa.server.transport.platform.PlatformAware;
 
-public final class NettySessionInfo implements PlatformAware{
+public final class SessionInfo implements PlatformAware{
     private final UUID uuid;
     private final int platformId;
     private final ChannelContext ctx;
@@ -34,7 +34,7 @@ public final class NettySessionInfo implements PlatformAware{
     private final int keepAlive;
     private final boolean isEncrypted;
 
-    public NettySessionInfo(UUID uuid, int platformId, ChannelContext ctx, ChannelType channelType, CipherPair cipherPair, EndpointObjectHash key,
+    public SessionInfo(UUID uuid, int platformId, ChannelContext ctx, ChannelType channelType, CipherPair cipherPair, EndpointObjectHash key,
             String applicationToken, int keepAlive, boolean isEncrypted) {
         super();
         this.uuid = uuid;
@@ -103,7 +103,7 @@ public final class NettySessionInfo implements PlatformAware{
         if (getClass() != obj.getClass()) {
             return false;
         }
-        NettySessionInfo other = (NettySessionInfo) obj;
+        SessionInfo other = (SessionInfo) obj;
         if (uuid == null) {
             if (other.uuid != null) {
                 return false;

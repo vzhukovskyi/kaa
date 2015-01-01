@@ -2,7 +2,7 @@ package org.kaaproject.kaa.server.operations.service.netty;
 
 import io.netty.channel.ChannelHandlerContext;
 
-import org.kaaproject.kaa.server.operations.service.akka.messages.io.ChannelContext;
+import org.kaaproject.kaa.server.transport.channel.ChannelContext;
 
 public class NettyChannelContext implements ChannelContext{
     private final ChannelHandlerContext ctx;

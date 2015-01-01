@@ -92,6 +92,10 @@
             <artifactId>log-shared</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.kaaproject.kaa.server.common</groupId>
+            <artifactId>transport-shared</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.kaaproject.kaa.common</groupId>
             <artifactId>core</artifactId>
         </dependency>

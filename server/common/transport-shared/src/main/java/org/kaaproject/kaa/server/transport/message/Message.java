@@ -13,28 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kaaproject.kaa.server.operations.service.http.commands;
+package org.kaaproject.kaa.server.transport.message;
 
-public enum ChannelType {
+import org.kaaproject.kaa.server.transport.channel.ChannelAware;
+import org.kaaproject.kaa.server.transport.platform.PlatformAware;
 
-    HTTP(false, false),
-    HTTP_LP(true, false),
-    TCP(false, true);
+public interface Message extends ChannelAware, PlatformAware{
 
-    private final boolean longPoll;
-    private final boolean async;
-
-    private ChannelType(boolean longPoll, boolean async) {
-        this.longPoll = longPoll;
-        this.async = async;
-    }
-
-    public boolean isAsync(){
-        return async;
-    }
-
-    public boolean isLongPoll(){
-        return longPoll;
-    }
+    MessageBuilder getMessageBuilder();
+    ErrorBuilder getErrorBuilder();
+    boolean isEncrypted();
 
 }

@@ -21,6 +21,7 @@ import io.netty.handler.codec.http.HttpResponse;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.kaaproject.kaa.server.transport.channel.ChannelType;
 
 public class SyncCommandTest {
 

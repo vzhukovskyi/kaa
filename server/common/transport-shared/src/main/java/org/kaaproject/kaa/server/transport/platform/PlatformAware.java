@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kaaproject.kaa.server.operations.service.netty;
+package org.kaaproject.kaa.server.transport.platform;
 
-public interface SessionCreateListener {
+public interface PlatformAware {
 
-    void onSessionCreated(NettySessionInfo session);
-
+    int getPlatformId();
+    
 }

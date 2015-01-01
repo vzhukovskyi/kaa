@@ -34,16 +34,16 @@ import org.kaaproject.kaa.common.channels.protocols.kaatcp.messages.MqttFrame;
 import org.kaaproject.kaa.common.channels.protocols.kaatcp.messages.SyncRequest;
 import org.kaaproject.kaa.server.common.server.kaatcp.AbstractKaaTcpCommandProcessor;
 import org.kaaproject.kaa.server.operations.service.akka.AkkaService;
-import org.kaaproject.kaa.server.operations.service.akka.messages.io.request.ErrorBuilder;
-import org.kaaproject.kaa.server.operations.service.akka.messages.io.request.MessageBuilder;
 import org.kaaproject.kaa.server.operations.service.akka.messages.io.request.NettyTcpConnectMessage;
 import org.kaaproject.kaa.server.operations.service.akka.messages.io.request.NettyTcpDisconnectMessage;
 import org.kaaproject.kaa.server.operations.service.akka.messages.io.request.NettyTcpPingMessage;
 import org.kaaproject.kaa.server.operations.service.akka.messages.io.request.NettyTcpSyncMessage;
-import org.kaaproject.kaa.server.operations.service.http.commands.ChannelType;
 import org.kaaproject.kaa.server.operations.service.netty.NettyChannelContext;
-import org.kaaproject.kaa.server.operations.service.netty.NettySessionInfo;
-import org.kaaproject.kaa.server.operations.service.netty.SessionCreateListener;
+import org.kaaproject.kaa.server.transport.channel.ChannelType;
+import org.kaaproject.kaa.server.transport.message.ErrorBuilder;
+import org.kaaproject.kaa.server.transport.message.MessageBuilder;
+import org.kaaproject.kaa.server.transport.session.SessionCreateListener;
+import org.kaaproject.kaa.server.transport.session.SessionInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,7 +56,7 @@ public class AkkaKaaTcpHandler extends SimpleChannelInboundHandler<AbstractKaaTc
 
     private final UUID uuid;
     private final AkkaService akkaService;
-    private volatile NettySessionInfo session;
+    private volatile SessionInfo session;
 
     private final static ErrorBuilder connectErrorConverter = new ErrorBuilder() {
         @Override
@@ -159,7 +159,7 @@ public class AkkaKaaTcpHandler extends SimpleChannelInboundHandler<AbstractKaaTc
     }
 
     @Override
-    public void onSessionCreated(NettySessionInfo session) {
+    public void onSessionCreated(SessionInfo session) {
         LOG.trace("[{}] Session info is set to {}", uuid, session);
         this.session = session;
     }

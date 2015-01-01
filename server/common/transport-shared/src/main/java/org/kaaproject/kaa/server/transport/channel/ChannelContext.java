@@ -1,4 +1,4 @@
-package org.kaaproject.kaa.server.operations.service.akka.messages.io;
+package org.kaaproject.kaa.server.transport.channel;
 
 public interface ChannelContext {
 

@@ -18,18 +18,19 @@ package org.kaaproject.kaa.server.operations.service.akka.messages.io.request;
 import java.util.UUID;
 
 import org.kaaproject.kaa.server.operations.service.akka.messages.core.endpoint.EndpointAwareMessage;
-import org.kaaproject.kaa.server.operations.service.akka.messages.io.ChannelAware;
-import org.kaaproject.kaa.server.operations.service.akka.messages.io.ChannelContext;
-import org.kaaproject.kaa.server.operations.service.http.commands.ChannelType;
-import org.kaaproject.kaa.server.operations.service.netty.NettySessionInfo;
+import org.kaaproject.kaa.server.transport.channel.ChannelAware;
+import org.kaaproject.kaa.server.transport.channel.ChannelContext;
+import org.kaaproject.kaa.server.transport.channel.ChannelType;
+import org.kaaproject.kaa.server.transport.session.SessionAware;
+import org.kaaproject.kaa.server.transport.session.SessionInfo;
 
 import akka.actor.ActorRef;
 
 public class NettyTcpDisconnectMessage extends EndpointAwareMessage implements SessionAware, ChannelAware{
 
-    private final NettySessionInfo session;
+    private final SessionInfo session;
 
-    public NettyTcpDisconnectMessage(NettySessionInfo session) {
+    public NettyTcpDisconnectMessage(SessionInfo session) {
         super(session.getApplicationToken(), session.getKey(), ActorRef.noSender());
         this.session = session;
     }
@@ -40,7 +41,7 @@ public class NettyTcpDisconnectMessage extends EndpointAwareMessage implements S
     }
 
     @Override
-    public NettySessionInfo getSessionInfo() {
+    public SessionInfo getSessionInfo() {
         return session;
     }
 

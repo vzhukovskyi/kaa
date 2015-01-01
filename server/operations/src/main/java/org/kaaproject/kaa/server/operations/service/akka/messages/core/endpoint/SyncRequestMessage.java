@@ -26,11 +26,11 @@ import org.kaaproject.kaa.server.operations.pojo.sync.EventClientSync;
 import org.kaaproject.kaa.server.operations.pojo.sync.NotificationClientSync;
 import org.kaaproject.kaa.server.operations.pojo.sync.ServerSync;
 import org.kaaproject.kaa.server.operations.pojo.sync.UserClientSync;
-import org.kaaproject.kaa.server.operations.service.akka.messages.io.ChannelAware;
-import org.kaaproject.kaa.server.operations.service.akka.messages.io.ChannelContext;
-import org.kaaproject.kaa.server.operations.service.akka.messages.io.request.Message;
-import org.kaaproject.kaa.server.operations.service.http.commands.ChannelType;
-import org.kaaproject.kaa.server.operations.service.netty.NettySessionInfo;
+import org.kaaproject.kaa.server.transport.channel.ChannelAware;
+import org.kaaproject.kaa.server.transport.channel.ChannelContext;
+import org.kaaproject.kaa.server.transport.channel.ChannelType;
+import org.kaaproject.kaa.server.transport.message.Message;
+import org.kaaproject.kaa.server.transport.session.SessionInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,7 +50,7 @@ public class SyncRequestMessage extends EndpointAwareMessage implements ChannelA
     private final ClientSync request;
 
     /** The session. */
-    private final NettySessionInfo session;
+    private final SessionInfo session;
 
     /**
      * Instantiates a new sync request message.
@@ -64,7 +64,7 @@ public class SyncRequestMessage extends EndpointAwareMessage implements ChannelA
      * @param originator
      *            the originator
      */
-    public SyncRequestMessage(NettySessionInfo session, ClientSync request, Message requestMessage, ActorRef originator) {
+    public SyncRequestMessage(SessionInfo session, ClientSync request, Message requestMessage, ActorRef originator) {
         super(session.getApplicationToken(), session.getKey(), originator);
         this.command = requestMessage;
         this.request = request;
@@ -95,7 +95,7 @@ public class SyncRequestMessage extends EndpointAwareMessage implements ChannelA
         return session.getCtx();
     }
 
-    public NettySessionInfo getSession() {
+    public SessionInfo getSession() {
         return session;
     }
 

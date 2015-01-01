@@ -17,9 +17,11 @@ package org.kaaproject.kaa.server.operations.service.akka.messages.io.request;
 
 import java.util.UUID;
 
-import org.kaaproject.kaa.server.operations.service.akka.messages.io.ChannelContext;
-import org.kaaproject.kaa.server.operations.service.akka.messages.io.PlatformAware;
-import org.kaaproject.kaa.server.operations.service.http.commands.ChannelType;
+import org.kaaproject.kaa.server.transport.channel.ChannelContext;
+import org.kaaproject.kaa.server.transport.channel.ChannelType;
+import org.kaaproject.kaa.server.transport.message.ErrorBuilder;
+import org.kaaproject.kaa.server.transport.message.MessageBuilder;
+import org.kaaproject.kaa.server.transport.platform.PlatformAware;
 
 public abstract class AbstractRequestMessage implements PlatformAware{
     private final UUID uuid;

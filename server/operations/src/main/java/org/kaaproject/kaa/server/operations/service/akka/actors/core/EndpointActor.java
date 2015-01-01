@@ -27,9 +27,9 @@ import org.kaaproject.kaa.server.operations.service.akka.messages.core.session.R
 import org.kaaproject.kaa.server.operations.service.akka.messages.core.topic.NotificationMessage;
 import org.kaaproject.kaa.server.operations.service.akka.messages.core.user.EndpointEventReceiveMessage;
 import org.kaaproject.kaa.server.operations.service.akka.messages.core.user.EndpointUserActionMessage;
-import org.kaaproject.kaa.server.operations.service.akka.messages.io.ChannelAware;
 import org.kaaproject.kaa.server.operations.service.akka.messages.io.request.NettyTcpDisconnectMessage;
 import org.kaaproject.kaa.server.operations.service.akka.messages.io.request.NettyTcpPingMessage;
+import org.kaaproject.kaa.server.transport.channel.ChannelAware;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

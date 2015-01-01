@@ -24,11 +24,11 @@ import java.util.UUID;
 import org.kaaproject.kaa.server.common.server.http.AbstractCommand;
 import org.kaaproject.kaa.server.common.server.http.DefaultHandler;
 import org.kaaproject.kaa.server.operations.service.akka.AkkaService;
-import org.kaaproject.kaa.server.operations.service.akka.messages.io.request.ErrorBuilder;
-import org.kaaproject.kaa.server.operations.service.akka.messages.io.request.MessageBuilder;
 import org.kaaproject.kaa.server.operations.service.akka.messages.io.request.NettyHttpSyncMessage;
 import org.kaaproject.kaa.server.operations.service.http.commands.AbstractHttpSyncCommand;
 import org.kaaproject.kaa.server.operations.service.netty.NettyChannelContext;
+import org.kaaproject.kaa.server.transport.message.ErrorBuilder;
+import org.kaaproject.kaa.server.transport.message.MessageBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

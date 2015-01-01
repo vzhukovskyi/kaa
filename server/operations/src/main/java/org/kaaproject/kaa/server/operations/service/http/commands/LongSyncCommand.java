@@ -16,6 +16,8 @@
 
 package org.kaaproject.kaa.server.operations.service.http.commands;
 
+import org.kaaproject.kaa.server.transport.channel.ChannelType;
+
 
 
 /**

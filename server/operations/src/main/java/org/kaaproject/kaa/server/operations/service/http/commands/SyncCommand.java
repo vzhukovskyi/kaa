@@ -20,6 +20,7 @@
 package org.kaaproject.kaa.server.operations.service.http.commands;
 
 import org.kaaproject.kaa.common.endpoint.CommonEPConstans;
+import org.kaaproject.kaa.server.transport.channel.ChannelType;
 
 /**
  * The Class SyncCommand.

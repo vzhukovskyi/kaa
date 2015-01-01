@@ -13,15 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kaaproject.kaa.server.operations.service.akka.messages.io.request;
+package org.kaaproject.kaa.server.transport.channel;
 
-import org.kaaproject.kaa.server.operations.service.akka.messages.io.ChannelAware;
-import org.kaaproject.kaa.server.operations.service.akka.messages.io.PlatformAware;
+public enum ChannelType {
 
-public interface Message extends ChannelAware, PlatformAware{
+    HTTP(false, false),
+    HTTP_LP(true, false),
+    TCP(false, true);
 
-    MessageBuilder getMessageBuilder();
-    ErrorBuilder getErrorBuilder();
-    boolean isEncrypted();
+    private final boolean longPoll;
+    private final boolean async;
+
+    private ChannelType(boolean longPoll, boolean async) {
+        this.longPoll = longPoll;
+        this.async = async;
+    }
+
+    public boolean isAsync(){
+        return async;
+    }
+
+    public boolean isLongPoll(){
+        return longPoll;
+    }
 
 }

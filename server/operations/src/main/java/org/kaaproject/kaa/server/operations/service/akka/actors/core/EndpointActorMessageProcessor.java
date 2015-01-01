@@ -77,10 +77,10 @@ import org.kaaproject.kaa.server.operations.service.akka.messages.core.user.Endp
 import org.kaaproject.kaa.server.operations.service.akka.messages.core.user.EndpointUserConnectMessage;
 import org.kaaproject.kaa.server.operations.service.akka.messages.core.user.EndpointUserDetachMessage;
 import org.kaaproject.kaa.server.operations.service.akka.messages.core.user.EndpointUserDisconnectMessage;
-import org.kaaproject.kaa.server.operations.service.akka.messages.io.ChannelAware;
 import org.kaaproject.kaa.server.operations.service.akka.messages.io.response.NettySessionResponseMessage;
 import org.kaaproject.kaa.server.operations.service.event.EventClassFamilyVersion;
-import org.kaaproject.kaa.server.operations.service.http.commands.ChannelType;
+import org.kaaproject.kaa.server.transport.channel.ChannelAware;
+import org.kaaproject.kaa.server.transport.channel.ChannelType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

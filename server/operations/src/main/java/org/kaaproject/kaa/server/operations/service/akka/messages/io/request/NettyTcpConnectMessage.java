@@ -18,10 +18,13 @@ package org.kaaproject.kaa.server.operations.service.akka.messages.io.request;
 import java.util.UUID;
 
 import org.kaaproject.kaa.common.channels.protocols.kaatcp.messages.Connect;
-import org.kaaproject.kaa.server.operations.service.akka.messages.io.ChannelContext;
-import org.kaaproject.kaa.server.operations.service.http.commands.ChannelType;
-import org.kaaproject.kaa.server.operations.service.netty.NettySessionInfo;
-import org.kaaproject.kaa.server.operations.service.netty.SessionCreateListener;
+import org.kaaproject.kaa.server.transport.channel.ChannelContext;
+import org.kaaproject.kaa.server.transport.channel.ChannelType;
+import org.kaaproject.kaa.server.transport.message.ErrorBuilder;
+import org.kaaproject.kaa.server.transport.message.MessageBuilder;
+import org.kaaproject.kaa.server.transport.message.SessionInitMessage;
+import org.kaaproject.kaa.server.transport.session.SessionCreateListener;
+import org.kaaproject.kaa.server.transport.session.SessionInfo;
 
 public class NettyTcpConnectMessage extends AbstractRequestMessage implements SessionInitMessage {
 
@@ -37,7 +40,7 @@ public class NettyTcpConnectMessage extends AbstractRequestMessage implements Se
     }
 
     @Override
-    public void onSessionCreated(NettySessionInfo session) {
+    public void onSessionCreated(SessionInfo session) {
         this.sessionAware.onSessionCreated(session);
     }
 

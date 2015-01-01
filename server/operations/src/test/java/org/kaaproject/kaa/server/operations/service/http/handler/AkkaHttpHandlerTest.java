@@ -24,7 +24,7 @@ import org.junit.Test;
 import org.kaaproject.kaa.server.operations.service.akka.AkkaService;
 import org.kaaproject.kaa.server.operations.service.akka.messages.io.request.NettyHttpSyncMessage;
 import org.kaaproject.kaa.server.operations.service.http.commands.AbstractHttpSyncCommand;
-import org.kaaproject.kaa.server.operations.service.http.commands.ChannelType;
+import org.kaaproject.kaa.server.transport.channel.ChannelType;
 import org.mockito.Mockito;
 
 public class AkkaHttpHandlerTest {

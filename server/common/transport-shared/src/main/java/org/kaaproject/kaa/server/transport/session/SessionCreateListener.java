@@ -13,10 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kaaproject.kaa.server.operations.service.akka.messages.io;
+package org.kaaproject.kaa.server.transport.session;
 
-public interface PlatformAware {
 
-    int getPlatformId();
-    
+public interface SessionCreateListener {
+
+    void onSessionCreated(SessionInfo session);
+
 }

@@ -16,18 +16,13 @@
 
 package org.kaaproject.kaa.server.bootstrap.service.http;
 
-import java.io.IOException;
-
 import org.kaaproject.kaa.common.bootstrap.gen.ChannelType;
-import org.kaaproject.kaa.server.bootstrap.service.config.KaaHttpServiceChannelConfig;
 import org.kaaproject.kaa.server.bootstrap.service.config.BootstrapServerConfig;
+import org.kaaproject.kaa.server.bootstrap.service.config.KaaHttpServiceChannelConfig;
 import org.kaaproject.kaa.server.bootstrap.service.initialization.ServiceChannel;
-import org.kaaproject.kaa.server.common.server.StatisticsNodeUpdater;
 import org.kaaproject.kaa.server.common.server.http.DefaultHttpServerInitializer;
 import org.kaaproject.kaa.server.common.server.http.NettyHttpServer;
-import org.kaaproject.kaa.server.common.server.statistics.StatisticsService;
 import org.kaaproject.kaa.server.common.zk.ZkChannelException;
-import org.kaaproject.kaa.server.common.zk.ZkChannelsUtils;
 import org.kaaproject.kaa.server.common.zk.gen.BaseStatistics;
 import org.kaaproject.kaa.server.common.zk.gen.IpComunicationParameters;
 import org.kaaproject.kaa.server.common.zk.gen.SupportedChannel;
@@ -44,7 +39,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author Andrey Panasenko
  */
-public class KaaHttpService  implements ServiceChannel, StatisticsNodeUpdater { 
+public class KaaHttpService  implements ServiceChannel { 
 
     /** The Constant logger */
     private static final Logger LOG = LoggerFactory
@@ -64,7 +59,6 @@ public class KaaHttpService  implements ServiceChannel, StatisticsNodeUpdater {
 
     private Long timeStarted = System.currentTimeMillis();
 
-    private StatisticsService statService;
     /**
      * KaaHttpService constructor
      * @param config KaaHttpServiceChannelConfig - HTTP channel specific configuration
@@ -75,8 +69,6 @@ public class KaaHttpService  implements ServiceChannel, StatisticsNodeUpdater {
         this.config = config;
         this.serverConfig = opConfig;
         this.netty = new NettyHttpServer(this.config, serverInitializer);
-        this.statService = new StatisticsService(getChannelType(), config, this);
-        this.config.setSessionTrack(statService);
     }
 
     
@@ -91,7 +83,6 @@ public class KaaHttpService  implements ServiceChannel, StatisticsNodeUpdater {
         LOG.trace("Bootstrap protocol service: starting Netty...");
         netty.init();
         netty.start();
-        statService.start();
     }
 
     /*
@@ -103,7 +94,6 @@ public class KaaHttpService  implements ServiceChannel, StatisticsNodeUpdater {
      */
     public void stop() {
         LOG.trace("Bootstrap protocol service, stopping Netty...");
-        statService.shutdown();
         netty.shutdown();
         netty.deInit();
     }
@@ -164,32 +154,5 @@ public class KaaHttpService  implements ServiceChannel, StatisticsNodeUpdater {
      */
     private ZkHttpComunicationParameters getZkCommunicationParameters() {
         return new ZkHttpComunicationParameters(new IpComunicationParameters(config.getBindInterface(), config.getPort()));
-    }
-
-    /* (non-Javadoc)
-     * @see org.kaaproject.kaa.server.common.server.StatisticsNodeUpdater#setStatistics(int, int, int)
-     */
-    @Override
-    public void setStatistics(int averageProcessedRequests, int averageOnlineSessions, int averageDeltaSync) {
-        LOG.trace("HTTP Service setStatistics, {},{},{}", averageProcessedRequests, averageOnlineSessions, averageDeltaSync);
-        processedRequestCount = Integer.valueOf(averageProcessedRequests);
-        registeredUsersCount = Integer.valueOf(averageOnlineSessions);
-        deltaCalculationCount = Integer.valueOf(averageDeltaSync);
-        timeStarted = System.currentTimeMillis();
-        if (serverConfig.getBootstrapNode() != null) {
-            try {
-                serverConfig.getBootstrapNode().updateNodeStatsValues(
-                        ZkChannelsUtils.getZkChannelTypeFromChanneltype(getChannelType()), 
-                        averageDeltaSync, 
-                        averageProcessedRequests, 
-                        averageOnlineSessions);
-            } catch (IOException e) {
-                LOG.error("Error update statistics for channel "+getChannelType(), e);
-            } catch (ZkChannelException e) {
-                LOG.error("Error update statistics for channel "+getChannelType(), e);
-            }            
-        } else {
-            LOG.error("Error update statistics for channel "+getChannelType()+ " BootstrapNode not set.");
-        }
     }
 }

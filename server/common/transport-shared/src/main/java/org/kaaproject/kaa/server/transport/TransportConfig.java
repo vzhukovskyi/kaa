@@ -32,5 +32,7 @@ public interface TransportConfig {
     String getTransportClass();
 
     Schema getConfigSchema();
+    
+    String getConfigFileName();
 
 }

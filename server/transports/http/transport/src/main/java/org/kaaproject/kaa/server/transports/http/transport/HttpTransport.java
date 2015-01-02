@@ -6,6 +6,7 @@ import java.util.Arrays;
 
 import org.kaaproject.kaa.server.transport.AbstractKaaTransport;
 import org.kaaproject.kaa.server.transport.TransportLifecycleException;
+import org.kaaproject.kaa.server.transport.TransportMetaData;
 import org.kaaproject.kaa.server.transport.TransportProperties;
 import org.kaaproject.kaa.server.transport.http.config.gen.AvroHttpConfig;
 import org.slf4j.Logger;
@@ -16,17 +17,18 @@ public class HttpTransport extends AbstractKaaTransport<AvroHttpConfig> {
     private static final Logger LOG = LoggerFactory.getLogger(HttpTransport.class);
     private static final Charset UTF8 = Charset.forName("UTF-8");
     private static final int SIZE_OF_INT = 4;
+    private static final int SUPPORTED_VERSION = 1;
     private AvroHttpConfig configuration;
 
     @Override
-    public byte[] getConnectionInfo() {
+    public TransportMetaData getConnectionInfo() {
         LOG.info("Serializing configuration info {}", configuration);
         byte[] interfaceData = toUTF8Bytes(configuration.getBindInterface());
         ByteBuffer buf = ByteBuffer.wrap(new byte[SIZE_OF_INT + interfaceData.length]);
         buf.putInt(configuration.getBindPort());
         buf.put(interfaceData);
         LOG.trace("Serialized configuration info {}", Arrays.toString(buf.array()));
-        return buf.array();
+        return new TransportMetaData(SUPPORTED_VERSION, SUPPORTED_VERSION, buf.array());
     }
 
     private byte[] toUTF8Bytes(String str) {

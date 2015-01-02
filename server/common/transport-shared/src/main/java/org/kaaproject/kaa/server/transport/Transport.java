@@ -44,7 +44,7 @@ public interface Transport {
      * 
      * @return serialized data that contains connection info.
      */
-    byte[] getConnectionInfo();
+    TransportMetaData getConnectionInfo();
 
     /**
      * Starts transport instance. This method should block until transport is

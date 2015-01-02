@@ -13,20 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kaaproject.kaa.server.common.server;
+package org.kaaproject.kaa.server.operations.service.transport;
+
+import org.kaaproject.kaa.server.common.zk.operations.OperationsNode;
 
 /**
- * StatisticsNodeUpdater interface.
- * This interface should implement every service which wont to receive statistics updates from collector.
- * @author Andrey Panasenko
+ * Responsible for lookup, initialization and life-cycle management of available
+ * transport implementations
+ * 
+ * @author Andrew Shvayka
  *
  */
-public interface StatisticsNodeUpdater {
-    /**
-     * Set new statistics calculated parameters.
-     * @param averageProcessedRequests - int 
-     * @param averageOnlineSessions - int 
-     * @param averageDeltaSync - int
-     */
-    public void setStatistics(int averageProcessedRequests, int averageOnlineSessions, int averageDeltaSync);
+public interface TransportService {
+
+    void lookupAndInit();
+
+    void start();
+
+    void stop();
+
+    void setOperationsNode(OperationsNode operationsNode);
+
 }

@@ -224,4 +224,26 @@ public class ServerSync {
         builder.append("]");
         return builder.toString();
     }
+
+    public void cleanup() {
+        if(userSync != null){
+            if(userSync.getEndpointAttachResponses() != null){
+                userSync.getEndpointAttachResponses().clear();
+            }
+            if(userSync.getEndpointDetachResponses() != null){
+                userSync.getEndpointDetachResponses().clear();
+            }
+            userSync.setUserAttachNotification(null);
+            userSync.setUserDetachNotification(null);
+            userSync.setUserAttachResponse(null);
+        }
+        if(eventSync != null){
+            if(eventSync.getEventListenersResponses() != null){
+                eventSync.getEventListenersResponses().clear();
+            }
+            if(eventSync.getEventSequenceNumberResponse() != null){
+                eventSync.setEventSequenceNumberResponse(null);
+            }
+        }
+    }
 }

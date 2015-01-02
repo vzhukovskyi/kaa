@@ -568,6 +568,9 @@ public class EndpointActorMessageProcessor {
 
         ServerSync copy = deepCopy(syncResponse);
         
+        syncResponse.cleanup();
+        LOG.debug("[{}] channel response after cleanup: {}", actorKey, syncResponse);
+        
         NettySessionResponseMessage response = new NettySessionResponseMessage(request.getSession(), copy, request
                 .getCommand().getResponseBuilder(), request.getCommand().getErrorBuilder());
 

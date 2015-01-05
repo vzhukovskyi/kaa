@@ -42,25 +42,6 @@ import org.slf4j.LoggerFactory;
 public abstract class AbstractKaaTcpServerInitializer extends ChannelInitializer<SocketChannel> {
     private static final Logger LOG = LoggerFactory.getLogger(DefaultHttpServerInitializer.class);
 
-    private Config conf;
-    private CommandFactory commandFactory;
-
-    /**
-     * Config getter.
-     * @return Config
-     */
-    public Config getConf() {
-        return conf;
-    }
-
-    /**
-     * Config setter.
-     * @param conf Config
-     */
-    public void setConf(Config conf) {
-        this.conf = conf;
-    }
-
     /**
      * KaaTcpServerInitializer constructor.
      */
@@ -74,7 +55,6 @@ public abstract class AbstractKaaTcpServerInitializer extends ChannelInitializer
      */
     public void init() throws Exception { //NOSONAR
         LOG.info("Default Server Initializer Init() started: ");
-        commandFactory = new CommandFactory(getConf().getCommandList());
     }
 
     @Override
@@ -90,7 +70,7 @@ public abstract class AbstractKaaTcpServerInitializer extends ChannelInitializer
         uuidAttr.set(uuid);
 
         p.addLast("binaryDecoder", new ByteArrayDecoder());
-        p.addLast("kaaTcpDecoder", new KaaTcpDecoder(commandFactory));
+        p.addLast("kaaTcpDecoder", getDecoder());
         p.addLast("binaryEncoder", new ByteArrayEncoder());
         p.addLast("kaaTcpEncoder", new KaaTcpEncoder());
         p.addLast("mainHandler", getMainHandler(uuid));
@@ -98,5 +78,7 @@ public abstract class AbstractKaaTcpServerInitializer extends ChannelInitializer
 
     }
 
+    protected abstract KaaTcpDecoder getDecoder();
+    
     protected abstract SimpleChannelInboundHandler<AbstractKaaTcpCommandProcessor> getMainHandler(UUID uuid);
 }

@@ -15,25 +15,30 @@
  */
 package org.kaaproject.kaa.server.transports.http.transport;
 
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.socket.SocketChannel;
-import io.netty.util.concurrent.DefaultEventExecutorGroup;
-import io.netty.util.concurrent.EventExecutorGroup;
+import io.netty.handler.codec.http.HttpRequest;
+import io.netty.handler.codec.http.HttpResponse;
 
 import java.nio.ByteBuffer;
-import java.nio.charset.Charset;
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import org.kaaproject.kaa.server.common.server.AbstractNettyServer;
+import org.kaaproject.kaa.server.common.server.CommandFactory;
+import org.kaaproject.kaa.server.common.server.KaaCommandProcessorFactory;
 import org.kaaproject.kaa.server.common.server.http.AbstractCommand;
 import org.kaaproject.kaa.server.common.server.http.DefaultHttpServerInitializer;
+import org.kaaproject.kaa.server.common.server.http.RequestDecoder;
 import org.kaaproject.kaa.server.transport.AbstractKaaTransport;
 import org.kaaproject.kaa.server.transport.TransportLifecycleException;
-import org.kaaproject.kaa.server.transport.TransportMetaData;
 import org.kaaproject.kaa.server.transport.TransportProperties;
 import org.kaaproject.kaa.server.transport.http.config.gen.AvroHttpConfig;
+import org.kaaproject.kaa.server.transports.http.transport.commands.LongSyncCommandFactory;
+import org.kaaproject.kaa.server.transports.http.transport.commands.SyncCommandFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,16 +50,12 @@ import org.slf4j.LoggerFactory;
  */
 public class HttpTransport extends AbstractKaaTransport<AvroHttpConfig> {
 
+    private static final Logger LOG = LoggerFactory.getLogger(HttpTransport.class);
     private static final String BIND_INTERFACE_PROP_NAME = "transport.bindInterface";
     private static final String LOCALHOST = "localhost";
-    private static final Logger LOG = LoggerFactory.getLogger(HttpTransport.class);
-    private static final Charset UTF8 = Charset.forName("UTF-8");
-    private static final int SIZE_OF_INT = 4;
     private static final int SUPPORTED_VERSION = 1;
     private AvroHttpConfig configuration;
     private AbstractNettyServer netty;
-    //TODO: move to avro config
-    private static final int EXECUTOR_GROUP_SIZE = 1;
 
     @Override
     public void init(TransportProperties commonProperties, AvroHttpConfig configuration) throws TransportLifecycleException {
@@ -62,17 +63,30 @@ public class HttpTransport extends AbstractKaaTransport<AvroHttpConfig> {
         this.configuration.setBindInterface(replaceProperty(this.configuration.getBindInterface(), BIND_INTERFACE_PROP_NAME,
                 commonProperties.getProperty(BIND_INTERFACE_PROP_NAME, LOCALHOST)));
 
-        final EventExecutorGroup executorGroup = new DefaultEventExecutorGroup(EXECUTOR_GROUP_SIZE);
+        List<KaaCommandProcessorFactory<HttpRequest, HttpResponse>> processors = new ArrayList<KaaCommandProcessorFactory<HttpRequest,HttpResponse>>();
+        processors.add(new SyncCommandFactory());
+        processors.add(new LongSyncCommandFactory());
+        final CommandFactory<HttpRequest, HttpResponse> factory = new CommandFactory<>(processors);
+        final int maxBodySize = configuration.getMaxBodySize();
 
-        this.netty = new AbstractNettyServer(configuration.getBindInterface(), configuration.getBindPort(),
-                configuration.getThreadPoolSize()) {
+        this.netty = new AbstractNettyServer(configuration.getBindInterface(), configuration.getBindPort()) {
 
             @Override
             protected ChannelInitializer<SocketChannel> configureInitializer() throws Exception {
                 return new DefaultHttpServerInitializer() {
                     @Override
                     protected SimpleChannelInboundHandler<AbstractCommand> getMainHandler(UUID uuid) {
-                        return new HttpHandler(uuid, HttpTransport.this.handler, executorGroup);
+                        return new HttpHandler(uuid, HttpTransport.this.handler);
+                    }
+
+                    @Override
+                    public int getClientMaxBodySize() {
+                        return maxBodySize;
+                    }
+
+                    @Override
+                    protected ChannelHandler getRequestDecoder() {
+                        return new RequestDecoder(factory);
                     }
                 };
             }
@@ -81,12 +95,15 @@ public class HttpTransport extends AbstractKaaTransport<AvroHttpConfig> {
 
     @Override
     public void start() {
+        LOG.info("Initializing netty");
         netty.init();
+        LOG.info("Starting netty");
         netty.start();
     }
 
     @Override
     public void stop() {
+        LOG.info("Stopping netty");
         netty.shutdown();
     }
 
@@ -96,21 +113,21 @@ public class HttpTransport extends AbstractKaaTransport<AvroHttpConfig> {
     }
 
     @Override
-    public TransportMetaData getConnectionInfo() {
-        LOG.info("Serializing configuration info {}", configuration);
+    protected ByteBuffer getSerializedConnectionInfo() {
         byte[] interfaceData = toUTF8Bytes(configuration.getBindInterface());
         ByteBuffer buf = ByteBuffer.wrap(new byte[SIZE_OF_INT + interfaceData.length]);
         buf.putInt(configuration.getBindPort());
         buf.put(interfaceData);
-        LOG.trace("Serialized configuration info {}", Arrays.toString(buf.array()));
-        return new TransportMetaData(SUPPORTED_VERSION, SUPPORTED_VERSION, buf.array());
+        return buf;
     }
 
-    private String replaceProperty(String source, String propertyName, String propertyValue) {
-        return source.replace("${" + propertyName + "}", propertyValue);
+    @Override
+    protected int getMinSupportedVersion() {
+        return SUPPORTED_VERSION;
     }
 
-    private byte[] toUTF8Bytes(String str) {
-        return str.getBytes(UTF8);
+    @Override
+    protected int getMaxSupportedVersion() {
+        return SUPPORTED_VERSION;
     }
 }

@@ -33,6 +33,7 @@ import io.netty.util.concurrent.GenericFutureListener;
  * executor thread for processing
  *
  */
+//TODO: remove
 public class DefaultHandler extends SimpleChannelInboundHandler<AbstractCommand> {
 
     private static final Logger LOG = LoggerFactory.getLogger(RequestDecoder.class);

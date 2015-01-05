@@ -16,16 +16,15 @@
 
 package org.kaaproject.kaa.server.common.server.kaatcp;
 
-import java.util.Arrays;
-
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
-import io.netty.util.Attribute;
+
+import java.util.Arrays;
 
 import org.kaaproject.kaa.common.channels.protocols.kaatcp.messages.MessageFactory;
 import org.kaaproject.kaa.common.channels.protocols.kaatcp.messages.MqttFrame;
-import org.kaaproject.kaa.server.common.server.CommandFactory;
-import org.kaaproject.kaa.server.common.server.http.NettyHttpServer;
+import org.kaaproject.kaa.server.common.server.KaaCommandProcessor;
+import org.kaaproject.kaa.server.common.server.KaaCommandProcessorFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,14 +33,16 @@ import org.slf4j.LoggerFactory;
  *
  * @author Yaroslav Zeygerman
  */
-public class KaaTcpDecoder extends SimpleChannelInboundHandler<byte []>  {
+public class KaaTcpDecoder extends SimpleChannelInboundHandler<byte[]> {
     private static final Logger LOG = LoggerFactory.getLogger(KaaTcpDecoder.class);
 
     public static final String KAA_TCP_COMMAND_NAME = "KaaTcp";
 
-    private final CommandFactory commandFactory;
+    private ChannelHandlerContext currentCtx;
+    private KaaCommandProcessorFactory<MqttFrame, MqttFrame> commandFactory;
 
-    public KaaTcpDecoder(CommandFactory commandFactory){
+    public KaaTcpDecoder(KaaCommandProcessorFactory<MqttFrame, MqttFrame> commandFactory) {
+        super();
         this.commandFactory = commandFactory;
     }
 
@@ -49,8 +50,7 @@ public class KaaTcpDecoder extends SimpleChannelInboundHandler<byte []>  {
         @Override
         public void onMqttFrame(MqttFrame frame) {
             try {
-                AbstractKaaTcpCommandProcessor processor = (AbstractKaaTcpCommandProcessor) commandFactory
-                        .getCommandProcessorByName(KAA_TCP_COMMAND_NAME);
+                KaaCommandProcessor<MqttFrame, MqttFrame> processor = commandFactory.createCommandProcessor();
                 processFrame(frame, processor);
             } catch (Exception e) {
                 LOG.error("Failed to process KaaTcp frame {}: {}", frame.getMessageType(), e);
@@ -59,21 +59,18 @@ public class KaaTcpDecoder extends SimpleChannelInboundHandler<byte []>  {
         }
     };
 
-    private ChannelHandlerContext currentCtx;
-
-    private void processFrame(MqttFrame frame, AbstractKaaTcpCommandProcessor processor) throws Exception {
+    private void processFrame(MqttFrame frame, KaaCommandProcessor<MqttFrame, MqttFrame> processor) throws Exception {
         processor.setRequest(frame);
         currentCtx.fireChannelRead(processor);
     }
 
-    public void channelReadCompete(ChannelHandlerContext ctx) throws Exception { //NOSONAR
+    public void channelReadCompete(ChannelHandlerContext ctx) throws Exception { // NOSONAR
         ctx.flush();
     }
 
     @Override
-    protected void channelRead0(ChannelHandlerContext ctx, byte [] data)
-            throws Exception {
-        if(LOG.isTraceEnabled()){
+    protected void channelRead0(ChannelHandlerContext ctx, byte[] data) throws Exception {
+        if (LOG.isTraceEnabled()) {
             LOG.trace("channelRead0: {}", Arrays.toString(data));
         }
         currentCtx = ctx;

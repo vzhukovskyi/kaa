@@ -22,10 +22,12 @@ import io.netty.handler.codec.DecoderResult;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpObject;
 import io.netty.handler.codec.http.HttpRequest;
+import io.netty.handler.codec.http.HttpResponse;
 import io.netty.util.Attribute;
 
 import java.util.UUID;
 
+import org.kaaproject.kaa.server.common.server.AbstractNettyServer;
 import org.kaaproject.kaa.server.common.server.BadRequestException;
 import org.kaaproject.kaa.server.common.server.CommandFactory;
 import org.slf4j.Logger;
@@ -41,9 +43,9 @@ import org.slf4j.LoggerFactory;
 public class RequestDecoder extends SimpleChannelInboundHandler<HttpObject> {
     private static final Logger LOG = LoggerFactory.getLogger(RequestDecoder.class);
 
-    private final CommandFactory commandFactory;
+    private final CommandFactory<HttpRequest, HttpResponse> commandFactory;
 
-    public RequestDecoder(CommandFactory commandFactory) {
+    public RequestDecoder(CommandFactory<HttpRequest, HttpResponse> commandFactory) {
         super();
         this.commandFactory = commandFactory;
     }
@@ -68,7 +70,7 @@ public class RequestDecoder extends SimpleChannelInboundHandler<HttpObject> {
             throw new BadRequestException(result.cause());
         }
 
-        Attribute<UUID> sessionUuidAttr = ctx.channel().attr(NettyHttpServer.UUID_KEY);
+        Attribute<UUID> sessionUuidAttr = ctx.channel().attr(AbstractNettyServer.UUID_KEY);
 
         if (httpObject instanceof HttpRequest) {
             HttpRequest httpRequest = (HttpRequest) httpObject;

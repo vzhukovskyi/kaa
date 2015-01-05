@@ -24,10 +24,9 @@ import static org.mockito.Mockito.when;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.kaaproject.kaa.server.bootstrap.service.config.KaaHttpServiceChannelConfig;
 import org.kaaproject.kaa.server.bootstrap.service.config.BootstrapServerConfig;
+import org.kaaproject.kaa.server.bootstrap.service.config.KaaHttpServiceChannelConfig;
 import org.kaaproject.kaa.server.common.server.http.DefaultHttpServerInitializer;
-import org.kaaproject.kaa.server.common.server.http.NettyHttpServer;
 
 
 public class ProtocolServiceTest {

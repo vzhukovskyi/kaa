@@ -36,16 +36,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * NettyHttpServer Class.
- * Used to start Netty server.
- * Config is used to handle netty server configuration.
- * Usage:
- * netty = new NettyHttpServer(conf);
- * netty.init();
- * netty.start();
+ * NettyHttpServer Class. Used to start Netty server. Config is used to handle
+ * netty server configuration. Usage: netty = new NettyHttpServer(conf);
+ * netty.init(); netty.start();
  *
- * To stop Netty:
- * netty.shutdown();
+ * To stop Netty: netty.shutdown();
  *
  * @author Yaroslav Zeygerman
  */
@@ -58,29 +53,23 @@ public abstract class AbstractNettyServer extends Thread {
     private EventLoopGroup bossGroup;
     private EventLoopGroup workerGroup;
     private ServerBootstrap bServer;
-    private EventExecutorGroup executor;
     private Channel bindChannel;
 
     private final String bindAddress;
     private final int bindPort;
 
-    private final int threadPoolSize;
-
     /**
      * NettyHttpServer constructor.
-     * @param conf Config
+     * 
+     * @param conf
+     *            Config
      */
-    public AbstractNettyServer(String bindAddress, int port, int threadPoolSize) {
+    public AbstractNettyServer(String bindAddress, int port) {
         this.bindAddress = bindAddress;
         this.bindPort = port;
-        this.threadPoolSize = threadPoolSize;
     }
 
     protected abstract ChannelInitializer<SocketChannel> configureInitializer() throws Exception;
-
-    public EventExecutorGroup getEventExecutorGroup() {
-        return executor;
-    }
 
     /**
      * Netty HTTP server initialization.
@@ -95,19 +84,16 @@ public abstract class AbstractNettyServer extends Thread {
             LOG.debug("NettyServer workGroup created");
             bServer = new ServerBootstrap();
             LOG.debug("NettyServer ServerBootstrap created");
-            executor = new DefaultEventExecutorGroup(threadPoolSize);
-            LOG.debug("NettyServer Task Executor created");
             ChannelInitializer<SocketChannel> sInit = configureInitializer();
             LOG.debug("NettyServer InitClass instance created");
 
             LOG.debug("NettyServer InitClass instance init()");
-            bServer.group(bossGroup, workerGroup)
-                    .channel(NioServerSocketChannel.class).childHandler(sInit)
+            bServer.group(bossGroup, workerGroup).channel(NioServerSocketChannel.class).childHandler(sInit)
                     .option(ChannelOption.SO_REUSEADDR, true);
             LOG.debug("NettyServer ServerBootstrap group initialized");
             bindChannel = bServer.bind(bindAddress, bindPort).sync().channel();
         } catch (Exception e) {
-            LOG.error("NettyHttpServer init() failed",e);
+            LOG.error("NettyHttpServer init() failed", e);
         }
     }
 
@@ -149,17 +135,6 @@ public abstract class AbstractNettyServer extends Thread {
             } finally {
                 workerGroup = null;
                 LOG.trace("NettyHttpServer stopping: workerGroup stopped");
-            }
-        }
-        if (executor != null) {
-            try {
-                Future<? extends Object> f = executor.shutdownGracefully(250, 1000, TimeUnit.MILLISECONDS);
-                f.await();
-            } catch (InterruptedException e) {
-                LOG.trace("NettyHttpServer stopping: task executor error", e);
-            } finally {
-                executor = null;
-                LOG.trace("NettyHttpServer stopping: task executor stopped.");
             }
         }
     }

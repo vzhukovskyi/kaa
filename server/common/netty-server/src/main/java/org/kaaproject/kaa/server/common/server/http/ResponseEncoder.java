@@ -18,6 +18,7 @@ package org.kaaproject.kaa.server.common.server.http;
 
 import java.util.UUID;
 
+import org.kaaproject.kaa.server.common.server.AbstractNettyServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,7 +46,7 @@ public class ResponseEncoder extends ChannelOutboundHandlerAdapter {
     @Override
     public void write(ChannelHandlerContext ctx, Object msg,
             ChannelPromise promise) throws Exception {
-        Attribute<UUID> sessionUuidAttr = ctx.channel().attr(NettyHttpServer.UUID_KEY);
+        Attribute<UUID> sessionUuidAttr = ctx.channel().attr(AbstractNettyServer.UUID_KEY);
 
         if (!(msg instanceof AbstractCommand)) {
             LOG.warn("Session [{}] got invalid HTTP response: {}", sessionUuidAttr, msg);

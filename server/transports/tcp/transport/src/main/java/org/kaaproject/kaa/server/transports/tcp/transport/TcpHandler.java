@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kaaproject.kaa.server.operations.service.tcp.handler;
+package org.kaaproject.kaa.server.transports.tcp.transport;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -34,23 +34,23 @@ import org.kaaproject.kaa.common.channels.protocols.kaatcp.messages.MqttFrame;
 import org.kaaproject.kaa.common.channels.protocols.kaatcp.messages.SyncRequest;
 import org.kaaproject.kaa.server.common.server.NettyChannelContext;
 import org.kaaproject.kaa.server.common.server.kaatcp.AbstractKaaTcpCommandProcessor;
-import org.kaaproject.kaa.server.operations.service.akka.messages.io.request.NettyTcpConnectMessage;
-import org.kaaproject.kaa.server.operations.service.akka.messages.io.request.NettyTcpDisconnectMessage;
-import org.kaaproject.kaa.server.operations.service.akka.messages.io.request.NettyTcpPingMessage;
-import org.kaaproject.kaa.server.operations.service.akka.messages.io.request.NettyTcpSyncMessage;
 import org.kaaproject.kaa.server.transport.channel.ChannelType;
 import org.kaaproject.kaa.server.transport.message.ErrorBuilder;
 import org.kaaproject.kaa.server.transport.message.MessageBuilder;
 import org.kaaproject.kaa.server.transport.message.MessageHandler;
 import org.kaaproject.kaa.server.transport.session.SessionCreateListener;
 import org.kaaproject.kaa.server.transport.session.SessionInfo;
+import org.kaaproject.kaa.server.transports.tcp.transport.messages.NettyTcpConnectMessage;
+import org.kaaproject.kaa.server.transports.tcp.transport.messages.NettyTcpDisconnectMessage;
+import org.kaaproject.kaa.server.transports.tcp.transport.messages.NettyTcpPingMessage;
+import org.kaaproject.kaa.server.transports.tcp.transport.messages.NettyTcpSyncMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class AkkaKaaTcpHandler extends SimpleChannelInboundHandler<AbstractKaaTcpCommandProcessor> implements SessionCreateListener {
+public class TcpHandler extends SimpleChannelInboundHandler<AbstractKaaTcpCommandProcessor> implements SessionCreateListener {
 
     /** The Constant LOG. */
-    private static final Logger LOG = LoggerFactory.getLogger(AkkaKaaTcpHandler.class);
+    private static final Logger LOG = LoggerFactory.getLogger(TcpHandler.class);
 
     private static final boolean NOT_ZIPPED = false;
 
@@ -97,7 +97,7 @@ public class AkkaKaaTcpHandler extends SimpleChannelInboundHandler<AbstractKaaTc
 
     private MessageBuilder connectResponseConverter;
 
-    public AkkaKaaTcpHandler(UUID uuid, MessageHandler akkaService) {
+    public TcpHandler(UUID uuid, MessageHandler akkaService) {
         this.uuid = uuid;
         this.akkaService = akkaService;
         this.connectResponseConverter = new MessageBuilder() {

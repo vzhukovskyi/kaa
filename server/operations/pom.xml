@@ -95,8 +95,13 @@
             <groupId>org.kaaproject.kaa.server.common</groupId>
             <artifactId>transport-shared</artifactId>
         </dependency>
+        <!-- TODO: remove any dependencies to specific transport implementations -->
         <dependency>
             <groupId>org.kaaproject.kaa.server.transports.http</groupId>
+            <artifactId>transport</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.kaaproject.kaa.server.transports.tcp</groupId>
             <artifactId>transport</artifactId>
         </dependency>
         <dependency>
@@ -708,11 +713,11 @@
                     <classifier>cdap</classifier>
                     <scope>runtime</scope>
                 </dependency>
-				<dependency>
-				    <groupId>org.apache.httpcomponents</groupId>
-				    <artifactId>httpcore</artifactId>
-				    <version>4.3.1</version>
-				</dependency>
+                <dependency>
+                    <groupId>org.apache.httpcomponents</groupId>
+                    <artifactId>httpcore</artifactId>
+                    <version>4.3.1</version>
+                </dependency>
             </dependencies>
         </profile>
         <profile>

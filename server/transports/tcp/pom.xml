@@ -26,12 +26,17 @@
     <artifactId>tcp</artifactId>
     <packaging>pom</packaging>
 
-    <name>Kaa Tcp Transport</name>
+    <name>Kaa TCP Transport</name>
     <url>http://kaaproject.org</url>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <main.dir>${basedir}/../../..</main.dir>
     </properties>
+    
+    <modules>
+        <module>config</module>
+        <module>transport</module>
+    </modules>
 
 </project>

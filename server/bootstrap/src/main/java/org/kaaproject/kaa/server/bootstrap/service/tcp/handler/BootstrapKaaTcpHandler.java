@@ -15,18 +15,16 @@
  */
 package org.kaaproject.kaa.server.bootstrap.service.tcp.handler;
 
-import java.util.UUID;
-import java.util.concurrent.Callable;
-
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
-import io.netty.util.Attribute;
 import io.netty.util.concurrent.EventExecutorGroup;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 
+import java.util.UUID;
+import java.util.concurrent.Callable;
+
 import org.kaaproject.kaa.server.bootstrap.service.tcp.commands.KaaTcpCommand;
-import org.kaaproject.kaa.server.common.server.http.NettyHttpServer;
 import org.kaaproject.kaa.server.common.server.kaatcp.AbstractKaaTcpCommandProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

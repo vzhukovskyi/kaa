@@ -17,10 +17,13 @@
 package org.kaaproject.kaa.server.operations.service.http;
 
 import io.netty.channel.SimpleChannelInboundHandler;
+import io.netty.handler.codec.http.HttpRequest;
+import io.netty.handler.codec.http.HttpResponse;
 import io.netty.util.concurrent.DefaultEventExecutorGroup;
 
 import java.util.UUID;
 
+import org.kaaproject.kaa.server.common.server.CommandFactory;
 import org.kaaproject.kaa.server.common.server.http.AbstractCommand;
 import org.kaaproject.kaa.server.common.server.http.DefaultHttpServerInitializer;
 import org.kaaproject.kaa.server.operations.service.akka.AkkaService;
@@ -60,6 +63,18 @@ public class HttpServerInitializer extends DefaultHttpServerInitializer {
     @Override
     protected SimpleChannelInboundHandler<AbstractCommand> getMainHandler(UUID uuid) {
         return new HttpHandler(uuid, akkaService, new DefaultEventExecutorGroup(1));
+    }
+
+    @Override
+    public int getClientMaxBodySize() {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    @Override
+    public CommandFactory<HttpRequest, HttpResponse> getCommandFactory() {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }

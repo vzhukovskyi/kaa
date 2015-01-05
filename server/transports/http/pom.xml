@@ -26,7 +26,7 @@
     <artifactId>http</artifactId>
     <packaging>pom</packaging>
 
-    <name>Kaa Http Transport</name>
+    <name>Kaa HTTP Transport</name>
     <url>http://kaaproject.org</url>
 
     <properties>

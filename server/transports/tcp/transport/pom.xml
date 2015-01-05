@@ -20,13 +20,13 @@
     <parent>
         <groupId>org.kaaproject.kaa.server.transports</groupId>
         <version>0.7.0-SNAPSHOT</version>
-        <artifactId>http</artifactId>
+        <artifactId>tcp</artifactId>
     </parent>
-    <groupId>org.kaaproject.kaa.server.transports.http</groupId>
+    <groupId>org.kaaproject.kaa.server.transports.tcp</groupId>
     <artifactId>transport</artifactId>
     <packaging>jar</packaging>
 
-    <name>Kaa HTTP Transports Implementation</name>
+    <name>Kaa TCP Transports Implementation</name>
     <url>http://kaaproject.org</url>
 
     <properties>
@@ -44,10 +44,10 @@
             <artifactId>netty-server</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.kaaproject.kaa.server.transports.http</groupId>
+            <groupId>org.kaaproject.kaa.server.transports.tcp</groupId>
             <artifactId>config</artifactId>
             <version>${project.version}</version>
-            <classifier>http</classifier>
+            <classifier>tcp</classifier>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
@@ -67,7 +67,7 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
                 <configuration>
-                    <classifier>http</classifier>
+                    <classifier>tcp</classifier>
                 </configuration>
             </plugin>
         </plugins>

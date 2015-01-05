@@ -29,12 +29,9 @@ import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.UUID;
-import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -44,8 +41,8 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.kaaproject.kaa.server.common.server.CommandFactory;
 import org.kaaproject.kaa.server.common.server.Config;
-import org.kaaproject.kaa.server.common.server.ConfigConst;
 import org.kaaproject.kaa.server.common.server.KaaCommandProcessor;
 import org.kaaproject.kaa.server.common.server.KaaCommandProcessorFactory;
 import org.kaaproject.kaa.server.common.server.http.DefaultHttpServerInitializer;
@@ -227,7 +224,20 @@ public class NettyHttpServerIT {
         sessionsClosed = 0;
         testProcessed = 0;
         averageTime = 0;
-        netty = new NettyHttpServer(config, new DefaultHttpServerInitializer());
+        netty = new NettyHttpServer(config, new DefaultHttpServerInitializer(){
+
+            @Override
+            public int getClientMaxBodySize() {
+                return 1024 * 10;
+            }
+
+            @Override
+            public CommandFactory<HttpRequest, HttpResponse> getCommandFactory() {
+                // TODO Auto-generated method stub
+                return null;
+            }
+            
+        });
         netty.init();
         netty.start();
         assertNotNull(netty);

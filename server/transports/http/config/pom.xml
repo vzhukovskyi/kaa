@@ -26,7 +26,7 @@
     <artifactId>config</artifactId>
     <packaging>jar</packaging>
 
-    <name>Kaa Http Transport Config</name>
+    <name>Kaa HTTP Transport Config</name>
     <url>http://kaaproject.org</url>
 
     <properties>
@@ -94,5 +94,4 @@
             </plugin>
         </plugins>
     </build>
-
 </project>

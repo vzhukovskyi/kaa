@@ -13,17 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kaaproject.kaa.server.operations.service.tcp.commands;
+package org.kaaproject.kaa.server.transports.tcp.transport.commands;
 
-import org.kaaproject.kaa.server.common.server.kaatcp.AbstractKaaTcpCommandProcessor;
+import org.kaaproject.kaa.common.channels.protocols.kaatcp.messages.MqttFrame;
+import org.kaaproject.kaa.server.common.server.KaaCommandProcessor;
+import org.kaaproject.kaa.server.common.server.KaaCommandProcessorFactory;
 
-public class KaaTcpCommand extends AbstractKaaTcpCommandProcessor{
-
-    static final String KAA_TCP = "KaaTcp";
+public class KaaTcpCommandFactory implements KaaCommandProcessorFactory<MqttFrame, MqttFrame>{
 
     @Override
-    public String getName() {
-        return KAA_TCP;
+    public String getCommandName() {
+        return KaaTcpCommand.KAA_TCP;
+    }
+
+    @Override
+    public KaaCommandProcessor<MqttFrame, MqttFrame> createCommandProcessor() {
+        return new KaaTcpCommand();
     }
 
 }

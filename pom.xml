@@ -520,6 +520,11 @@ Copyright 2014 CyberVision, Inc.
                 <version>${project.version}</version>
             </dependency>
             <dependency>
+                <groupId>org.kaaproject.kaa.server.transports.tcp</groupId>
+                <artifactId>transport</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>org.kaaproject.kaa.server.common</groupId>
                 <artifactId>zk</artifactId>
                 <version>${project.version}</version>

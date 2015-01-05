@@ -16,6 +16,10 @@
 
 package org.kaaproject.kaa.server.bootstrap.service.http;
 
+import io.netty.handler.codec.http.HttpRequest;
+import io.netty.handler.codec.http.HttpResponse;
+
+import org.kaaproject.kaa.server.common.server.CommandFactory;
 import org.kaaproject.kaa.server.common.server.http.DefaultHttpServerInitializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,5 +38,17 @@ public class KaaHttpServerInitializer extends DefaultHttpServerInitializer {
     public KaaHttpServerInitializer() {
         super();
         LOG.info("Initializing Bootstrap server...");
+    }
+
+    @Override
+    public int getClientMaxBodySize() {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    @Override
+    public CommandFactory<HttpRequest, HttpResponse> getCommandFactory() {
+        // TODO Auto-generated method stub
+        return null;
     }
 }

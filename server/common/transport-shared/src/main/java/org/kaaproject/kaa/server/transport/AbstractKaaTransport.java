@@ -16,7 +16,10 @@
 package org.kaaproject.kaa.server.transport;
 
 import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.charset.Charset;
 import java.text.MessageFormat;
+import java.util.Arrays;
 
 import org.apache.avro.specific.SpecificRecordBase;
 import org.kaaproject.kaa.common.avro.AvroByteArrayConverter;
@@ -35,6 +38,8 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class AbstractKaaTransport<T extends SpecificRecordBase> implements Transport {
     private static final Logger LOG = LoggerFactory.getLogger(AbstractKaaTransport.class);
+    private static final Charset UTF8 = Charset.forName("UTF-8");
+    protected static final int SIZE_OF_INT = 4;
 
     /**
      * Message handler
@@ -59,6 +64,14 @@ public abstract class AbstractKaaTransport<T extends SpecificRecordBase> impleme
             throw new TransportLifecycleException(e);
         }
     }
+    
+    @Override
+    public TransportMetaData getConnectionInfo() {
+        LOG.info("Serializing connection info");
+        ByteBuffer buf = getSerializedConnectionInfo();
+        LOG.trace("Serialized connection info is {}", Arrays.toString(buf.array()));
+        return new TransportMetaData(getMinSupportedVersion(), getMaxSupportedVersion(), buf.array());
+    }
 
     /**
      * Initializes transport with specific configuration object.
@@ -75,8 +88,22 @@ public abstract class AbstractKaaTransport<T extends SpecificRecordBase> impleme
      * @return the configuration class
      */
     public abstract Class<T> getConfigurationClass();
+    
+    protected abstract ByteBuffer getSerializedConnectionInfo();
+    
+    protected abstract int getMinSupportedVersion();
+    
+    protected abstract int getMaxSupportedVersion();
 
     private String getClassName() {
         return this.getClass().getName();
+    }
+
+    protected String replaceProperty(String source, String propertyName, String propertyValue) {
+        return source.replace("${" + propertyName + "}", propertyValue);
+    }
+
+    protected byte[] toUTF8Bytes(String str) {
+        return str.getBytes(UTF8);
     }
 }

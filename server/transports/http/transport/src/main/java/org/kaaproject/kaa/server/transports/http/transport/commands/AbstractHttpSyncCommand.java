@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kaaproject.kaa.server.operations.service.http.commands;
+package org.kaaproject.kaa.server.transports.http.transport.commands;
 
 import static io.netty.handler.codec.http.HttpHeaders.Names.CONNECTION;
 import static io.netty.handler.codec.http.HttpHeaders.Names.CONTENT_LENGTH;
@@ -42,8 +42,6 @@ import org.kaaproject.kaa.common.endpoint.CommonEPConstans;
 import org.kaaproject.kaa.common.endpoint.security.MessageEncoderDecoder;
 import org.kaaproject.kaa.server.common.server.BadRequestException;
 import org.kaaproject.kaa.server.common.server.http.AbstractCommand;
-import org.kaaproject.kaa.server.operations.pojo.exceptions.GetDeltaException;
-import org.kaaproject.kaa.server.operations.service.akka.messages.io.request.SyncStatistics;
 import org.kaaproject.kaa.server.transport.channel.ChannelType;
 
 /**
@@ -54,7 +52,7 @@ import org.kaaproject.kaa.server.transport.channel.ChannelType;
  * @param <R>
  *            the generic type
  */
-public abstract class AbstractHttpSyncCommand extends AbstractCommand implements SyncStatistics {
+public abstract class AbstractHttpSyncCommand extends AbstractCommand {
 
     /** The signature. */
     private byte[] requestSignature;
@@ -146,7 +144,7 @@ public abstract class AbstractHttpSyncCommand extends AbstractCommand implements
      * org.kaaproject.kaa.server.common.http.server.CommandProcessor#Process ()
      */
     @Override
-    public void process() throws BadRequestException, GeneralSecurityException, IOException, GetDeltaException {
+    public void process() throws BadRequestException, GeneralSecurityException, IOException {
     }
 
     public byte[] getRequestSignature() {
@@ -198,11 +196,6 @@ public abstract class AbstractHttpSyncCommand extends AbstractCommand implements
 
     public static String getCommandName() {
         return COMMAND_NAME;
-    }
-
-    @Override
-    public void reportSyncTime(long syncTime){
-        setSyncTime(syncTime);
     }
 
     @Override

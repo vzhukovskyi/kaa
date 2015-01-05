@@ -13,11 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 /**
- * Provides generic statistics collector service 
- * which implements {@link org.kaaproject.kaa.server.common.server.SessionTrackable} interface.
- * 
- * @author Andrey Panasenko
- *
+ * Provides default http server command implementation
  */
-package org.kaaproject.kaa.server.common.server.statistics;
+package org.kaaproject.kaa.server.transports.http.transport.commands;

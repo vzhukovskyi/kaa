@@ -15,7 +15,7 @@
  */
 package org.kaaproject.kaa.server.transport;
 
-
+import org.kaaproject.kaa.server.transport.message.MessageHandler;
 
 /**
  * A communication transport between Kaa server and endpoint.
@@ -26,17 +26,20 @@ package org.kaaproject.kaa.server.transport;
 public interface Transport {
 
     /**
-     * Initialize transport instance with particular configuration and common transport properties.
-     * Configuration is serialized Avro object. Serialization is done using
-     * schema specified in {@link KaaTransportConfig}.
+     * Initialize transport instance with particular configuration and common
+     * transport properties. Configuration is serialized Avro object.
+     * Serialization is done using schema specified in
+     * {@link KaaTransportConfig}.
      *
      * @param commonProperties
      *            common properties for all transports
      * @param configuration
      *            serialized avro object of transport configuration
+     * @param handler
+     *            actual handler for the decoded messages
      * @throws TransportLifecycleException
      */
-    void init(TransportProperties commonProperties, byte[] configuration) throws TransportLifecycleException;
+    void init(TransportProperties commonProperties, byte[] configuration, MessageHandler handler) throws TransportLifecycleException;
 
     /**
      * retrieves serialized connection info data. This data will be used in

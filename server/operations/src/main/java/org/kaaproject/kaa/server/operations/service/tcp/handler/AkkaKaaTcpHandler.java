@@ -32,13 +32,13 @@ import org.kaaproject.kaa.common.channels.protocols.kaatcp.messages.KaaSyncMessa
 import org.kaaproject.kaa.common.channels.protocols.kaatcp.messages.MessageType;
 import org.kaaproject.kaa.common.channels.protocols.kaatcp.messages.MqttFrame;
 import org.kaaproject.kaa.common.channels.protocols.kaatcp.messages.SyncRequest;
+import org.kaaproject.kaa.server.common.server.NettyChannelContext;
 import org.kaaproject.kaa.server.common.server.kaatcp.AbstractKaaTcpCommandProcessor;
 import org.kaaproject.kaa.server.operations.service.akka.AkkaService;
 import org.kaaproject.kaa.server.operations.service.akka.messages.io.request.NettyTcpConnectMessage;
 import org.kaaproject.kaa.server.operations.service.akka.messages.io.request.NettyTcpDisconnectMessage;
 import org.kaaproject.kaa.server.operations.service.akka.messages.io.request.NettyTcpPingMessage;
 import org.kaaproject.kaa.server.operations.service.akka.messages.io.request.NettyTcpSyncMessage;
-import org.kaaproject.kaa.server.operations.service.netty.NettyChannelContext;
 import org.kaaproject.kaa.server.transport.channel.ChannelType;
 import org.kaaproject.kaa.server.transport.message.ErrorBuilder;
 import org.kaaproject.kaa.server.transport.message.MessageBuilder;
@@ -129,8 +129,8 @@ public class AkkaKaaTcpHandler extends SimpleChannelInboundHandler<AbstractKaaTc
         LOG.trace("[{}] Processing {}", uuid, frame);
         if (frame.getMessageType() == MessageType.CONNECT) {
             if (session == null) {
-                akkaService.process(new NettyTcpConnectMessage(uuid, new NettyChannelContext(ctx), (Connect) frame, ChannelType.TCP,
-                        this, connectResponseConverter, connectErrorConverter, null));
+                akkaService.process(new NettyTcpConnectMessage(uuid, new NettyChannelContext(ctx), (Connect) frame, ChannelType.TCP, this,
+                        connectResponseConverter, connectErrorConverter));
             } else {
                 LOG.warn("[{}] Ignoring duplicate {} message ", uuid, MessageType.CONNECT);
             }
@@ -139,8 +139,8 @@ public class AkkaKaaTcpHandler extends SimpleChannelInboundHandler<AbstractKaaTc
                 switch (frame.getMessageType()) {
                 case KAASYNC:
                     if (((KaaSync) frame).getKaaSyncMessageType() == KaaSyncMessageType.SYNC) {
-                        akkaService.process(new NettyTcpSyncMessage((SyncRequest) frame, session, syncResponseConverter,
-                                syncErrorConverter, null));
+                        akkaService
+                                .process(new NettyTcpSyncMessage((SyncRequest) frame, session, syncResponseConverter, syncErrorConverter));
                     }
                     break;
                 case PINGREQ:

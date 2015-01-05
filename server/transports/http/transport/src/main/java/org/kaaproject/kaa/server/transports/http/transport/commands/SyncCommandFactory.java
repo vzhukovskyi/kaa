@@ -1,16 +1,10 @@
-package org.kaaproject.kaa.server.operations.service.http.commands;
+package org.kaaproject.kaa.server.transports.http.transport.commands;
 
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpResponse;
 
-import org.kaaproject.kaa.common.endpoint.security.MessageEncoderDecoder;
 import org.kaaproject.kaa.server.common.server.KaaCommandProcessor;
 import org.kaaproject.kaa.server.common.server.KaaCommandProcessorFactory;
-import org.kaaproject.kaa.server.operations.service.OperationsService;
-import org.kaaproject.kaa.server.operations.service.cache.CacheService;
-import org.kaaproject.kaa.server.operations.service.security.KeyStoreService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 /*
  * Copyright 2014 CyberVision, Inc.
@@ -27,16 +21,9 @@ import org.springframework.stereotype.Service;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@Service
 public class SyncCommandFactory implements KaaCommandProcessorFactory<HttpRequest, HttpResponse>{
 
     protected String commandName;
-    @Autowired
-    OperationsService operationsService;
-    @Autowired
-    CacheService cacheService;
-    @Autowired
-    KeyStoreService keyStoreService;
 
     public void setCommandName(String commandName) {
         this.commandName = commandName;

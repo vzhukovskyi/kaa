@@ -14,27 +14,31 @@
  * limitations under the License.
  */
 
-package org.kaaproject.kaa.server.common.server;
+package org.kaaproject.kaa.server.transports.http.transport.commands;
 
-import java.util.UUID;
+import org.kaaproject.kaa.server.transport.channel.ChannelType;
+
+
 
 /**
- * Interface is used to collect session statistics.
- *
- * @author Andrey Panasenko
+ * The Class UpdateEndpointCommand.
  */
-public interface SessionTrackable {
+public class LongSyncCommand extends SyncCommand {
+
+    @Override
+    public ChannelType getChannelType() {
+        return ChannelType.HTTP_LP;
+    }
 
     /**
-     * Create new session Track
-     * @param uuid - session UUID
-     * @return Track to report HTTP requests statistics data.
+     * Instantiates a new sync command.
      */
-    public Track newSession(UUID uuid);
+    public LongSyncCommand() {
+        super();
+        LOG.trace("CommandName: " + COMMAND_NAME + ": Created..");
+    }
 
-    /**
-     * Notify on close session
-     * @param uuid - session UUID
-     */
-    public void closeSession(UUID uuid);
+    public static String getCommandName() {
+        return LONG_SYNC_COMMAND;
+    }
 }

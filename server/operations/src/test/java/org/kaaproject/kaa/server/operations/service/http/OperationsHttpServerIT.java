@@ -33,7 +33,6 @@ import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -47,16 +46,14 @@ import org.junit.Test;
 import org.kaaproject.kaa.common.endpoint.gen.SyncRequest;
 import org.kaaproject.kaa.common.endpoint.gen.SyncResponse;
 import org.kaaproject.kaa.server.common.server.KaaCommandProcessorFactory;
-import org.kaaproject.kaa.server.common.server.SessionTrackable;
-import org.kaaproject.kaa.server.common.server.Track;
 import org.kaaproject.kaa.server.common.server.http.NettyHttpServer;
 import org.kaaproject.kaa.server.operations.service.bootstrap.DefaultOperationsBootstrapService;
 import org.kaaproject.kaa.server.operations.service.config.HttpChannelConfig;
-import org.kaaproject.kaa.server.operations.service.http.commands.LongSyncCommand;
-import org.kaaproject.kaa.server.operations.service.http.commands.SyncCommand;
 import org.kaaproject.kaa.server.operations.service.http.commands.TestLongSyncCommandFactory;
 import org.kaaproject.kaa.server.operations.service.http.commands.TestSyncCommandFactory;
 import org.kaaproject.kaa.server.operations.service.security.FileKeyStoreService;
+import org.kaaproject.kaa.server.transports.http.transport.commands.LongSyncCommand;
+import org.kaaproject.kaa.server.transports.http.transport.commands.SyncCommand;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -130,53 +127,6 @@ public class OperationsHttpServerIT {
 
     private static ConcurrentHashMap<Integer, SyncTest<SyncRequest, SyncResponse>> syncTests = new ConcurrentHashMap<>(NUMBER_OF_TESTS);
 
-    public class RequestTrack implements Track {
-
-        private long requestStart;
-        private int id;
-        private long calculatedProcessTime;
-
-        @Override
-        public int newRequest() {
-            requestStart = System.currentTimeMillis();
-            id = rnd.nextInt();
-            return id;
-        }
-
-        @Override
-        public void setProcessTime(int requestId, long time) {
-
-        }
-
-        @Override
-        public void closeRequest(int requestId) {
-            calculatedProcessTime = System.currentTimeMillis() - requestStart;
-            requestTime += calculatedProcessTime;
-        }
-
-    }
-
-    public class Statistics implements SessionTrackable {
-
-        private final ConcurrentHashMap<UUID, Long> sessions;
-
-        public Statistics() {
-            sessions = new ConcurrentHashMap<>(NUMBER_OF_TESTS);
-        }
-
-        @Override
-        public Track newSession(UUID uuid) {
-            sessions.put(uuid, new Long(System.currentTimeMillis()));
-            return new RequestTrack();
-        }
-
-        @Override
-        public void closeSession(UUID uuid) {
-            sessionTime += System.currentTimeMillis() - sessions.remove(uuid).longValue();
-        }
-
-    }
-
     public class SyncTest<T,R> {
         public int id;
         public T requestSent;
@@ -220,9 +170,9 @@ public class OperationsHttpServerIT {
 
         mockKeystoreService = mock(FileKeyStoreService.class);
 
-        KaaCommandProcessorFactory<HttpRequest, HttpResponse> commandSyncProcessorFactory = new TestSyncCommandFactory(SyncCommand.getCommandName(), testOperationsService, testCacheService, mockKeystoreService);
+        KaaCommandProcessorFactory<HttpRequest, HttpResponse> commandSyncProcessorFactory = new TestSyncCommandFactory(SyncCommand.getCommandName());
 
-        KaaCommandProcessorFactory<HttpRequest, HttpResponse> commandLongSyncProcessorFactory = new TestLongSyncCommandFactory(LongSyncCommand.getCommandName(), testOperationsService, testCacheService, mockKeystoreService);
+        KaaCommandProcessorFactory<HttpRequest, HttpResponse> commandLongSyncProcessorFactory = new TestLongSyncCommandFactory(LongSyncCommand.getCommandName());
 
         List<KaaCommandProcessorFactory> commands = new ArrayList<>();
         commands.add(commandSyncProcessorFactory);
@@ -276,7 +226,7 @@ public class OperationsHttpServerIT {
         requestTime = 0;
         sessionTime = 0;
 
-        httpChannelConfig.setSessionTrack(new Statistics());
+//        httpChannelConfig.setSessionTrack(new Statistics());
 
         netty = new NettyHttpServer(httpChannelConfig, new TestEndPointServerInitializer(testAkkaService));
         netty.init();

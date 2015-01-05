@@ -13,14 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kaaproject.kaa.server.operations.service.akka.messages.io.request;
+package org.kaaproject.kaa.server.transport.message;
 
 import java.util.UUID;
 
 import org.kaaproject.kaa.server.transport.channel.ChannelContext;
 import org.kaaproject.kaa.server.transport.channel.ChannelType;
-import org.kaaproject.kaa.server.transport.message.ErrorBuilder;
-import org.kaaproject.kaa.server.transport.message.MessageBuilder;
 import org.kaaproject.kaa.server.transport.platform.PlatformAware;
 
 public abstract class AbstractRequestMessage implements PlatformAware{
@@ -30,10 +28,9 @@ public abstract class AbstractRequestMessage implements PlatformAware{
     private final ChannelType channelType;
     private final MessageBuilder responseConverter;
     private final ErrorBuilder errorConverter;
-    private final SyncStatistics syncStatistics;
 
     protected AbstractRequestMessage(UUID uuid, Integer platformId, ChannelContext channelContext, ChannelType channelType, MessageBuilder responseConverter,
-            ErrorBuilder errorConverter, SyncStatistics syncStatistics) {
+            ErrorBuilder errorConverter) {
         super();
         this.uuid = uuid;
         this.platformId = platformId;
@@ -41,7 +38,6 @@ public abstract class AbstractRequestMessage implements PlatformAware{
         this.channelType = channelType;
         this.responseConverter = responseConverter;
         this.errorConverter = errorConverter;
-        this.syncStatistics = syncStatistics;
     }
 
     public UUID getChannelUuid() {
@@ -62,10 +58,6 @@ public abstract class AbstractRequestMessage implements PlatformAware{
 
     public ErrorBuilder getErrorBuilder() {
         return errorConverter;
-    }
-
-    public SyncStatistics getSyncStatistics() {
-        return syncStatistics;
     }
 
     @Override

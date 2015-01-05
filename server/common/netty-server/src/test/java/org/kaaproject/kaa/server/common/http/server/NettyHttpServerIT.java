@@ -48,8 +48,6 @@ import org.kaaproject.kaa.server.common.server.Config;
 import org.kaaproject.kaa.server.common.server.ConfigConst;
 import org.kaaproject.kaa.server.common.server.KaaCommandProcessor;
 import org.kaaproject.kaa.server.common.server.KaaCommandProcessorFactory;
-import org.kaaproject.kaa.server.common.server.SessionTrackable;
-import org.kaaproject.kaa.server.common.server.Track;
 import org.kaaproject.kaa.server.common.server.http.DefaultHttpServerInitializer;
 import org.kaaproject.kaa.server.common.server.http.NettyHttpServer;
 import org.slf4j.Logger;
@@ -61,7 +59,7 @@ import org.slf4j.LoggerFactory;
  * @author Andrey Panasenko <apanasenko@cybervisiontech.com>
  *
  */
-public class NettyHttpServerIT implements SessionTrackable, Track {
+public class NettyHttpServerIT {
 
     /** Port which used to bind to for Netty HTTP */
     public static final int bindPort = 9193;
@@ -224,7 +222,7 @@ public class NettyHttpServerIT implements SessionTrackable, Track {
      */
     @Before
     public void beforeTest() throws Exception {
-        config.setSessionTrack(this);
+//        config.setSessionTrack(this);
         sessionsCreated = 0;
         sessionsClosed = 0;
         testProcessed = 0;
@@ -507,34 +505,4 @@ public class NettyHttpServerIT implements SessionTrackable, Track {
         return true;
     }
 
-    @Override
-    public int newRequest() {
-        int id = rnd.nextInt();
-        requests.put(new Integer(id), new Long(System.currentTimeMillis()));
-        return id;
-    }
-
-    @Override
-    public void setProcessTime(int requestId, long time) {
-        Integer id = new Integer(requestId);
-        if (requests.containsKey(id)) {
-            averageTime += time;
-        }
-    }
-
-    @Override
-    public void closeRequest(int requestId) {
-        requests.remove(new Integer(requestId));
-    }
-
-    @Override
-    public Track newSession(UUID uuid) {
-        sessionsCreated++;
-        return this;
-    }
-
-    @Override
-    public void closeSession(UUID uuid) {
-        sessionsClosed++;
-    }
 }

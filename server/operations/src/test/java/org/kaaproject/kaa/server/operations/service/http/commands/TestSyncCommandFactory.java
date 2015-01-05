@@ -18,15 +18,13 @@ package org.kaaproject.kaa.server.operations.service.http.commands;
 import org.kaaproject.kaa.server.operations.service.OperationsService;
 import org.kaaproject.kaa.server.operations.service.cache.CacheService;
 import org.kaaproject.kaa.server.operations.service.security.KeyStoreService;
+import org.kaaproject.kaa.server.transports.http.transport.commands.SyncCommandFactory;
 
 public class TestSyncCommandFactory extends SyncCommandFactory{
 
-    public TestSyncCommandFactory(String commandName, OperationsService operationsService, CacheService cacheService, KeyStoreService keyStoreService){
+    public TestSyncCommandFactory(String commandName){
         super();
         this.commandName = commandName;
-        this.operationsService = operationsService;
-        this.cacheService = cacheService;
-        this.keyStoreService = keyStoreService;
     }
 
 }

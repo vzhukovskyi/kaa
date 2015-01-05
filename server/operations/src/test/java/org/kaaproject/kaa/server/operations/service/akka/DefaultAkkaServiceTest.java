@@ -771,7 +771,7 @@ public class DefaultAkkaServiceTest {
         SessionInfo session = new SessionInfo(UUID.randomUUID(), Constants.KAA_PLATFORM_PROTOCOL_AVRO_ID, channelContextMock,
                 ChannelType.TCP, crypt.getSessionCipherPair(), EndpointObjectHash.fromBytes(clientPublicKey.array()), APP_TOKEN, 100, true);
 
-        SessionAwareMessage message = new NettyTcpSyncMessage(kaaSync, session, responseBuilder, errorBuilder, null);
+        SessionAwareMessage message = new NettyTcpSyncMessage(kaaSync, session, responseBuilder, errorBuilder);
         akkaService.process(message);
 
         SyncResponse response = new SyncResponse();

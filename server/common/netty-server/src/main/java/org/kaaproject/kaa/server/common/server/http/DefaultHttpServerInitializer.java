@@ -16,7 +16,6 @@
 
 package org.kaaproject.kaa.server.common.server.http;
 
-import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -26,14 +25,11 @@ import io.netty.handler.codec.http.HttpRequestDecoder;
 import io.netty.handler.codec.http.HttpResponseEncoder;
 import io.netty.util.Attribute;
 import io.netty.util.concurrent.EventExecutorGroup;
-import io.netty.util.concurrent.Future;
-import io.netty.util.concurrent.GenericFutureListener;
 
 import java.util.UUID;
 
 import org.kaaproject.kaa.server.common.server.CommandFactory;
 import org.kaaproject.kaa.server.common.server.Config;
-import org.kaaproject.kaa.server.common.server.Track;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -103,12 +99,6 @@ public class DefaultHttpServerInitializer extends ChannelInitializer<SocketChann
         Attribute<UUID> uuidAttr = ch.attr(NettyHttpServer.UUID_KEY);
         uuidAttr.set(uuid);
 
-        if (conf.getSessionTrack() != null) {
-            Track track = conf.getSessionTrack().newSession(uuid);
-            Attribute<Track> trackAttr = ch.attr(NettyHttpServer.TRACK_KEY);
-            trackAttr.set(track);
-        }
-
         p.addLast("httpDecoder", new HttpRequestDecoder());
         p.addLast("httpAggregator", new HttpObjectAggregator(conf.getClientMaxBodySize()));
         p.addLast("httpDecoderAux", new RequestDecoder(commandFactory));
@@ -116,19 +106,6 @@ public class DefaultHttpServerInitializer extends ChannelInitializer<SocketChann
         p.addLast("httpEncoderAux", new ResponseEncoder());
         p.addLast("handler", getMainHandler(uuid));
         p.addLast("httpExceptionHandler", new DefaultExceptionHandler());
-
-        ChannelFuture closeFuture = ch.closeFuture();
-        closeFuture.addListener(new GenericFutureListener<Future<? super Void>>() {
-
-            @Override
-            public void operationComplete(Future<? super Void> future)
-                    throws Exception {
-                if (conf.getSessionTrack() != null) {
-                    conf.getSessionTrack().closeSession(uuid);
-                }
-            }
-
-        });
     }
 
     protected SimpleChannelInboundHandler<AbstractCommand> getMainHandler(UUID uuid){

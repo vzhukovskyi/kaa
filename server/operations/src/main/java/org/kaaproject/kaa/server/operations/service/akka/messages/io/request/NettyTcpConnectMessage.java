@@ -20,6 +20,7 @@ import java.util.UUID;
 import org.kaaproject.kaa.common.channels.protocols.kaatcp.messages.Connect;
 import org.kaaproject.kaa.server.transport.channel.ChannelContext;
 import org.kaaproject.kaa.server.transport.channel.ChannelType;
+import org.kaaproject.kaa.server.transport.message.AbstractRequestMessage;
 import org.kaaproject.kaa.server.transport.message.ErrorBuilder;
 import org.kaaproject.kaa.server.transport.message.MessageBuilder;
 import org.kaaproject.kaa.server.transport.message.SessionInitMessage;
@@ -32,9 +33,8 @@ public class NettyTcpConnectMessage extends AbstractRequestMessage implements Se
     private final SessionCreateListener sessionAware;
 
     public NettyTcpConnectMessage(UUID uuid, ChannelContext channelContext, Connect command,
-            ChannelType channelType, SessionCreateListener sessionAware, MessageBuilder responseConverter, ErrorBuilder errorConverter,
-            SyncStatistics syncStatistics) {
-        super(uuid, command.getNextProtocolId(), channelContext, channelType, responseConverter, errorConverter, syncStatistics);
+            ChannelType channelType, SessionCreateListener sessionAware, MessageBuilder responseConverter, ErrorBuilder errorConverter) {
+        super(uuid, command.getNextProtocolId(), channelContext, channelType, responseConverter, errorConverter);
         this.command = command;
         this.sessionAware = sessionAware;
     }

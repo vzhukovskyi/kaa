@@ -16,7 +16,6 @@
 
 package org.kaaproject.kaa.server.common.server.kaatcp;
 
-import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -24,17 +23,13 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.codec.bytes.ByteArrayDecoder;
 import io.netty.handler.codec.bytes.ByteArrayEncoder;
 import io.netty.util.Attribute;
-import io.netty.util.concurrent.Future;
-import io.netty.util.concurrent.GenericFutureListener;
 
 import java.util.UUID;
 
 import org.kaaproject.kaa.server.common.server.AbstractNettyServer;
 import org.kaaproject.kaa.server.common.server.CommandFactory;
 import org.kaaproject.kaa.server.common.server.Config;
-import org.kaaproject.kaa.server.common.server.Track;
 import org.kaaproject.kaa.server.common.server.http.DefaultHttpServerInitializer;
-import org.kaaproject.kaa.server.common.server.http.NettyHttpServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -94,12 +89,6 @@ public abstract class AbstractKaaTcpServerInitializer extends ChannelInitializer
         Attribute<UUID> uuidAttr = ch.attr(AbstractNettyServer.UUID_KEY);
         uuidAttr.set(uuid);
 
-        if (conf.getSessionTrack() != null) {
-            Track track = conf.getSessionTrack().newSession(uuid);
-            Attribute<Track> trackAttr = ch.attr(NettyHttpServer.TRACK_KEY);
-            trackAttr.set(track);
-        }
-
         p.addLast("binaryDecoder", new ByteArrayDecoder());
         p.addLast("kaaTcpDecoder", new KaaTcpDecoder(commandFactory));
         p.addLast("binaryEncoder", new ByteArrayEncoder());
@@ -107,18 +96,6 @@ public abstract class AbstractKaaTcpServerInitializer extends ChannelInitializer
         p.addLast("mainHandler", getMainHandler(uuid));
         p.addLast("kaaTcpExceptionHandler", new KaaTcpExceptionHandler());
 
-        ChannelFuture closeFuture = ch.closeFuture();
-        closeFuture.addListener(new GenericFutureListener<Future<? super Void>>() {
-
-            @Override
-            public void operationComplete(Future<? super Void> future)
-                    throws Exception {
-                if (conf.getSessionTrack() != null) {
-                    conf.getSessionTrack().closeSession(uuid);
-                }
-            }
-
-        });
     }
 
     protected abstract SimpleChannelInboundHandler<AbstractKaaTcpCommandProcessor> getMainHandler(UUID uuid);

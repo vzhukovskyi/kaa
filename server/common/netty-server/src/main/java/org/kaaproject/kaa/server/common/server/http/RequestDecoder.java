@@ -28,7 +28,6 @@ import java.util.UUID;
 
 import org.kaaproject.kaa.server.common.server.BadRequestException;
 import org.kaaproject.kaa.server.common.server.CommandFactory;
-import org.kaaproject.kaa.server.common.server.Track;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -70,7 +69,6 @@ public class RequestDecoder extends SimpleChannelInboundHandler<HttpObject> {
         }
 
         Attribute<UUID> sessionUuidAttr = ctx.channel().attr(NettyHttpServer.UUID_KEY);
-        Attribute<Track> sessionTrackAttr = ctx.channel().attr(NettyHttpServer.TRACK_KEY);
 
         if (httpObject instanceof HttpRequest) {
             HttpRequest httpRequest = (HttpRequest) httpObject;
@@ -78,10 +76,6 @@ public class RequestDecoder extends SimpleChannelInboundHandler<HttpObject> {
             if (httpRequest.getMethod().equals(HttpMethod.POST)) {
                 String uri = httpRequest.getUri();
                 AbstractCommand cp = (AbstractCommand) commandFactory.getCommandProcessor(uri);
-                if (sessionTrackAttr.get() != null) {
-                    int id = sessionTrackAttr.get().newRequest();
-                    cp.setCommandId(id);
-                }
                 cp.setSessionUuid(sessionUuidAttr.get());
                 cp.setRequest(httpRequest);
                 cp.parse();

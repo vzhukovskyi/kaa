@@ -17,7 +17,7 @@
 /**
  *
  */
-package org.kaaproject.kaa.server.operations.service.http.commands;
+package org.kaaproject.kaa.server.transports.http.transport.commands;
 
 import org.kaaproject.kaa.common.endpoint.CommonEPConstans;
 import org.kaaproject.kaa.server.transport.channel.ChannelType;

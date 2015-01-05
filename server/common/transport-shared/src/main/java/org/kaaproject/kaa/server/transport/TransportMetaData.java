@@ -56,7 +56,7 @@ public class TransportMetaData implements Serializable {
      * @param connectionInfo
      *            connection data
      */
-    public void addConnectionInfo(int version, byte[] connectionInfo) {
+    public void setConnectionInfo(int version, byte[] connectionInfo) {
         this.versionSpecificConnectionInfo.put(version, connectionInfo);
     }
     

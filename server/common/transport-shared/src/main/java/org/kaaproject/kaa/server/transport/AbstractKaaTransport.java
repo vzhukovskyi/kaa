@@ -20,6 +20,7 @@ import java.text.MessageFormat;
 
 import org.apache.avro.specific.SpecificRecordBase;
 import org.kaaproject.kaa.common.avro.AvroByteArrayConverter;
+import org.kaaproject.kaa.server.transport.message.MessageHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,13 +36,19 @@ import org.slf4j.LoggerFactory;
 public abstract class AbstractKaaTransport<T extends SpecificRecordBase> implements Transport {
     private static final Logger LOG = LoggerFactory.getLogger(AbstractKaaTransport.class);
 
+    /**
+     * Message handler
+     */
+    protected MessageHandler handler;
+    
     /*
      * (non-Javadoc)
      * 
      * @see org.kaaproject.kaa.server.transport.Transport#init(byte[])
      */
     @Override
-    public void init(TransportProperties commonProperties, byte[] configuration) throws TransportLifecycleException {
+    public void init(TransportProperties commonProperties, byte[] configuration, MessageHandler handler) throws TransportLifecycleException {
+        this.handler = handler;
         AvroByteArrayConverter<T> converter = new AvroByteArrayConverter<>(getConfigurationClass());
         try {
             T config = converter.fromByteArray(configuration);

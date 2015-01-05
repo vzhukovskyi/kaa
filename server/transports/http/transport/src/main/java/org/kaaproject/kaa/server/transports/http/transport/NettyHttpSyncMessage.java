@@ -14,17 +14,18 @@
  * limitations under the License.
  */
 
-package org.kaaproject.kaa.server.operations.service.akka.messages.io.request;
+package org.kaaproject.kaa.server.transports.http.transport;
 
 import java.util.UUID;
 
-import org.kaaproject.kaa.server.operations.service.http.commands.AbstractHttpSyncCommand;
 import org.kaaproject.kaa.server.transport.channel.ChannelContext;
 import org.kaaproject.kaa.server.transport.channel.ChannelType;
+import org.kaaproject.kaa.server.transport.message.AbstractRequestMessage;
 import org.kaaproject.kaa.server.transport.message.ErrorBuilder;
 import org.kaaproject.kaa.server.transport.message.MessageBuilder;
 import org.kaaproject.kaa.server.transport.message.SessionInitMessage;
 import org.kaaproject.kaa.server.transport.session.SessionInfo;
+import org.kaaproject.kaa.server.transports.http.transport.commands.AbstractHttpSyncCommand;
 
 /**
  * The Class NettyCommandAwareMessage.
@@ -34,8 +35,8 @@ public class NettyHttpSyncMessage extends AbstractRequestMessage implements Sess
     private final AbstractHttpSyncCommand command;
 
     public NettyHttpSyncMessage(UUID uuid, Integer platformId, ChannelContext channelContext, ChannelType channelType, AbstractHttpSyncCommand command,
-            MessageBuilder responseConverter, ErrorBuilder errorConverter, SyncStatistics syncStatistics) {
-        super(uuid, platformId, channelContext, channelType, responseConverter, errorConverter, syncStatistics);
+            MessageBuilder responseConverter, ErrorBuilder errorConverter) {
+        super(uuid, platformId, channelContext, channelType, responseConverter, errorConverter);
         this.command = command;
     }
 

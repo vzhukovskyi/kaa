@@ -16,6 +16,7 @@
 package org.kaaproject.kaa.server.transport;
 
 import java.util.Properties;
+import java.util.Map.Entry;
 
 /**
  * Stores common properties for all transports. Majority of this properties are
@@ -26,9 +27,18 @@ import java.util.Properties;
  */
 public class TransportProperties extends Properties {
 
+    private static final String FILTER_PREFIX = "transport.";
     /**
      * 
      */
     private static final long serialVersionUID = -3398931583634951967L;
 
+    public TransportProperties(Properties source){
+        super();
+        for(Entry<Object, Object> entry : source.entrySet()){
+            if(entry.getKey().toString().startsWith(FILTER_PREFIX)){
+                this.put(entry.getKey(), entry.getValue());
+            }
+        }
+    }
 }

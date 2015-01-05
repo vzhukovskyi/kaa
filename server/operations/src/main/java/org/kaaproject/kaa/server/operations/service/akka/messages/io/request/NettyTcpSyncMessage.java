@@ -16,6 +16,7 @@
 package org.kaaproject.kaa.server.operations.service.akka.messages.io.request;
 
 import org.kaaproject.kaa.common.channels.protocols.kaatcp.messages.SyncRequest;
+import org.kaaproject.kaa.server.transport.message.AbstractRequestMessage;
 import org.kaaproject.kaa.server.transport.message.ErrorBuilder;
 import org.kaaproject.kaa.server.transport.message.MessageBuilder;
 import org.kaaproject.kaa.server.transport.message.SessionAwareMessage;
@@ -27,8 +28,8 @@ public class NettyTcpSyncMessage extends AbstractRequestMessage implements Sessi
     private final SessionInfo sessionInfo;
 
     public NettyTcpSyncMessage(SyncRequest command, SessionInfo sessionInfo,
-            MessageBuilder responseConverter, ErrorBuilder errorConverter, SyncStatistics syncStatistics) {
-        super(sessionInfo.getUuid(), sessionInfo.getPlatformId(), sessionInfo.getCtx(), sessionInfo.getChannelType(), responseConverter, errorConverter, syncStatistics);
+            MessageBuilder responseConverter, ErrorBuilder errorConverter) {
+        super(sessionInfo.getUuid(), sessionInfo.getPlatformId(), sessionInfo.getCtx(), sessionInfo.getChannelType(), responseConverter, errorConverter);
         this.command = command;
         this.sessionInfo = sessionInfo;
     }

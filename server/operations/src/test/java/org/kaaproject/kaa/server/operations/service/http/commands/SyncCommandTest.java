@@ -22,6 +22,10 @@ import io.netty.handler.codec.http.HttpResponse;
 import org.junit.Assert;
 import org.junit.Test;
 import org.kaaproject.kaa.server.transport.channel.ChannelType;
+import org.kaaproject.kaa.server.transports.http.transport.commands.LongSyncCommand;
+import org.kaaproject.kaa.server.transports.http.transport.commands.LongSyncCommandFactory;
+import org.kaaproject.kaa.server.transports.http.transport.commands.SyncCommand;
+import org.kaaproject.kaa.server.transports.http.transport.commands.SyncCommandFactory;
 
 public class SyncCommandTest {
 

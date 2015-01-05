@@ -28,7 +28,6 @@ import org.kaaproject.kaa.server.operations.service.akka.messages.io.request.Net
 import org.kaaproject.kaa.server.operations.service.akka.messages.io.request.NettyTcpDisconnectMessage;
 import org.kaaproject.kaa.server.operations.service.akka.messages.io.request.NettyTcpPingMessage;
 import org.kaaproject.kaa.server.operations.service.akka.messages.io.request.NettyTcpSyncMessage;
-import org.kaaproject.kaa.server.operations.service.akka.messages.io.request.SyncStatistics;
 import org.kaaproject.kaa.server.transport.channel.ChannelContext;
 import org.kaaproject.kaa.server.transport.channel.ChannelType;
 import org.kaaproject.kaa.server.transport.message.ErrorBuilder;
@@ -52,13 +51,13 @@ public class NettyTcpMessageTest {
         SessionInfo session = new SessionInfo(channelId, Constants.KAA_PLATFORM_PROTOCOL_AVRO_ID, ctx, channelType, sessionKey, key,
                 applicationToken, keepAlive, true);
 
-        Connect command = new Connect(keepAlive, Constants.KAA_PLATFORM_PROTOCOL_AVRO_ID, "aesSessionKey".getBytes(), "syncRequest".getBytes(), "signature".getBytes());
+        Connect command = new Connect(keepAlive, Constants.KAA_PLATFORM_PROTOCOL_AVRO_ID, "aesSessionKey".getBytes(),
+                "syncRequest".getBytes(), "signature".getBytes());
         SessionCreateListener listener = Mockito.mock(SessionCreateListener.class);
         MessageBuilder responseBuilder = Mockito.mock(MessageBuilder.class);
         ErrorBuilder errorBuilder = Mockito.mock(ErrorBuilder.class);
-        SyncStatistics stats = Mockito.mock(SyncStatistics.class);
-        NettyTcpConnectMessage message = new NettyTcpConnectMessage(channelId, ctx, command, channelType,
-                listener, responseBuilder, errorBuilder, stats);
+        NettyTcpConnectMessage message = new NettyTcpConnectMessage(channelId, ctx, command, channelType, listener, responseBuilder,
+                errorBuilder);
 
         Assert.assertEquals(channelId, message.getChannelUuid());
         Assert.assertEquals(channelType, message.getChannelType());
@@ -66,7 +65,6 @@ public class NettyTcpMessageTest {
 
         Assert.assertEquals(responseBuilder, message.getMessageBuilder());
         Assert.assertEquals(errorBuilder, message.getErrorBuilder());
-        Assert.assertEquals(stats, message.getSyncStatistics());
 
         Assert.assertArrayEquals("syncRequest".getBytes(), message.getEncodedMessageData());
         Assert.assertArrayEquals("aesSessionKey".getBytes(), message.getEncodedSessionKey());
@@ -91,7 +89,7 @@ public class NettyTcpMessageTest {
 
         SyncRequest command = new SyncRequest("avroObject".getBytes(), false, false);
 
-        NettyTcpSyncMessage message = new NettyTcpSyncMessage(command, session, null, null, null);
+        NettyTcpSyncMessage message = new NettyTcpSyncMessage(command, session, null, null);
 
         Assert.assertArrayEquals("avroObject".getBytes(), message.getEncodedRequestData());
         Assert.assertEquals(session, message.getSessionInfo());

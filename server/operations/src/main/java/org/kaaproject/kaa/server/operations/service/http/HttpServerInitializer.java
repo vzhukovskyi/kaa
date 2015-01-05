@@ -24,7 +24,7 @@ import java.util.UUID;
 import org.kaaproject.kaa.server.common.server.http.AbstractCommand;
 import org.kaaproject.kaa.server.common.server.http.DefaultHttpServerInitializer;
 import org.kaaproject.kaa.server.operations.service.akka.AkkaService;
-import org.kaaproject.kaa.server.operations.service.http.handler.AkkaHttpHandler;
+import org.kaaproject.kaa.server.transports.http.transport.HttpHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,7 +59,7 @@ public class HttpServerInitializer extends DefaultHttpServerInitializer {
      */
     @Override
     protected SimpleChannelInboundHandler<AbstractCommand> getMainHandler(UUID uuid) {
-        return new AkkaHttpHandler(uuid, akkaService, new DefaultEventExecutorGroup(1));
+        return new HttpHandler(uuid, akkaService, new DefaultEventExecutorGroup(1));
     }
 
 }

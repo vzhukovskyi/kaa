@@ -25,7 +25,6 @@ import io.netty.util.Attribute;
 import org.kaaproject.kaa.common.channels.protocols.kaatcp.messages.MessageFactory;
 import org.kaaproject.kaa.common.channels.protocols.kaatcp.messages.MqttFrame;
 import org.kaaproject.kaa.server.common.server.CommandFactory;
-import org.kaaproject.kaa.server.common.server.Track;
 import org.kaaproject.kaa.server.common.server.http.NettyHttpServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,11 +62,6 @@ public class KaaTcpDecoder extends SimpleChannelInboundHandler<byte []>  {
     private ChannelHandlerContext currentCtx;
 
     private void processFrame(MqttFrame frame, AbstractKaaTcpCommandProcessor processor) throws Exception {
-        Attribute<Track> sessionTrackAttr = currentCtx.channel().attr(NettyHttpServer.TRACK_KEY);
-        if (sessionTrackAttr.get() != null) {
-            int id = sessionTrackAttr.get().newRequest();
-            processor.setCommandId(id);
-        }
         processor.setRequest(frame);
         currentCtx.fireChannelRead(processor);
     }

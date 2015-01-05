@@ -33,7 +33,7 @@ import org.kaaproject.kaa.common.endpoint.gen.SyncRequest;
 import org.kaaproject.kaa.common.endpoint.gen.SyncRequestMetaData;
 import org.kaaproject.kaa.common.endpoint.gen.SyncResponse;
 import org.kaaproject.kaa.common.endpoint.gen.TopicState;
-import org.kaaproject.kaa.server.operations.service.http.commands.LongSyncCommand;
+import org.kaaproject.kaa.server.transports.http.transport.commands.LongSyncCommand;
 
 /**
  * HTTP Test for LongSync request.

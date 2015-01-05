@@ -18,7 +18,6 @@ package org.kaaproject.kaa.server.common.server.http;
 
 import java.util.UUID;
 
-import org.kaaproject.kaa.server.common.server.Track;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,14 +57,7 @@ public class ResponseEncoder extends ChannelOutboundHandlerAdapter {
 
         AbstractCommand cp = (AbstractCommand) msg;
 
-        Attribute<Track> sessionTrackAttr = ctx.channel().attr(NettyHttpServer.TRACK_KEY);
-
         HttpResponse httpResponse = cp.getResponse();
-
-        if (sessionTrackAttr.get() != null) {
-            sessionTrackAttr.get().setProcessTime(cp.getCommandId(), cp.getSyncTime());
-            sessionTrackAttr.get().closeRequest(cp.getCommandId());
-        }
 
         ChannelFuture future = ctx.writeAndFlush(httpResponse, promise);
         if (!HttpHeaders.isKeepAlive(httpResponse)) {

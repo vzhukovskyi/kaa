@@ -68,7 +68,6 @@ public abstract class NettyService implements ServiceChannel{
     @Override
     public void stop() {
         netty.shutdown();
-        netty.deInit();
     }
 
     /**

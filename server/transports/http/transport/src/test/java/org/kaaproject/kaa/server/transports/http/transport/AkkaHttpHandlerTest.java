@@ -14,17 +14,18 @@
  * limitations under the License.
  */
 
-package org.kaaproject.kaa.server.operations.service.http.handler;
+package org.kaaproject.kaa.server.transports.http.transport;
 
 import io.netty.util.concurrent.EventExecutorGroup;
 
 import java.util.UUID;
 
 import org.junit.Test;
-import org.kaaproject.kaa.server.operations.service.akka.AkkaService;
-import org.kaaproject.kaa.server.operations.service.akka.messages.io.request.NettyHttpSyncMessage;
-import org.kaaproject.kaa.server.operations.service.http.commands.AbstractHttpSyncCommand;
 import org.kaaproject.kaa.server.transport.channel.ChannelType;
+import org.kaaproject.kaa.server.transport.message.MessageHandler;
+import org.kaaproject.kaa.server.transports.http.transport.HttpHandler;
+import org.kaaproject.kaa.server.transports.http.transport.NettyHttpSyncMessage;
+import org.kaaproject.kaa.server.transports.http.transport.commands.AbstractHttpSyncCommand;
 import org.mockito.Mockito;
 
 public class AkkaHttpHandlerTest {
@@ -32,12 +33,12 @@ public class AkkaHttpHandlerTest {
     @Test
     public void testFlow() throws Exception{
         UUID uuid = UUID.randomUUID();
-        AkkaService akkaService = Mockito.mock(AkkaService.class);
+        MessageHandler messageHandler = Mockito.mock(MessageHandler.class);
         EventExecutorGroup executor = Mockito.mock(EventExecutorGroup.class);
         AbstractHttpSyncCommand commandMock = Mockito.mock(AbstractHttpSyncCommand.class);
         Mockito.when(commandMock.getChannelType()).thenReturn(ChannelType.HTTP);
-        AkkaHttpHandler handler = new AkkaHttpHandler(uuid, akkaService, executor);
+        HttpHandler handler = new HttpHandler(uuid, messageHandler, executor);
         handler.channelRead0(null, commandMock);
-        Mockito.verify(akkaService).process(Mockito.any(NettyHttpSyncMessage.class));
+        Mockito.verify(messageHandler).process(Mockito.any(NettyHttpSyncMessage.class));
     }
 }

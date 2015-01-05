@@ -68,7 +68,6 @@ public class ProtocolServiceTest {
         ps.setNetty(serverMock);
         ps.stop();
         verify(serverMock, times(1)).shutdown();
-        verify(serverMock, times(1)).deInit();
     }
 
 }

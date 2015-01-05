@@ -1,4 +1,4 @@
-package org.kaaproject.kaa.server.operations.service.netty;
+package org.kaaproject.kaa.server.common.server;
 
 import io.netty.channel.ChannelHandlerContext;
 

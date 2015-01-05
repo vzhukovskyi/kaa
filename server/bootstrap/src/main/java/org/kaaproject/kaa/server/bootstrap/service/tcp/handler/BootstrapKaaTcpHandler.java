@@ -26,7 +26,6 @@ import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 
 import org.kaaproject.kaa.server.bootstrap.service.tcp.commands.KaaTcpCommand;
-import org.kaaproject.kaa.server.common.server.Track;
 import org.kaaproject.kaa.server.common.server.http.NettyHttpServer;
 import org.kaaproject.kaa.server.common.server.kaatcp.AbstractKaaTcpCommandProcessor;
 import org.slf4j.Logger;
@@ -68,12 +67,6 @@ public class BootstrapKaaTcpHandler extends SimpleChannelInboundHandler<Abstract
         LOG.info("KaaTcp handler session {}, got command {}",uuid.toString(), arg1.getName());
         KaaTcpCommand command = (KaaTcpCommand) arg1;
         Callable<KaaTcpCommand> callable = (Callable<KaaTcpCommand>) command;
-        final long startTime = System.currentTimeMillis(); 
-        final Attribute<Track> sessionTrackAttr = ctx.channel().attr(NettyHttpServer.TRACK_KEY);
-        if (sessionTrackAttr.get() != null) {
-            int id = sessionTrackAttr.get().newRequest();
-            command.setCommandId(id);
-        }
         
         final Future<KaaTcpCommand> future = executor.submit(callable);
         
@@ -83,8 +76,6 @@ public class BootstrapKaaTcpHandler extends SimpleChannelInboundHandler<Abstract
             public void operationComplete(Future<KaaTcpCommand> arg0) throws Exception {
                 // TODO Auto-generated method stub
                 LOG.trace("BootstrapKaaTcpHandler().operationComplete...");
-                sessionTrackAttr.get().setProcessTime(arg0.get().getCommandId(), System.currentTimeMillis() - startTime);
-                sessionTrackAttr.get().closeRequest(arg0.get().getCommandId());
                 if (arg0.isSuccess()) {
                     ctx.writeAndFlush(arg0.get().getResponse());
                 } else {

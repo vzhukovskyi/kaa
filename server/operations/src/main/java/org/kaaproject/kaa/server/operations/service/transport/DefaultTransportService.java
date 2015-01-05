@@ -24,6 +24,7 @@ import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Properties;
 import java.util.Set;
 
 import org.apache.avro.generic.GenericRecord;
@@ -36,6 +37,7 @@ import org.kaaproject.kaa.server.transport.KaaTransportConfig;
 import org.kaaproject.kaa.server.transport.Transport;
 import org.kaaproject.kaa.server.transport.TransportConfig;
 import org.kaaproject.kaa.server.transport.TransportLifecycleException;
+import org.kaaproject.kaa.server.transport.TransportProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,6 +46,13 @@ import org.springframework.context.annotation.ClassPathScanningCandidateComponen
 import org.springframework.core.type.filter.AnnotationTypeFilter;
 import org.springframework.stereotype.Service;
 
+/**
+ * Default implementation of {@link TransportService} that scans classpath for
+ * available {@link Transport} implementations, instantiate and manage them.
+ * 
+ * @author Andrew Shvayka
+ *
+ */
 @Service
 public class DefaultTransportService implements TransportService {
 
@@ -55,6 +64,9 @@ public class DefaultTransportService implements TransportService {
     /** The cache service. */
     @Autowired
     private AkkaService akkaService;
+
+    @Autowired
+    private Properties properties;
 
     private OperationsNode operationsNode;
 
@@ -92,6 +104,10 @@ public class DefaultTransportService implements TransportService {
         }
         LOG.info("Lookup of available transport configurations found {} configurations.", configs.size());
 
+        LOG.info("Lookup of transport properties started");
+        TransportProperties transportProperties = new TransportProperties(properties);
+        LOG.info("Lookup of transport properties found {} properties", transportProperties.size());
+
         for (TransportConfig config : configs.values()) {
             LOG.info("Initializing transport with name {} and class {}", config.getName(), config.getTransportClass());
             try {
@@ -102,8 +118,7 @@ public class DefaultTransportService implements TransportService {
                 GenericAvroConverter<GenericRecord> configConverter = new GenericAvroConverter<GenericRecord>(config.getConfigSchema());
                 GenericRecord configRecord = configConverter.decodeJson(Files.readAllBytes(Paths.get(configFileURL.toURI())));
                 LOG.info("Lookup of transport configuration file {}", config.getConfigFileName());
-                // TODO: init common properties;
-                transport.init(null, configConverter.encode(configRecord));
+                transport.init(transportProperties, configConverter.encode(configRecord), akkaService);
                 transports.put(config.getId(), transport);
             } catch (ReflectiveOperationException | IOException | URISyntaxException | TransportLifecycleException e) {
                 LOG.error(MessageFormat.format("Failed to init transport for {0}", config.getTransportClass()), e);

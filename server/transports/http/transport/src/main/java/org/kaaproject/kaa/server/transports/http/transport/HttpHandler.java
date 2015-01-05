@@ -14,34 +14,31 @@
  * limitations under the License.
  */
 
-package org.kaaproject.kaa.server.operations.service.http.handler;
+package org.kaaproject.kaa.server.transports.http.transport;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.util.concurrent.EventExecutorGroup;
 
 import java.util.UUID;
 
+import org.kaaproject.kaa.server.common.server.NettyChannelContext;
 import org.kaaproject.kaa.server.common.server.http.AbstractCommand;
 import org.kaaproject.kaa.server.common.server.http.DefaultHandler;
-import org.kaaproject.kaa.server.operations.service.akka.AkkaService;
-import org.kaaproject.kaa.server.operations.service.akka.messages.io.request.NettyHttpSyncMessage;
-import org.kaaproject.kaa.server.operations.service.http.commands.AbstractHttpSyncCommand;
-import org.kaaproject.kaa.server.operations.service.netty.NettyChannelContext;
 import org.kaaproject.kaa.server.transport.message.ErrorBuilder;
 import org.kaaproject.kaa.server.transport.message.MessageBuilder;
+import org.kaaproject.kaa.server.transport.message.MessageHandler;
+import org.kaaproject.kaa.server.transports.http.transport.commands.AbstractHttpSyncCommand;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * The Class AkkaHandler.
  */
-public class AkkaHttpHandler extends DefaultHandler implements MessageBuilder, ErrorBuilder{
+public class HttpHandler extends DefaultHandler implements MessageBuilder, ErrorBuilder{
 
-    /** The Constant LOG. */
-    private static final Logger LOG = LoggerFactory.getLogger(AkkaHttpHandler.class);
+    private static final Logger LOG = LoggerFactory.getLogger(HttpHandler.class);
 
-    /** The akka service. */
-    private final AkkaService akkaService;
+    private final MessageHandler messageHandler;
 
     /** The uuid. */
     private final UUID uuid;
@@ -58,9 +55,9 @@ public class AkkaHttpHandler extends DefaultHandler implements MessageBuilder, E
      * @param executorGroup
      *            the executor group
      */
-    public AkkaHttpHandler(UUID uuid, AkkaService akkaService, EventExecutorGroup executorGroup) {
+    public HttpHandler(UUID uuid, MessageHandler akkaService, EventExecutorGroup executorGroup) {
         super(executorGroup);
-        this.akkaService = akkaService;
+        this.messageHandler = akkaService;
         this.uuid = uuid;
     }
 
@@ -75,9 +72,9 @@ public class AkkaHttpHandler extends DefaultHandler implements MessageBuilder, E
     @Override
     protected void channelRead0(final ChannelHandlerContext ctx, final AbstractCommand msg) throws Exception {
         this.command = (AbstractHttpSyncCommand) msg;
-        NettyHttpSyncMessage message = new NettyHttpSyncMessage(uuid, msg.getNextProtocol(), new NettyChannelContext(ctx), command.getChannelType(), command , this, this, command);
-        LOG.trace("Forwarding {} to akka", message);
-        akkaService.process(message);
+        NettyHttpSyncMessage message = new NettyHttpSyncMessage(uuid, msg.getNextProtocol(), new NettyChannelContext(ctx), command.getChannelType(), command , this, this);
+        LOG.trace("Forwarding {} to handler", message);
+        messageHandler.process(message);
     }
 
     @Override

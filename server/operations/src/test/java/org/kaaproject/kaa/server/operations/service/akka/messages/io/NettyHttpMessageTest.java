@@ -20,13 +20,12 @@ import java.util.UUID;
 import org.junit.Assert;
 import org.junit.Test;
 import org.kaaproject.kaa.common.Constants;
-import org.kaaproject.kaa.server.operations.service.akka.messages.io.request.NettyHttpSyncMessage;
-import org.kaaproject.kaa.server.operations.service.akka.messages.io.request.SyncStatistics;
-import org.kaaproject.kaa.server.operations.service.http.commands.SyncCommand;
 import org.kaaproject.kaa.server.transport.channel.ChannelContext;
 import org.kaaproject.kaa.server.transport.channel.ChannelType;
 import org.kaaproject.kaa.server.transport.message.ErrorBuilder;
 import org.kaaproject.kaa.server.transport.message.MessageBuilder;
+import org.kaaproject.kaa.server.transports.http.transport.NettyHttpSyncMessage;
+import org.kaaproject.kaa.server.transports.http.transport.commands.SyncCommand;
 import org.mockito.Mockito;
 
 public class NettyHttpMessageTest {
@@ -43,9 +42,8 @@ public class NettyHttpMessageTest {
         Mockito.when(command.getRequestSignature()).thenReturn("signature".getBytes());
         MessageBuilder responseBuilder = Mockito.mock(MessageBuilder.class);
         ErrorBuilder errorBuilder = Mockito.mock(ErrorBuilder.class);
-        SyncStatistics stats = Mockito.mock(SyncStatistics.class);
 
-        NettyHttpSyncMessage message = new NettyHttpSyncMessage(channelId, Constants.KAA_PLATFORM_PROTOCOL_AVRO_ID, ctx, channelType, command, responseBuilder, errorBuilder, stats);
+        NettyHttpSyncMessage message = new NettyHttpSyncMessage(channelId, Constants.KAA_PLATFORM_PROTOCOL_AVRO_ID, ctx, channelType, command, responseBuilder, errorBuilder);
 
         Assert.assertEquals(channelId, message.getChannelUuid());
         Assert.assertEquals(channelType, message.getChannelType());
@@ -53,7 +51,6 @@ public class NettyHttpMessageTest {
 
         Assert.assertEquals(responseBuilder, message.getMessageBuilder());
         Assert.assertEquals(errorBuilder, message.getErrorBuilder());
-        Assert.assertEquals(stats, message.getSyncStatistics());
 
         Assert.assertArrayEquals("syncRequest".getBytes(), message.getEncodedMessageData());
         Assert.assertArrayEquals("aesSessionKey".getBytes(), message.getEncodedSessionKey());

@@ -46,14 +46,12 @@ import org.slf4j.LoggerFactory;
  *
  * To stop Netty:
  * netty.shutdown();
- * netty.DeInit();
  *
  * @author Yaroslav Zeygerman
  */
 public abstract class AbstractNettyServer extends Thread {
 
     public static final AttributeKey<UUID> UUID_KEY = AttributeKey.valueOf(ConfigConst.UUID_KEY);
-    public static final AttributeKey<Track> TRACK_KEY = AttributeKey.valueOf(ConfigConst.TRACK_KEY);
 
     private static final Logger LOG = LoggerFactory.getLogger(AbstractNettyServer.class);
 
@@ -164,12 +162,5 @@ public abstract class AbstractNettyServer extends Thread {
                 LOG.trace("NettyHttpServer stopping: task executor stopped.");
             }
         }
-    }
-
-    /**
-     * Netty HTTP server deinitialization.
-     */
-    public void deInit() {
-        LOG.info("NettyHttpServer deInitializing...");
     }
 }

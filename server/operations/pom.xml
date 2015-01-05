@@ -96,6 +96,10 @@
             <artifactId>transport-shared</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.kaaproject.kaa.server.transports.http</groupId>
+            <artifactId>transport</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.kaaproject.kaa.common</groupId>
             <artifactId>core</artifactId>
         </dependency>

@@ -97,7 +97,6 @@ public class KaaTcpService implements ServiceChannel {
     @Override
     public void stop() {
         netty.shutdown();
-        netty.deInit();
         LOG.info("KaaTcp netty stoped");
     }
 

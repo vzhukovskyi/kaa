@@ -13,8 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.kaaproject.kaa.server.transport.message;
+
+import org.kaaproject.kaa.server.transport.session.SessionAware;
 
 /**
- * Provides default http server command implementation
+ * Represents handler of messages from transport layer
+ * connection info.
+ * 
+ * @author Andrew Shvayka
+ *
  */
-package org.kaaproject.kaa.server.operations.service.http.commands;
+public interface MessageHandler {
+    /**
+     * handle session aware message
+     * 
+     * @param message
+     */
+    void process(SessionAware message);
+
+    /**
+     * handle session init message
+     * 
+     * @param message
+     */
+    void process(SessionInitMessage message);
+}

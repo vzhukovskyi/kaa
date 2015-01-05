@@ -95,7 +95,6 @@ public class KaaHttpService  implements ServiceChannel {
     public void stop() {
         LOG.trace("Bootstrap protocol service, stopping Netty...");
         netty.shutdown();
-        netty.deInit();
     }
 
     /**

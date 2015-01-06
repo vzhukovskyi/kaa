@@ -366,7 +366,7 @@ public class DefaultAkkaServiceTest {
         Mockito.when(message.getChannelContext()).thenReturn(Mockito.mock(ChannelContext.class));
         Mockito.when(message.getErrorBuilder()).thenReturn(errorBuilder);
         Mockito.when(message.getSessionInfo()).thenReturn(sessionInfo);
-        Mockito.when(message.getEncodedRequestData()).thenReturn("dummy".getBytes());
+        Mockito.when(message.getEncodedMessageData()).thenReturn("dummy".getBytes());
         Mockito.when(message.isEncrypted()).thenReturn(true);
         akkaService.process(message);
         Mockito.verify(errorBuilder, Mockito.timeout(TIMEOUT * 10).atLeastOnce()).build(Mockito.any(Exception.class));

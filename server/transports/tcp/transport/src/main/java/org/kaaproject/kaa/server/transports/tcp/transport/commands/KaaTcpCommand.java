@@ -15,7 +15,7 @@
  */
 package org.kaaproject.kaa.server.transports.tcp.transport.commands;
 
-import org.kaaproject.kaa.server.common.server.kaatcp.AbstractKaaTcpCommandProcessor;
+import org.kaaproject.kaa.server.transports.tcp.transport.netty.AbstractKaaTcpCommandProcessor;
 
 public class KaaTcpCommand extends AbstractKaaTcpCommandProcessor{
 

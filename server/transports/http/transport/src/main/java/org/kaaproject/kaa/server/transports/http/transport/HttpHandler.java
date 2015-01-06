@@ -23,11 +23,12 @@ import io.netty.util.concurrent.EventExecutorGroup;
 import java.util.UUID;
 
 import org.kaaproject.kaa.server.common.server.NettyChannelContext;
-import org.kaaproject.kaa.server.common.server.http.AbstractCommand;
 import org.kaaproject.kaa.server.transport.message.ErrorBuilder;
 import org.kaaproject.kaa.server.transport.message.MessageBuilder;
 import org.kaaproject.kaa.server.transport.message.MessageHandler;
 import org.kaaproject.kaa.server.transports.http.transport.commands.AbstractHttpSyncCommand;
+import org.kaaproject.kaa.server.transports.http.transport.messages.NettyHttpSyncMessage;
+import org.kaaproject.kaa.server.transports.http.transport.netty.AbstractCommand;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

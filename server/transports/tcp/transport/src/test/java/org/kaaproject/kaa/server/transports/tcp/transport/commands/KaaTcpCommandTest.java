@@ -13,13 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kaaproject.kaa.server.transport.message;
+package org.kaaproject.kaa.server.transports.tcp.transport.commands;
 
-import org.kaaproject.kaa.server.transport.session.SessionAware;
+import org.junit.Assert;
+import org.junit.Test;
+
+public class KaaTcpCommandTest {
 
 
-public interface SessionAwareMessage extends Message, SessionAware{
-
-    byte[] getEncodedMessageData();
+    @Test
+    public void testKaaTcpCommand(){
+        KaaTcpCommandFactory commandFactory = new KaaTcpCommandFactory();
+        KaaTcpCommand command = (KaaTcpCommand)commandFactory.createCommandProcessor();
+        Assert.assertNotNull(command);
+        Assert.assertEquals(KaaTcpCommand.KAA_TCP, command.getName());
+    }
 
 }

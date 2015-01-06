@@ -7,12 +7,11 @@ package org.kaaproject.kaa.server.transport.http.config.gen;
 @SuppressWarnings("all")
 @org.apache.avro.specific.AvroGenerated
 public class AvroHttpConfig extends org.apache.avro.specific.SpecificRecordBase implements org.apache.avro.specific.SpecificRecord {
-  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"AvroHttpConfig\",\"namespace\":\"org.kaaproject.kaa.server.transport.http.config.gen\",\"fields\":[{\"name\":\"bindInterface\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"}},{\"name\":\"bindPort\",\"type\":\"int\"},{\"name\":\"maxBodySize\",\"type\":\"int\"},{\"name\":\"threadPoolSize\",\"type\":\"int\"}]}");
+  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"AvroHttpConfig\",\"namespace\":\"org.kaaproject.kaa.server.transport.http.config.gen\",\"fields\":[{\"name\":\"bindInterface\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"}},{\"name\":\"bindPort\",\"type\":\"int\"},{\"name\":\"maxBodySize\",\"type\":\"int\"}]}");
   public static org.apache.avro.Schema getClassSchema() { return SCHEMA$; }
    private java.lang.String bindInterface;
    private int bindPort;
    private int maxBodySize;
-   private int threadPoolSize;
 
   /**
    * Default constructor.  Note that this does not initialize fields
@@ -24,11 +23,10 @@ public class AvroHttpConfig extends org.apache.avro.specific.SpecificRecordBase 
   /**
    * All-args constructor.
    */
-  public AvroHttpConfig(java.lang.String bindInterface, java.lang.Integer bindPort, java.lang.Integer maxBodySize, java.lang.Integer threadPoolSize) {
+  public AvroHttpConfig(java.lang.String bindInterface, java.lang.Integer bindPort, java.lang.Integer maxBodySize) {
     this.bindInterface = bindInterface;
     this.bindPort = bindPort;
     this.maxBodySize = maxBodySize;
-    this.threadPoolSize = threadPoolSize;
   }
 
   public org.apache.avro.Schema getSchema() { return SCHEMA$; }
@@ -38,7 +36,6 @@ public class AvroHttpConfig extends org.apache.avro.specific.SpecificRecordBase 
     case 0: return bindInterface;
     case 1: return bindPort;
     case 2: return maxBodySize;
-    case 3: return threadPoolSize;
     default: throw new org.apache.avro.AvroRuntimeException("Bad index");
     }
   }
@@ -49,7 +46,6 @@ public class AvroHttpConfig extends org.apache.avro.specific.SpecificRecordBase 
     case 0: bindInterface = (java.lang.String)value$; break;
     case 1: bindPort = (java.lang.Integer)value$; break;
     case 2: maxBodySize = (java.lang.Integer)value$; break;
-    case 3: threadPoolSize = (java.lang.Integer)value$; break;
     default: throw new org.apache.avro.AvroRuntimeException("Bad index");
     }
   }
@@ -99,21 +95,6 @@ public class AvroHttpConfig extends org.apache.avro.specific.SpecificRecordBase 
     this.maxBodySize = value;
   }
 
-  /**
-   * Gets the value of the 'threadPoolSize' field.
-   */
-  public java.lang.Integer getThreadPoolSize() {
-    return threadPoolSize;
-  }
-
-  /**
-   * Sets the value of the 'threadPoolSize' field.
-   * @param value the value to set.
-   */
-  public void setThreadPoolSize(java.lang.Integer value) {
-    this.threadPoolSize = value;
-  }
-
   /** Creates a new AvroHttpConfig RecordBuilder */
   public static org.kaaproject.kaa.server.transport.http.config.gen.AvroHttpConfig.Builder newBuilder() {
     return new org.kaaproject.kaa.server.transport.http.config.gen.AvroHttpConfig.Builder();
@@ -138,7 +119,6 @@ public class AvroHttpConfig extends org.apache.avro.specific.SpecificRecordBase 
     private java.lang.String bindInterface;
     private int bindPort;
     private int maxBodySize;
-    private int threadPoolSize;
 
     /** Creates a new Builder */
     private Builder() {
@@ -160,10 +140,6 @@ public class AvroHttpConfig extends org.apache.avro.specific.SpecificRecordBase 
         this.maxBodySize = data().deepCopy(fields()[2].schema(), other.maxBodySize);
         fieldSetFlags()[2] = true;
       }
-      if (isValidValue(fields()[3], other.threadPoolSize)) {
-        this.threadPoolSize = data().deepCopy(fields()[3].schema(), other.threadPoolSize);
-        fieldSetFlags()[3] = true;
-      }
     }
     
     /** Creates a Builder by copying an existing AvroHttpConfig instance */
@@ -180,10 +156,6 @@ public class AvroHttpConfig extends org.apache.avro.specific.SpecificRecordBase 
       if (isValidValue(fields()[2], other.maxBodySize)) {
         this.maxBodySize = data().deepCopy(fields()[2].schema(), other.maxBodySize);
         fieldSetFlags()[2] = true;
-      }
-      if (isValidValue(fields()[3], other.threadPoolSize)) {
-        this.threadPoolSize = data().deepCopy(fields()[3].schema(), other.threadPoolSize);
-        fieldSetFlags()[3] = true;
       }
     }
 
@@ -260,30 +232,6 @@ public class AvroHttpConfig extends org.apache.avro.specific.SpecificRecordBase 
       return this;
     }
 
-    /** Gets the value of the 'threadPoolSize' field */
-    public java.lang.Integer getThreadPoolSize() {
-      return threadPoolSize;
-    }
-    
-    /** Sets the value of the 'threadPoolSize' field */
-    public org.kaaproject.kaa.server.transport.http.config.gen.AvroHttpConfig.Builder setThreadPoolSize(int value) {
-      validate(fields()[3], value);
-      this.threadPoolSize = value;
-      fieldSetFlags()[3] = true;
-      return this; 
-    }
-    
-    /** Checks whether the 'threadPoolSize' field has been set */
-    public boolean hasThreadPoolSize() {
-      return fieldSetFlags()[3];
-    }
-    
-    /** Clears the value of the 'threadPoolSize' field */
-    public org.kaaproject.kaa.server.transport.http.config.gen.AvroHttpConfig.Builder clearThreadPoolSize() {
-      fieldSetFlags()[3] = false;
-      return this;
-    }
-
     @Override
     public AvroHttpConfig build() {
       try {
@@ -291,7 +239,6 @@ public class AvroHttpConfig extends org.apache.avro.specific.SpecificRecordBase 
         record.bindInterface = fieldSetFlags()[0] ? this.bindInterface : (java.lang.String) defaultValue(fields()[0]);
         record.bindPort = fieldSetFlags()[1] ? this.bindPort : (java.lang.Integer) defaultValue(fields()[1]);
         record.maxBodySize = fieldSetFlags()[2] ? this.maxBodySize : (java.lang.Integer) defaultValue(fields()[2]);
-        record.threadPoolSize = fieldSetFlags()[3] ? this.threadPoolSize : (java.lang.Integer) defaultValue(fields()[3]);
         return record;
       } catch (Exception e) {
         throw new org.apache.avro.AvroRuntimeException(e);

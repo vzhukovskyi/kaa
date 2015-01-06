@@ -20,7 +20,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.kaaproject.kaa.server.common.server.http.DefaultHttpServerInitializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,7 +30,7 @@ import org.slf4j.LoggerFactory;
  */
 public class CommandFactory<U,V> {
 
-    private static final Logger LOG = LoggerFactory.getLogger(DefaultHttpServerInitializer.class);
+    private static final Logger LOG = LoggerFactory.getLogger(CommandFactory.class);
 
     private final Map<String, KaaCommandProcessorFactory<U, V>> factories;
 

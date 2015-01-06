@@ -16,13 +16,13 @@
 package org.kaaproject.kaa.server.transports.tcp.transport.messages;
 
 import org.kaaproject.kaa.common.channels.protocols.kaatcp.messages.SyncRequest;
-import org.kaaproject.kaa.server.transport.message.AbstractRequestMessage;
+import org.kaaproject.kaa.server.transport.message.AbstractMessage;
 import org.kaaproject.kaa.server.transport.message.ErrorBuilder;
 import org.kaaproject.kaa.server.transport.message.MessageBuilder;
 import org.kaaproject.kaa.server.transport.message.SessionAwareMessage;
 import org.kaaproject.kaa.server.transport.session.SessionInfo;
 
-public class NettyTcpSyncMessage extends AbstractRequestMessage implements SessionAwareMessage {
+public class NettyTcpSyncMessage extends AbstractMessage implements SessionAwareMessage {
 
     private final SyncRequest command;
     private final SessionInfo sessionInfo;
@@ -35,7 +35,7 @@ public class NettyTcpSyncMessage extends AbstractRequestMessage implements Sessi
     }
 
     @Override
-    public byte[] getEncodedRequestData() {
+    public byte[] getEncodedMessageData() {
         return command.getAvroObject();
     }
 

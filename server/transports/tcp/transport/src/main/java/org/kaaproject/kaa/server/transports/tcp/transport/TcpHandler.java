@@ -33,7 +33,6 @@ import org.kaaproject.kaa.common.channels.protocols.kaatcp.messages.MessageType;
 import org.kaaproject.kaa.common.channels.protocols.kaatcp.messages.MqttFrame;
 import org.kaaproject.kaa.common.channels.protocols.kaatcp.messages.SyncRequest;
 import org.kaaproject.kaa.server.common.server.NettyChannelContext;
-import org.kaaproject.kaa.server.common.server.kaatcp.AbstractKaaTcpCommandProcessor;
 import org.kaaproject.kaa.server.transport.channel.ChannelType;
 import org.kaaproject.kaa.server.transport.message.ErrorBuilder;
 import org.kaaproject.kaa.server.transport.message.MessageBuilder;
@@ -44,6 +43,7 @@ import org.kaaproject.kaa.server.transports.tcp.transport.messages.NettyTcpConne
 import org.kaaproject.kaa.server.transports.tcp.transport.messages.NettyTcpDisconnectMessage;
 import org.kaaproject.kaa.server.transports.tcp.transport.messages.NettyTcpPingMessage;
 import org.kaaproject.kaa.server.transports.tcp.transport.messages.NettyTcpSyncMessage;
+import org.kaaproject.kaa.server.transports.tcp.transport.netty.AbstractKaaTcpCommandProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -8,14 +8,14 @@ import java.nio.ByteBuffer;
 import java.util.UUID;
 
 import org.kaaproject.kaa.server.common.server.AbstractNettyServer;
-import org.kaaproject.kaa.server.common.server.kaatcp.AbstractKaaTcpCommandProcessor;
-import org.kaaproject.kaa.server.common.server.kaatcp.AbstractKaaTcpServerInitializer;
-import org.kaaproject.kaa.server.common.server.kaatcp.KaaTcpDecoder;
 import org.kaaproject.kaa.server.transport.AbstractKaaTransport;
 import org.kaaproject.kaa.server.transport.TransportLifecycleException;
 import org.kaaproject.kaa.server.transport.TransportProperties;
 import org.kaaproject.kaa.server.transport.tcp.config.gen.AvroTcpConfig;
 import org.kaaproject.kaa.server.transports.tcp.transport.commands.KaaTcpCommandFactory;
+import org.kaaproject.kaa.server.transports.tcp.transport.netty.AbstractKaaTcpCommandProcessor;
+import org.kaaproject.kaa.server.transports.tcp.transport.netty.AbstractKaaTcpServerInitializer;
+import org.kaaproject.kaa.server.transports.tcp.transport.netty.KaaTcpDecoder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,7 +28,7 @@ public class TcpTransport extends AbstractKaaTransport<AvroTcpConfig> {
     private AbstractNettyServer netty;
 
     @Override
-    public void init(TransportProperties commonProperties, AvroTcpConfig configuration) throws TransportLifecycleException {
+    protected void init(TransportProperties commonProperties, AvroTcpConfig configuration) throws TransportLifecycleException {
         this.configuration = configuration;
         this.configuration.setBindInterface(replaceProperty(this.configuration.getBindInterface(), BIND_INTERFACE_PROP_NAME,
                 commonProperties.getProperty(BIND_INTERFACE_PROP_NAME, LOCALHOST)));

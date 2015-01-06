@@ -278,7 +278,7 @@ public class EncDecActorMessageProcessor {
     private ClientSync decodeEncryptedRequest(SessionAwareMessage message) throws GeneralSecurityException, PlatformEncDecException {
         SessionInfo session = message.getSessionInfo();
         crypt.setSessionCipherPair(session.getCipherPair());
-        byte[] requestRaw = crypt.decodeData(message.getEncodedRequestData());
+        byte[] requestRaw = crypt.decodeData(message.getEncodedMessageData());
         LOG.trace("Request data decrypted");
         ClientSync request = decodePlatformLevelData(message.getPlatformId(), requestRaw);
         LOG.trace("Request data deserialized");
@@ -286,7 +286,7 @@ public class EncDecActorMessageProcessor {
     }
 
     private ClientSync decodeUnencryptedRequest(SessionAwareMessage message) throws PlatformEncDecException {
-        byte[] requestRaw = message.getEncodedRequestData();
+        byte[] requestRaw = message.getEncodedMessageData();
         ClientSync request = decodePlatformLevelData(message.getPlatformId(), requestRaw);
         LOG.trace("Request data deserialized");
         return request;

@@ -21,8 +21,8 @@ import io.netty.util.concurrent.EventExecutorGroup;
 
 import java.util.UUID;
 
-import org.kaaproject.kaa.server.common.server.http.AbstractCommand;
-import org.kaaproject.kaa.server.common.server.http.DefaultHandler;
+import org.kaaproject.kaa.server.transports.http.transport.netty.AbstractCommand;
+import org.kaaproject.kaa.server.transports.http.transport.netty.DefaultHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

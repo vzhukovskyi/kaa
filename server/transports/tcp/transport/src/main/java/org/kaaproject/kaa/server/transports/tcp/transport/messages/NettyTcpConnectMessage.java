@@ -20,14 +20,14 @@ import java.util.UUID;
 import org.kaaproject.kaa.common.channels.protocols.kaatcp.messages.Connect;
 import org.kaaproject.kaa.server.transport.channel.ChannelContext;
 import org.kaaproject.kaa.server.transport.channel.ChannelType;
-import org.kaaproject.kaa.server.transport.message.AbstractRequestMessage;
+import org.kaaproject.kaa.server.transport.message.AbstractMessage;
 import org.kaaproject.kaa.server.transport.message.ErrorBuilder;
 import org.kaaproject.kaa.server.transport.message.MessageBuilder;
 import org.kaaproject.kaa.server.transport.message.SessionInitMessage;
 import org.kaaproject.kaa.server.transport.session.SessionCreateListener;
 import org.kaaproject.kaa.server.transport.session.SessionInfo;
 
-public class NettyTcpConnectMessage extends AbstractRequestMessage implements SessionInitMessage {
+public class NettyTcpConnectMessage extends AbstractMessage implements SessionInitMessage {
 
     private final Connect command;
     private final SessionCreateListener sessionAware;

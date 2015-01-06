@@ -41,8 +41,8 @@ import org.kaaproject.kaa.common.Constants;
 import org.kaaproject.kaa.common.endpoint.CommonEPConstans;
 import org.kaaproject.kaa.common.endpoint.security.MessageEncoderDecoder;
 import org.kaaproject.kaa.server.common.server.BadRequestException;
-import org.kaaproject.kaa.server.common.server.http.AbstractCommand;
 import org.kaaproject.kaa.server.transport.channel.ChannelType;
+import org.kaaproject.kaa.server.transports.http.transport.netty.AbstractCommand;
 
 /**
  * The Class AbstractOperationsCommand.

@@ -91,7 +91,7 @@ public class NettyTcpMessageTest {
 
         NettyTcpSyncMessage message = new NettyTcpSyncMessage(command, session, null, null);
 
-        Assert.assertArrayEquals("avroObject".getBytes(), message.getEncodedRequestData());
+        Assert.assertArrayEquals("avroObject".getBytes(), message.getEncodedMessageData());
         Assert.assertEquals(session, message.getSessionInfo());
         Assert.assertNotNull(message.toString());
     }

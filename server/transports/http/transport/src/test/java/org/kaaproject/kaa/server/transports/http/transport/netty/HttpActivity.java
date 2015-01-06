@@ -13,13 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kaaproject.kaa.server.transport.message;
 
-import org.kaaproject.kaa.server.transport.session.SessionAware;
+/**
+ * 
+ */
+package org.kaaproject.kaa.server.transports.http.transport.netty;
 
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 
-public interface SessionAwareMessage extends Message, SessionAware{
-
-    byte[] getEncodedMessageData();
-
+/**
+ * @author Andrey Panasenko <apanasenko@cybervisiontech.com>
+ *
+ */
+public interface HttpActivity {
+    public void httpRequestComplete(IOException ioe, Map<String, List<String>> header, String body);
 }

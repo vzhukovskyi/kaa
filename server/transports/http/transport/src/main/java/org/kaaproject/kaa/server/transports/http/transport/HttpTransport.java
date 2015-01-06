@@ -30,15 +30,15 @@ import java.util.UUID;
 import org.kaaproject.kaa.server.common.server.AbstractNettyServer;
 import org.kaaproject.kaa.server.common.server.CommandFactory;
 import org.kaaproject.kaa.server.common.server.KaaCommandProcessorFactory;
-import org.kaaproject.kaa.server.common.server.http.AbstractCommand;
-import org.kaaproject.kaa.server.common.server.http.DefaultHttpServerInitializer;
-import org.kaaproject.kaa.server.common.server.http.RequestDecoder;
 import org.kaaproject.kaa.server.transport.AbstractKaaTransport;
 import org.kaaproject.kaa.server.transport.TransportLifecycleException;
 import org.kaaproject.kaa.server.transport.TransportProperties;
 import org.kaaproject.kaa.server.transport.http.config.gen.AvroHttpConfig;
 import org.kaaproject.kaa.server.transports.http.transport.commands.LongSyncCommandFactory;
 import org.kaaproject.kaa.server.transports.http.transport.commands.SyncCommandFactory;
+import org.kaaproject.kaa.server.transports.http.transport.netty.AbstractCommand;
+import org.kaaproject.kaa.server.transports.http.transport.netty.DefaultHttpServerInitializer;
+import org.kaaproject.kaa.server.transports.http.transport.netty.RequestDecoder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

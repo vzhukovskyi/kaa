@@ -15,44 +15,13 @@
  */
 package org.kaaproject.kaa.server.transports.tcp.transport.messages;
 
-import java.util.UUID;
-
-import org.kaaproject.kaa.server.operations.service.akka.messages.core.endpoint.EndpointAwareMessage;
-import org.kaaproject.kaa.server.transport.channel.ChannelAware;
-import org.kaaproject.kaa.server.transport.channel.ChannelContext;
-import org.kaaproject.kaa.server.transport.channel.ChannelType;
-import org.kaaproject.kaa.server.transport.session.SessionAware;
+import org.kaaproject.kaa.server.transport.message.SessionDisconnectMessage;
 import org.kaaproject.kaa.server.transport.session.SessionInfo;
 
-import akka.actor.ActorRef;
-
-public class NettyTcpDisconnectMessage extends EndpointAwareMessage implements SessionAware, ChannelAware{
-
-    private final SessionInfo session;
+public class NettyTcpDisconnectMessage extends SessionDisconnectMessage {
 
     public NettyTcpDisconnectMessage(SessionInfo session) {
-        super(session.getApplicationToken(), session.getKey(), ActorRef.noSender());
-        this.session = session;
-    }
-
-    @Override
-    public UUID getChannelUuid() {
-        return session.getUuid();
-    }
-
-    @Override
-    public SessionInfo getSessionInfo() {
-        return session;
-    }
-
-    @Override
-    public ChannelType getChannelType() {
-        return session.getChannelType();
-    }
-
-    @Override
-    public ChannelContext getChannelContext() {
-        return session.getCtx();
+        super(session);
     }
 
 }

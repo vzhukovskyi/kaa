@@ -25,8 +25,6 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.util.AttributeKey;
-import io.netty.util.concurrent.DefaultEventExecutorGroup;
-import io.netty.util.concurrent.EventExecutorGroup;
 import io.netty.util.concurrent.Future;
 
 import java.util.UUID;
@@ -46,7 +44,7 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class AbstractNettyServer extends Thread {
 
-    public static final AttributeKey<UUID> UUID_KEY = AttributeKey.valueOf(ConfigConst.UUID_KEY);
+    public static final AttributeKey<UUID> UUID_KEY = AttributeKey.valueOf("UUID");
 
     private static final Logger LOG = LoggerFactory.getLogger(AbstractNettyServer.class);
 

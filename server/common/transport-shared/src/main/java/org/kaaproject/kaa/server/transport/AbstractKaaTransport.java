@@ -80,7 +80,7 @@ public abstract class AbstractKaaTransport<T extends SpecificRecordBase> impleme
      *            the configuration
      * @throws TransportLifecycleException
      */
-    public abstract void init(TransportProperties commonProperties, T configuration) throws TransportLifecycleException;
+    protected abstract void init(TransportProperties commonProperties, T configuration) throws TransportLifecycleException;
 
     /**
      * Gets the configuration class.

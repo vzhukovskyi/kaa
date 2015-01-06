@@ -13,13 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kaaproject.kaa.server.transport.message;
 
-import org.kaaproject.kaa.server.transport.session.SessionAware;
-
-
-public interface SessionAwareMessage extends Message, SessionAware{
-
-    byte[] getEncodedMessageData();
-
-}
+/**
+ * Provides common Netty HTTP server framework for process CommandProcessor commands.
+ */
+package org.kaaproject.kaa.server.transports.http.transport.netty;

@@ -27,7 +27,11 @@ package org.kaaproject.kaa.server.common;
 public final class Version {
 
     /** The Constant PROJECT_VERSION. */
+<<<<<<< HEAD
     public static final String PROJECT_VERSION = "0.7.0-SNAPSHOT";
+=======
+    public static final String PROJECT_VERSION = "N/A";
+>>>>>>> master
     
     /** The Constant COMMIT_HASH. */
     public static final String COMMIT_HASH = "N/A";

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kaaproject.kaa.server.operations.service.http;
+package org.kaaproject.kaa.server.transports.http.transport;
 
 import java.io.DataOutputStream;
 import java.io.IOException;

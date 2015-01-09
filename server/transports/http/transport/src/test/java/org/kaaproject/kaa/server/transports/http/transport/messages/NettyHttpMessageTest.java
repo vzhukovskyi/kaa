@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kaaproject.kaa.server.operations.service.akka.messages.io;
+package org.kaaproject.kaa.server.transports.http.transport.messages;
 
 import java.util.UUID;
 

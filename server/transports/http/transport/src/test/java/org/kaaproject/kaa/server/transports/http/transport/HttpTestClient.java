@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kaaproject.kaa.server.operations.service.http;
+package org.kaaproject.kaa.server.transports.http.transport;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -113,7 +113,9 @@ abstract public class HttpTestClient<T extends SpecificRecordBase,R  extends Spe
             throws MalformedURLException, Exception {
         testId = rnd.nextInt();
         this.activity = activity;
-        String url = "http://localhost:"+OperationsHttpServerIT.bindPort+"/domain/"+commandName;
+        //TODO: replace
+        int bindPort = 7888;
+        String url = "http://localhost:"+bindPort+"/domain/"+commandName;
         connection = (HttpURLConnection)new URL(url).openConnection();
         objects = new MultipartObjects();
         requestConverter = new AvroByteArrayConverter<>(getRequestConverterClass());

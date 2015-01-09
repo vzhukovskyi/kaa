@@ -40,6 +40,10 @@
             <artifactId>transport-shared</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.kaaproject.kaa.common</groupId>
+            <artifactId>endpoint-shared</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.kaaproject.kaa.server.common</groupId>
             <artifactId>netty-server</artifactId>
         </dependency>

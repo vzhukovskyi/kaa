@@ -14,8 +14,12 @@
  * limitations under the License.
  */
 
-package org.kaaproject.kaa.server.operations.service.http;
+/**
+ *
+ */
+package org.kaaproject.kaa.server.transports.http.transport;
 
+import java.net.MalformedURLException;
 import java.nio.ByteBuffer;
 import java.security.PublicKey;
 import java.util.LinkedList;
@@ -29,14 +33,14 @@ import org.kaaproject.kaa.common.endpoint.gen.SyncRequest;
 import org.kaaproject.kaa.common.endpoint.gen.SyncRequestMetaData;
 import org.kaaproject.kaa.common.endpoint.gen.SyncResponse;
 import org.kaaproject.kaa.common.endpoint.gen.TopicState;
-import org.kaaproject.kaa.server.transports.http.transport.commands.SyncCommand;
+import org.kaaproject.kaa.server.transports.http.transport.commands.LongSyncCommand;
 
 /**
- * Class to Send and Receive Sync Command.
+ * HTTP Test for LongSync request.
  * @author Andrey Panasenko <apanasenko@cybervisiontech.com>
  *
  */
-public class HttpTestSyncClient extends HttpTestClient<SyncRequest, SyncResponse> {
+public class HttpTestLongSyncClient extends HttpTestClient<SyncRequest, SyncResponse> {
 
     /** Defined application token */
     public static final String APPLICATION_TOKEN = "123test";
@@ -65,20 +69,31 @@ public class HttpTestSyncClient extends HttpTestClient<SyncRequest, SyncResponse
     /** application seq number, in test it used to pass testId */
     private int appStateSeqNumber;
 
-
-
+    /**
+     * Constructor
+     * @param serverPublicKey - server public key
+     * @param activity - interface to notify request finish.
+     * @throws MalformedURLException - if URI is incorrect
+     * @throws Exception - if request creation failed
+     */
+    public HttpTestLongSyncClient(
+            PublicKey serverPublicKey,
+            HttpActivity<SyncResponse> activity)
+            throws MalformedURLException, Exception {
+        super(serverPublicKey, LongSyncCommand.getCommandName(), activity);
+        longSyncInit();
+        postInit(getRequest());
+    }
 
     /**
-     * Constructor.
-     * @param serverPublicKey - server public key
-     * @param activity - activity interface implementation
-     * @throws Exception - throws if request creation failed.
+     * Create SyncRequest.
      */
-    public HttpTestSyncClient(PublicKey serverPublicKey, HttpActivity<SyncResponse> activity)
-            throws Exception {
-        super(serverPublicKey, SyncCommand.getCommandName(), activity);
+    private void longSyncInit() {
+        SyncRequest request = new SyncRequest();
+        request.setSyncRequestMetaData(new SyncRequestMetaData());
+        setRequest(request);
+        getRequest().getSyncRequestMetaData().setTimeout(Long.valueOf(rnd.nextInt(10000000)));
         syncInit();
-        postInit(getRequest());
     }
 
     /**
@@ -90,22 +105,26 @@ public class HttpTestSyncClient extends HttpTestClient<SyncRequest, SyncResponse
         configurationHash = getRandomBytes(HASH_SIZE);
         appStateSeqNumber = getId();
 
-        setRequest(new SyncRequest());
-        getRequest().setSyncRequestMetaData(new SyncRequestMetaData());
-        getRequest().getSyncRequestMetaData().setApplicationToken(APPLICATION_TOKEN);
-        getRequest().getSyncRequestMetaData().setEndpointPublicKeyHash(ByteBuffer.wrap(getClientPublicKeyHash().getData()));
-        getRequest().getSyncRequestMetaData().setProfileHash(ByteBuffer.wrap(profileHash));
+        SyncRequest request = new SyncRequest();
+        request.setSyncRequestMetaData(new SyncRequestMetaData());
+        request.getSyncRequestMetaData().setApplicationToken(APPLICATION_TOKEN);
+        request.getSyncRequestMetaData().setEndpointPublicKeyHash(ByteBuffer.wrap(getClientPublicKeyHash().getData()));
+        request.getSyncRequestMetaData().setProfileHash(ByteBuffer.wrap(profileHash));
 
-        getRequest().setConfigurationSyncRequest(new ConfigurationSyncRequest());
-        getRequest().getConfigurationSyncRequest().setConfigurationHash(ByteBuffer.wrap(configurationHash));
-        getRequest().getConfigurationSyncRequest().setAppStateSeqNumber(appStateSeqNumber);
+        ConfigurationSyncRequest csRequest = new ConfigurationSyncRequest();
+        csRequest.setConfigurationHash(ByteBuffer.wrap(configurationHash));
+        csRequest.setAppStateSeqNumber(appStateSeqNumber);
+        request.setConfigurationSyncRequest(csRequest);
 
         generateSubscriptionCommandList();
-        getRequest().setNotificationSyncRequest(new NotificationSyncRequest());
-        getRequest().getNotificationSyncRequest().setSubscriptionCommands(subscriptionCommands);
-        getRequest().getNotificationSyncRequest().setTopicStates(topicStates);
-        getRequest().getNotificationSyncRequest().setTopicListHash(ByteBuffer.wrap(profileHash));
-        getRequest().getNotificationSyncRequest().setAppStateSeqNumber(appStateSeqNumber);
+        NotificationSyncRequest nsRequest = new NotificationSyncRequest();
+        nsRequest.setSubscriptionCommands(subscriptionCommands);
+        nsRequest.setTopicStates(topicStates);
+        nsRequest.setTopicListHash(ByteBuffer.wrap(profileHash));
+        nsRequest.setAppStateSeqNumber(appStateSeqNumber);
+        request.setNotificationSyncRequest(nsRequest);
+
+        setRequest(request);
     }
 
     /**
@@ -162,7 +181,6 @@ public class HttpTestSyncClient extends HttpTestClient<SyncRequest, SyncResponse
         return appStateSeqNumber;
     }
 
-
     @Override
     protected Class<SyncRequest> getRequestConverterClass() {
         return SyncRequest.class;
@@ -172,4 +190,5 @@ public class HttpTestSyncClient extends HttpTestClient<SyncRequest, SyncResponse
     protected Class<SyncResponse> getResponseConverterClass() {
         return SyncResponse.class;
     }
+
 }

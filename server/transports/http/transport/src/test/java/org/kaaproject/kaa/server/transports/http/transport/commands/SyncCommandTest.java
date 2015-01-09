@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kaaproject.kaa.server.operations.service.http.commands;
+package org.kaaproject.kaa.server.transports.http.transport.commands;
 
 import static io.netty.handler.codec.http.HttpHeaders.Names.CONTENT_TYPE;
 import static org.kaaproject.kaa.common.Constants.RESPONSE_CONTENT_TYPE;

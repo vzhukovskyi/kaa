@@ -13,18 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kaaproject.kaa.server.operations.service.http.commands;
 
-import org.kaaproject.kaa.server.operations.service.OperationsService;
-import org.kaaproject.kaa.server.operations.service.cache.CacheService;
-import org.kaaproject.kaa.server.operations.service.security.KeyStoreService;
-import org.kaaproject.kaa.server.transports.http.transport.commands.SyncCommandFactory;
+package org.kaaproject.kaa.server.transports.http.transport;
 
-public class TestSyncCommandFactory extends SyncCommandFactory{
 
-    public TestSyncCommandFactory(String commandName){
-        super();
-        this.commandName = commandName;
-    }
-
+/**
+ * Interface to invoke http client request finish.
+ * @author Andrey Panasenko <apanasenko@cybervisiontech.com>
+ *
+ */
+public interface HttpActivity<T> {
+    /**
+     * HTTP request complete
+     * @param e - Exception if request failed.
+     * @param id - ID of http request
+     * @param response - HTTP response 
+     */
+    public void httpRequestComplete(Exception e, int id, T response);
 }

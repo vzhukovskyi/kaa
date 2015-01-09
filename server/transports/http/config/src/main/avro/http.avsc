@@ -5,7 +5,6 @@
  "fields": [
      {"name": "bindInterface", "type": "string"},
      {"name": "bindPort", "type": "int"},
-     {"name": "maxBodySize", "type": "int"},
-     {"name": "threadPoolSize", "type": "int"}
+     {"name": "maxBodySize", "type": "int"}
  ]
 }

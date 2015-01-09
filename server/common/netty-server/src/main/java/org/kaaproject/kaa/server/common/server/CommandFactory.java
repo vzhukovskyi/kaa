@@ -52,6 +52,7 @@ public class CommandFactory<U,V> {
      * @throws Exception
      *             - throws if URI is incorrect or request command not found
      */
+    //TODO: remove this method and move logic to http RequestDecoder
     public KaaCommandProcessor<U,V> getCommandProcessor(String uri) throws Exception { // NOSONAR
         if (uri == null || uri.length() <= 0) {
             throw new Exception("URI parameter incorrect"); // NOSONAR

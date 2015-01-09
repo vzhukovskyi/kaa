@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kaaproject.kaa.server.operations.service.netty;
+package org.kaaproject.kaa.server.transport.session;
 
 import java.util.UUID;
 
@@ -22,10 +22,14 @@ import org.junit.Test;
 import org.kaaproject.kaa.common.Constants;
 import org.kaaproject.kaa.server.transport.session.SessionInfo;
 
-public class NettySessionInfoTest {
-
+/**
+ * 
+ * @author Andrew Shvayka
+ *
+ */
+public class SessionInfoTest {
     @Test
-    public void equalsHashCode(){
+    public void equalsHashCode() {
         UUID uuid1 = UUID.randomUUID();
         UUID uuid2 = UUID.randomUUID();
         SessionInfo info1 = new SessionInfo(uuid1, Constants.KAA_PLATFORM_PROTOCOL_AVRO_ID, null, null, null, null, null, 0, false);

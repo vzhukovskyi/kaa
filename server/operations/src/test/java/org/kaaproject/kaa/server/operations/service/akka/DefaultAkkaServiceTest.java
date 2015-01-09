@@ -84,7 +84,6 @@ import org.kaaproject.kaa.server.operations.pojo.sync.ServerSync;
 import org.kaaproject.kaa.server.operations.pojo.sync.UserServerSync;
 import org.kaaproject.kaa.server.operations.service.OperationsService;
 import org.kaaproject.kaa.server.operations.service.akka.actors.io.platform.AvroEncDec;
-import org.kaaproject.kaa.server.operations.service.akka.messages.io.request.NettyTcpSyncMessage;
 import org.kaaproject.kaa.server.operations.service.cache.CacheService;
 import org.kaaproject.kaa.server.operations.service.cache.EventClassFqnKey;
 import org.kaaproject.kaa.server.operations.service.event.EndpointEvent;
@@ -762,16 +761,62 @@ public class DefaultAkkaServiceTest {
         md.setTimeout(2l * TIMEOUT);
         request.setSyncRequestMetaData(md);
 
-        MessageBuilder responseBuilder = Mockito.mock(MessageBuilder.class);
-        ErrorBuilder errorBuilder = Mockito.mock(ErrorBuilder.class);
+        final MessageBuilder responseBuilder = Mockito.mock(MessageBuilder.class);
+        final ErrorBuilder errorBuilder = Mockito.mock(ErrorBuilder.class);
 
         AvroByteArrayConverter<SyncRequest> requestConverter = new AvroByteArrayConverter<>(SyncRequest.class);
-        org.kaaproject.kaa.common.channels.protocols.kaatcp.messages.SyncRequest kaaSync = new org.kaaproject.kaa.common.channels.protocols.kaatcp.messages.SyncRequest(
+        final org.kaaproject.kaa.common.channels.protocols.kaatcp.messages.SyncRequest kaaSync = new org.kaaproject.kaa.common.channels.protocols.kaatcp.messages.SyncRequest(
                 crypt.encodeData(requestConverter.toByteArray(request)), false, true);
-        SessionInfo session = new SessionInfo(UUID.randomUUID(), Constants.KAA_PLATFORM_PROTOCOL_AVRO_ID, channelContextMock,
+        final SessionInfo session = new SessionInfo(UUID.randomUUID(), Constants.KAA_PLATFORM_PROTOCOL_AVRO_ID, channelContextMock,
                 ChannelType.TCP, crypt.getSessionCipherPair(), EndpointObjectHash.fromBytes(clientPublicKey.array()), APP_TOKEN, 100, true);
 
-        SessionAwareMessage message = new NettyTcpSyncMessage(kaaSync, session, responseBuilder, errorBuilder);
+        SessionAwareMessage message = new SessionAwareMessage() {
+            
+            @Override
+            public SessionInfo getSessionInfo() {
+                return session;
+            }
+            
+            @Override
+            public int getPlatformId() {
+                return session.getPlatformId();
+            }
+            
+            @Override
+            public UUID getChannelUuid() {
+                return session.getUuid();
+            }
+            
+            @Override
+            public ChannelType getChannelType() {
+                return session.getChannelType();
+            }
+            
+            @Override
+            public ChannelContext getChannelContext() {
+                return session.getCtx();
+            }
+            
+            @Override
+            public boolean isEncrypted() {
+                return session.isEncrypted();
+            }
+            
+            @Override
+            public MessageBuilder getMessageBuilder() {
+                return responseBuilder;
+            }
+            
+            @Override
+            public ErrorBuilder getErrorBuilder() {
+                return errorBuilder;
+            }
+            
+            @Override
+            public byte[] getEncodedMessageData() {
+                return kaaSync.getAvroObject();
+            }
+        };
         akkaService.process(message);
 
         SyncResponse response = new SyncResponse();

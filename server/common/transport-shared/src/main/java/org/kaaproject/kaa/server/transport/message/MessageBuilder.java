@@ -18,4 +18,6 @@ package org.kaaproject.kaa.server.transport.message;
 public interface MessageBuilder {
 
     Object[] build(byte[] messageData, boolean isEncrypted);
+    
+    Object[] build(byte[] messageData, byte[] messageSignature, boolean isEncrypted);
 }

@@ -18,7 +18,6 @@ package org.kaaproject.kaa.server.transports.http.transport;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
-import io.netty.util.concurrent.EventExecutorGroup;
 
 import java.util.UUID;
 
@@ -82,8 +81,16 @@ public class HttpHandler extends SimpleChannelInboundHandler<AbstractCommand>  i
     }
 
     @Override
-    public Object[] build(byte[] responseData, boolean isEncrypted) {
+    public Object[] build(byte[] responseData, byte[] responseSignatureData, boolean isEncrypted) {
         command.setResponseBody(responseData);
+        if(responseSignatureData != null){
+            command.setResponseSignature(responseSignatureData);
+        }
         return new Object[]{command};
+    }
+
+    @Override
+    public Object[] build(byte[] messageData, boolean isEncrypted) {
+        return build(messageData, null, isEncrypted);
     }
 }

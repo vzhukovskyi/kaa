@@ -35,7 +35,6 @@ import org.kaaproject.kaa.common.bootstrap.gen.OperationsServerList;
 import org.kaaproject.kaa.common.bootstrap.gen.Resolve;
 import org.kaaproject.kaa.common.endpoint.CommonEPConstans;
 import org.kaaproject.kaa.common.endpoint.security.MessageEncoderDecoder;
-import org.kaaproject.kaa.server.bootstrap.service.http.commands.ResolveCommand;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -72,7 +71,8 @@ public class TestClient implements Runnable {
 
     public TestClient(String nettyHost, int nettyPort, PublicKey serverPublicKey, HttpActivity activity) throws IOException {
         testId = rnd.nextInt();
-        String url = "http://"+nettyHost+":"+nettyPort+"/domain/"+ResolveCommand.getCommandName();
+        //TODO:fix
+        String url = "http://"+nettyHost+":"+nettyPort+"/domain/"+"resolve";
         connection = (HttpURLConnection)new URL(url).openConnection();
         this.activity = activity;
         crypt = new MessageEncoderDecoder(null,null,serverPublicKey);

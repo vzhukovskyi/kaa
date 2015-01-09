@@ -21,7 +21,6 @@ package org.kaaproject.kaa.server.bootstrap.service.initialization;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import org.junit.Test;
@@ -121,7 +120,6 @@ public class DefaultBootstrapInitializationServiceIT {
         l.shutdown();
         assertNotNull(dbiService);
         assertNull(dbiService.getBootstrapNode());
-        assertEquals(0,dbiService.getNettyServersList().size());
     }
 
 }

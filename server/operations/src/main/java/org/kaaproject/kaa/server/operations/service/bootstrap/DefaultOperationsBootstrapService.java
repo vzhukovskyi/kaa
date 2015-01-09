@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -33,7 +34,7 @@ import org.apache.thrift.transport.TTransportException;
 import org.kaaproject.kaa.server.common.thrift.gen.operations.OperationsThriftService;
 import org.kaaproject.kaa.server.common.zk.gen.ConnectionInfo;
 import org.kaaproject.kaa.server.common.zk.gen.OperationsNodeInfo;
-import org.kaaproject.kaa.server.common.zk.gen.SupportedChannel;
+import org.kaaproject.kaa.server.common.zk.gen.TransportMetaData;
 import org.kaaproject.kaa.server.common.zk.operations.OperationsNode;
 import org.kaaproject.kaa.server.operations.service.OperationsService;
 import org.kaaproject.kaa.server.operations.service.akka.AkkaService;
@@ -42,7 +43,8 @@ import org.kaaproject.kaa.server.operations.service.config.OperationsServerConfi
 import org.kaaproject.kaa.server.operations.service.event.EventService;
 import org.kaaproject.kaa.server.operations.service.security.KeyStoreService;
 import org.kaaproject.kaa.server.operations.service.thrift.OperationsThriftServiceImpl;
-import org.kaaproject.kaa.server.operations.service.transport.TransportService;
+import org.kaaproject.kaa.server.operations.service.transport.OperationsTransportService;
+import org.kaaproject.kaa.server.transport.TransportUpdateListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -83,7 +85,7 @@ public class DefaultOperationsBootstrapService implements OperationsBootstrapSer
     private AkkaService akkaService;
     
     @Autowired
-    private TransportService transportService;
+    private OperationsTransportService transportService;
 
     /** The cache service. */
     @Autowired
@@ -168,7 +170,20 @@ public class DefaultOperationsBootstrapService implements OperationsBootstrapSer
             startZK();
         }
         
-        transportService.setOperationsNode(operationsNode);
+        transportService.addListener(new TransportUpdateListener() {
+
+            @Override
+            public void onTransportsStarted(List<TransportMetaData> mdList) {
+                OperationsNodeInfo info = operationsNode.getNodeInfo();
+                info.setTransports(mdList);
+                try {
+                    operationsNode.updateNodeData(info);
+                } catch (IOException e) {
+                    LOG.error("Failed to update bootstrap node info", e);
+                }
+            }
+
+        });
         
         transportService.start();
 
@@ -269,7 +284,7 @@ public class DefaultOperationsBootstrapService implements OperationsBootstrapSer
         OperationsNodeInfo nodeInfo = new OperationsNodeInfo();
         ByteBuffer keyData = ByteBuffer.wrap(keyStoreService.getPublicKey().getEncoded());
         nodeInfo.setConnectionInfo(new ConnectionInfo(getConfig().getThriftHost(), getConfig().getThriftPort(), keyData));
-        nodeInfo.setSupportedChannelsArray(new ArrayList<SupportedChannel>());
+        nodeInfo.setTransports(new ArrayList<TransportMetaData>());
         operationsNode = new OperationsNode(nodeInfo, getConfig().getZkHostPortList(), new RetryUntilElapsed(getConfig().getZkMaxRetryTime(), getConfig()
                 .getZkSleepTime()));
         try {

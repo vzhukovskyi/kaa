@@ -29,10 +29,7 @@
     </properties>
 
     <dependencies>
-        <dependency>
-            <groupId>org.apache.avro</groupId>
-            <artifactId>avro</artifactId>
-        </dependency>
+
         <dependency>
             <groupId>org.kaaproject.kaa.server.common</groupId>
             <artifactId>utils</artifactId>
@@ -40,6 +37,18 @@
         <dependency>
             <groupId>org.kaaproject.kaa.common</groupId>
             <artifactId>endpoint-shared</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.kaaproject.kaa.server.common</groupId>
+            <artifactId>zk</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.avro</groupId>
+            <artifactId>avro</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
         </dependency>
         <dependency>
             <groupId>junit</groupId>

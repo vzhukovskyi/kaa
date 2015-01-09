@@ -73,12 +73,17 @@ public class TcpHandler extends SimpleChannelInboundHandler<AbstractKaaTcpComman
 
     private final static MessageBuilder syncResponseConverter = new MessageBuilder() {
         @Override
-        public Object[] build(byte[] encriptedResponseData, boolean isEncrypted) {
+        public Object[] build(byte[] encriptedResponseData, byte[] encriptedResponseSignature, boolean isEncrypted) {
             Object[] responses = new Object[1];
             responses[0] = new org.kaaproject.kaa.common.channels.protocols.kaatcp.messages.SyncResponse(encriptedResponseData, NOT_ZIPPED,
                     isEncrypted);
             LOG.debug("Sending {} response objects", responses.length);
             return responses;
+        }
+
+        @Override
+        public Object[] build(byte[] messageData, boolean isEncrypted) {
+            return build(messageData, null, isEncrypted);
         }
     };
 
@@ -104,7 +109,7 @@ public class TcpHandler extends SimpleChannelInboundHandler<AbstractKaaTcpComman
             volatile boolean connAckSent = false;
 
             @Override
-            public Object[] build(byte[] encriptedResponseData, boolean isEncrypted) {
+            public Object[] build(byte[] encriptedResponseData, byte[] encriptedResponseSignature, boolean isEncrypted) {
                 if (!connAckSent) {
                     synchronized (this) {
                         if (!connAckSent) {
@@ -118,7 +123,12 @@ public class TcpHandler extends SimpleChannelInboundHandler<AbstractKaaTcpComman
                         }
                     }
                 }
-                return syncResponseConverter.build(encriptedResponseData, isEncrypted);
+                return syncResponseConverter.build(encriptedResponseData, encriptedResponseSignature, isEncrypted);
+            }
+
+            @Override
+            public Object[] build(byte[] messageData, boolean isEncrypted) {
+                return build(messageData, null, isEncrypted);
             }
         };
     }

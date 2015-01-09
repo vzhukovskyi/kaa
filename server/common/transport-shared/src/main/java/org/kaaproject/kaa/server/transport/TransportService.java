@@ -13,8 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.kaaproject.kaa.server.transport;
+
 
 /**
- * Provides generated avro objects for bootstrap server
+ * Responsible for lookup, initialization and life-cycle management of available
+ * transport implementations
+ * 
+ * @author Andrew Shvayka
+ *
  */
-package org.kaaproject.kaa.common.bootstrap.gen;
+public interface TransportService {
+
+    void lookupAndInit();
+
+    void start();
+
+    void stop();
+    
+    boolean addListener(TransportUpdateListener listener);
+    
+    boolean removeListener(TransportUpdateListener listener);
+
+}

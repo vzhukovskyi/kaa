@@ -37,6 +37,7 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.List;
 
+import org.apache.commons.codec.binary.Base64;
 import org.kaaproject.kaa.common.Constants;
 import org.kaaproject.kaa.common.endpoint.CommonEPConstans;
 import org.kaaproject.kaa.common.endpoint.security.MessageEncoderDecoder;
@@ -65,6 +66,9 @@ public abstract class AbstractHttpSyncCommand extends AbstractCommand {
 
     /** The response body. */
     private byte[] responseBody;
+    
+    /** The signature. */
+    private byte[] responseSignature;
     
     private int nextProtocol = Constants.KAA_PLATFORM_PROTOCOL_AVRO_ID;
 
@@ -166,6 +170,14 @@ public abstract class AbstractHttpSyncCommand extends AbstractCommand {
     public void setResponseBody(byte[] responseBody) {
         this.responseBody = responseBody;
     }
+    
+    public byte[] getResponseSignature() {
+        return responseSignature;
+    }
+
+    public void setResponseSignature(byte[] responseSignature) {
+        this.responseSignature = responseSignature;
+    }
 
     /*
      * (non-Javadoc)
@@ -182,6 +194,9 @@ public abstract class AbstractHttpSyncCommand extends AbstractCommand {
         httpResponse.headers().set(CONTENT_TYPE, CommonEPConstans.RESPONSE_CONTENT_TYPE);
         httpResponse.headers().set(CONTENT_LENGTH, httpResponse.content().readableBytes());
         httpResponse.headers().set(CommonEPConstans.RESPONSE_TYPE, CommonEPConstans.RESPONSE_TYPE_OPERATION);
+        if(responseSignature != null){
+            httpResponse.headers().set(CommonEPConstans.SIGNATURE_HEADER_NAME, Base64.encodeBase64String(responseSignature));
+        }
         if (isNeedConnectionClose()) {
             httpResponse.headers().set(CONNECTION, HttpHeaders.Values.CLOSE);
         } else {

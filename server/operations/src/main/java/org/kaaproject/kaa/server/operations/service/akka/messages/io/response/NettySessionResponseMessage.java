@@ -18,7 +18,7 @@ package org.kaaproject.kaa.server.operations.service.akka.messages.io.response;
 
 import java.util.UUID;
 
-import org.kaaproject.kaa.server.operations.pojo.sync.ServerSync;
+import org.kaaproject.kaa.server.sync.ServerSync;
 import org.kaaproject.kaa.server.transport.channel.ChannelContext;
 import org.kaaproject.kaa.server.transport.channel.ChannelType;
 import org.kaaproject.kaa.server.transport.message.ErrorBuilder;

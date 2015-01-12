@@ -130,9 +130,7 @@ public class DefaultBootstrapInitializationService implements BootstrapInitializ
             if (operationsServerListService == null) {
                 throw new Exception("Error initializing OperationsServerListService()"); // NOSONAR
             }
-
-            operationsServerListService.init();
-
+            
             transportService.lookupAndInit();
 
             final CountDownLatch thriftStartupLatch = new CountDownLatch(1);
@@ -149,6 +147,8 @@ public class DefaultBootstrapInitializationService implements BootstrapInitializ
             if (zkEnabled) {
                 startZK();
             }
+            
+            operationsServerListService.init(bootstrapNode);
 
             transportService.addListener(new TransportUpdateListener() {
 
@@ -187,10 +187,6 @@ public class DefaultBootstrapInitializationService implements BootstrapInitializ
     @Override
     public void stop() {
         LOG.trace("Stopping Bootstrap Service..." + propertiesToString());
-
-        if (operationsServerListService != null) {
-            operationsServerListService.stop();
-        }
 
         if (zkEnabled) {
             stopZK();
@@ -297,27 +293,6 @@ public class DefaultBootstrapInitializationService implements BootstrapInitializ
             bootstrapNode = null;
             serverConfig.setBootstrapNode(bootstrapNode);
         }
-    }
-
-    /**
-     * @return the bootstrapThriftService
-     */
-    public BootstrapThriftServiceImpl getBootstrapThriftService() {
-        return bootstrapThriftService;
-    }
-
-    /**
-     * @return the bootstrapNode
-     */
-    public BootstrapNode getBootstrapNode() {
-        return bootstrapNode;
-    }
-
-    /**
-     * @return the operationsServerListService
-     */
-    public OperationsServerListService getOperationsServerListService() {
-        return operationsServerListService;
     }
 
     /**

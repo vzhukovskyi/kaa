@@ -27,15 +27,13 @@ import org.kaaproject.kaa.server.common.zk.gen.OperationsNodeInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
  * The Class OperationsNode.
  */
 public class OperationsNode extends WorkerNodeTracker {
 
     /** The Constant logger. */
-    private static final Logger LOG = LoggerFactory
-            .getLogger(BootstrapNode.class);
+    private static final Logger LOG = LoggerFactory.getLogger(BootstrapNode.class);
 
     /** The node info. */
     private OperationsNodeInfo nodeInfo;
@@ -43,9 +41,12 @@ public class OperationsNode extends WorkerNodeTracker {
     /**
      * Instantiates a new endpoint node.
      *
-     * @param nodeInfo the node info
-     * @param zkHostPortList the zk host port list
-     * @param retryPolicy the retry policy
+     * @param nodeInfo
+     *            the node info
+     * @param zkHostPortList
+     *            the zk host port list
+     * @param retryPolicy
+     *            the retry policy
      */
     public OperationsNode(OperationsNodeInfo nodeInfo, String zkHostPortList, RetryPolicy retryPolicy) {
         super(zkHostPortList, retryPolicy);
@@ -56,23 +57,23 @@ public class OperationsNode extends WorkerNodeTracker {
     /**
      * Updates current ZK node data.
      *
-     * @param currentNodeInfo the current node info
-     * @throws IOException Signals that an I/O exception has occurred.
+     * @param currentNodeInfo
+     *            the current node info
+     * @throws IOException
+     *             Signals that an I/O exception has occurred.
      */
-    public void updateNodeData(OperationsNodeInfo currentNodeInfo)
-            throws IOException {
+    public void updateNodeData(OperationsNodeInfo currentNodeInfo) throws IOException {
         this.nodeInfo = currentNodeInfo;
         doZKClientAction(new ZKClientAction() {
             @Override
             public void doWithZkClient(CuratorFramework client) throws Exception {
-                client.setData().forPath(nodePath,
-                        operationsNodeAvroConverter.get().toByteArray(nodeInfo));
+                client.setData().forPath(nodePath, operationsNodeAvroConverter.get().toByteArray(nodeInfo));
             }
         });
     }
 
     @Override
-    public boolean createZkNode() throws IOException{
+    public boolean createZkNode() throws IOException {
         return doZKClientAction(new ZKClientAction() {
             @Override
             public void doWithZkClient(CuratorFramework client) throws Exception {
@@ -81,9 +82,7 @@ public class OperationsNode extends WorkerNodeTracker {
                         .create()
                         .creatingParentsIfNeeded()
                         .withMode(CreateMode.EPHEMERAL_SEQUENTIAL)
-                        .forPath(
-                                OPERATIONS_SERVER_NODE_PATH
-                                        + OPERATIONS_SERVER_NODE_PATH,
+                        .forPath(OPERATIONS_SERVER_NODE_PATH + OPERATIONS_SERVER_NODE_PATH,
                                 operationsNodeAvroConverter.get().toByteArray(nodeInfo));
                 LOG.info("Created node with path: " + nodePath);
             }
@@ -92,6 +91,7 @@ public class OperationsNode extends WorkerNodeTracker {
 
     /**
      * Self NodeInfo getter.
+     * 
      * @return OperationsNodeInfo
      */
     public OperationsNodeInfo getNodeInfo() {

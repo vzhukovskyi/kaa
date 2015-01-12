@@ -16,6 +16,8 @@
 
 package org.kaaproject.kaa.server.control.service.loadmgmt;
 
+import static org.kaaproject.kaa.server.common.zk.ServerNameUtil.getNameFromConnectionInfo;
+
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,7 +37,6 @@ import org.kaaproject.kaa.server.common.thrift.util.ThriftExecutor;
 import org.kaaproject.kaa.server.common.zk.bootstrap.BootstrapNodeListener;
 import org.kaaproject.kaa.server.common.zk.control.ControlNode;
 import org.kaaproject.kaa.server.common.zk.gen.BootstrapNodeInfo;
-import org.kaaproject.kaa.server.common.zk.gen.ConnectionInfo;
 import org.kaaproject.kaa.server.common.zk.gen.OperationsNodeInfo;
 import org.kaaproject.kaa.server.common.zk.operations.OperationsNodeListener;
 import org.kaaproject.kaa.server.control.service.loadmgmt.dynamicmgmt.OperationsServerLoadHistory;
@@ -78,9 +79,6 @@ public class DynamicLoadManager implements OperationsNodeListener, BootstrapNode
 
     /** The Constant DEFAULT_PRIORITY. */
     private static final int DEFAULT_PRIORITY = 10;
-
-    /** Delimiter in DNS name host:port. */
-    private static final String HOST_PORT_DELIMITER = ":";
 
     private static final Logger LOG = LoggerFactory.getLogger(DynamicLoadManager.class);
 
@@ -365,21 +363,6 @@ public class DynamicLoadManager implements OperationsNodeListener, BootstrapNode
      */
     public void setLoadDistributionService(LoadDistributionService loadDistributionService) {
         this.loadDistributionService = loadDistributionService;
-    }
-
-    /**
-     * Gets the operations name from connection info.
-     *
-     * @param connectionInfo
-     *            the connection info
-     * @return the thrift host name and thrift port from connection info
-     */
-    private String getNameFromConnectionInfo(ConnectionInfo connectionInfo) {
-        StringBuffer name = new StringBuffer();
-        name.append(connectionInfo.getThriftHost());
-        name.append(HOST_PORT_DELIMITER);
-        name.append(connectionInfo.getThriftPort());
-        return name.toString();
     }
 
     /**

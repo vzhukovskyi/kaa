@@ -15,7 +15,7 @@
  */
 package org.kaaproject.kaa.server.operations.service.akka.messages.io.response;
 
-import org.kaaproject.kaa.server.operations.pojo.sync.ServerSync;
+import org.kaaproject.kaa.server.sync.ServerSync;
 import org.kaaproject.kaa.server.transport.channel.ChannelAware;
 import org.kaaproject.kaa.server.transport.message.ErrorBuilder;
 import org.kaaproject.kaa.server.transport.message.MessageBuilder;

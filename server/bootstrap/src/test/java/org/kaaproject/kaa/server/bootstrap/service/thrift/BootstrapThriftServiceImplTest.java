@@ -33,7 +33,7 @@ import org.apache.thrift.TException;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.kaaproject.kaa.server.bootstrap.service.OperationsServerListService;
+import org.kaaproject.kaa.server.bootstrap.service.DefaultOperationsServerListService;
 import org.kaaproject.kaa.server.bootstrap.service.initialization.BootstrapInitializationService;
 import org.kaaproject.kaa.server.common.thrift.gen.bootstrap.ThriftChannelType;
 import org.kaaproject.kaa.server.common.thrift.gen.bootstrap.ThriftCommunicationParameters;
@@ -49,14 +49,14 @@ import org.springframework.test.util.ReflectionTestUtils;
  */
 public class BootstrapThriftServiceImplTest {
 
-    private static OperationsServerListService operationsListMock;
+    private static DefaultOperationsServerListService operationsListMock;
     private static BootstrapInitializationService bootstrapInitializationService;
     /**
      * @throws java.lang.Exception
      */
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
-        operationsListMock = mock(OperationsServerListService.class);
+        operationsListMock = mock(DefaultOperationsServerListService.class);
         bootstrapInitializationService = mock(BootstrapInitializationService.class);
     }
 

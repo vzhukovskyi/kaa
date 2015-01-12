@@ -19,13 +19,11 @@ package org.kaaproject.kaa.server.bootstrap.service.thrift;
 import java.util.List;
 
 import org.apache.thrift.TException;
-import org.kaaproject.kaa.server.bootstrap.service.OperationsServerListService;
+import org.kaaproject.kaa.server.bootstrap.service.DefaultOperationsServerListService;
 import org.kaaproject.kaa.server.bootstrap.service.initialization.BootstrapInitializationService;
 import org.kaaproject.kaa.server.common.thrift.cli.server.BaseCliThriftService;
 import org.kaaproject.kaa.server.common.thrift.gen.bootstrap.BootstrapThriftService;
-import org.kaaproject.kaa.server.common.thrift.gen.bootstrap.ThriftCommunicationParameters;
 import org.kaaproject.kaa.server.common.thrift.gen.bootstrap.ThriftOperationsServer;
-import org.kaaproject.kaa.server.common.thrift.gen.bootstrap.ThriftSupportedChannel;
 import org.kaaproject.kaa.server.common.thrift.util.ThriftExecutor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,7 +45,7 @@ public class BootstrapThriftServiceImpl extends BaseCliThriftService implements
     BootstrapInitializationService bootstrapInitializationService;
 
     @Autowired
-    OperationsServerListService operationsServerListService;
+    DefaultOperationsServerListService operationsServerListService;
 
     private static final Logger LOG = LoggerFactory.getLogger(BootstrapThriftServiceImpl.class);
 

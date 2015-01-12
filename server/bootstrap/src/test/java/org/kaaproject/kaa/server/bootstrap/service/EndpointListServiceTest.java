@@ -35,7 +35,7 @@ public class EndpointListServiceTest {
 
     @Test
     public void testEndpointListServiceInitWithNullBootstrapNode() {
-        OperationsServerListService endpointListService = new OperationsServerListService();
+        DefaultOperationsServerListService endpointListService = new DefaultOperationsServerListService();
         endpointListService.init();
 
         Assert.assertNotNull(endpointListService.getOpsServerList());
@@ -43,7 +43,7 @@ public class EndpointListServiceTest {
 
     @Test
     public void testEndpointListServiceDeinitWithBootstrapNode() {
-        OperationsServerListService endpointListService = new OperationsServerListService();
+        DefaultOperationsServerListService endpointListService = new DefaultOperationsServerListService();
         endpointListService.init();
         endpointListService.stop();
 
@@ -51,7 +51,7 @@ public class EndpointListServiceTest {
 
     @Test
     public void testEndpointListServiceUpdateList() {
-        OperationsServerListService endpointListService = new OperationsServerListService();
+        DefaultOperationsServerListService endpointListService = new DefaultOperationsServerListService();
         endpointListService.init();
 
         ByteBuffer pk = ByteBuffer.wrap(new byte[] { 1, 2, 3 });

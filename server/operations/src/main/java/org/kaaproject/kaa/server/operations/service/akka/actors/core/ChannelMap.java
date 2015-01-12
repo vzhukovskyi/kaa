@@ -23,8 +23,8 @@ import java.util.UUID;
 
 import org.kaaproject.kaa.common.TransportType;
 import org.kaaproject.kaa.server.operations.pojo.SyncResponseHolder;
-import org.kaaproject.kaa.server.operations.pojo.sync.ClientSync;
 import org.kaaproject.kaa.server.operations.service.akka.messages.core.endpoint.SyncRequestMessage;
+import org.kaaproject.kaa.server.sync.ClientSync;
 import org.kaaproject.kaa.server.transport.channel.ChannelContext;
 import org.kaaproject.kaa.server.transport.channel.ChannelType;
 import org.kaaproject.kaa.server.transport.session.SessionInfo;

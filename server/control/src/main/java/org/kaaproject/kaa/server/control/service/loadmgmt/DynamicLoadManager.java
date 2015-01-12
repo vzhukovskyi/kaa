@@ -26,11 +26,7 @@ import java.util.Map;
 import org.apache.thrift.TException;
 import org.kaaproject.kaa.server.common.thrift.gen.bootstrap.BootstrapThriftService;
 import org.kaaproject.kaa.server.common.thrift.gen.bootstrap.BootstrapThriftService.Client;
-import org.kaaproject.kaa.server.common.thrift.gen.bootstrap.ThriftChannelType;
-import org.kaaproject.kaa.server.common.thrift.gen.bootstrap.ThriftCommunicationParameters;
-import org.kaaproject.kaa.server.common.thrift.gen.bootstrap.ThriftIpParameters;
 import org.kaaproject.kaa.server.common.thrift.gen.bootstrap.ThriftOperationsServer;
-import org.kaaproject.kaa.server.common.thrift.gen.bootstrap.ThriftSupportedChannel;
 import org.kaaproject.kaa.server.common.thrift.gen.operations.OperationsThriftService;
 import org.kaaproject.kaa.server.common.thrift.gen.operations.RedirectionRule;
 import org.kaaproject.kaa.server.common.thrift.util.ThriftActivity;
@@ -316,7 +312,6 @@ public class DynamicLoadManager implements OperationsNodeListener, BootstrapNode
         String dnsName = getNameFromConnectionInfo(nodeInfo.getConnectionInfo());
         LOG.info("Operations server {} update", dnsName);
         if (opsServersMap.containsKey(dnsName)) {
-            opsServersMap.get(dnsName).opsServer.setPublicKey(nodeInfo.getConnectionInfo().getPublicKey());
             opsServersMap.get(dnsName).history.addOpsServerLoad(nodeInfo.getLoadInfo());
         } else {
             addNewOperationsServer(dnsName, nodeInfo);
@@ -329,7 +324,7 @@ public class DynamicLoadManager implements OperationsNodeListener, BootstrapNode
      */
     private void addNewOperationsServer(String dnsName, OperationsNodeInfo nodeInfo) {
         OperationsServerMeta meta = new OperationsServerMeta(null, nodeInfo);
-        ThriftOperationsServer operations = new ThriftOperationsServer(nodeInfo.getConnectionInfo().getPublicKey(), DEFAULT_PRIORITY);
+        ThriftOperationsServer operations = new ThriftOperationsServer(dnsName, DEFAULT_PRIORITY);
         meta.opsServer = operations;
         opsServersMap.put(dnsName, meta);
     }

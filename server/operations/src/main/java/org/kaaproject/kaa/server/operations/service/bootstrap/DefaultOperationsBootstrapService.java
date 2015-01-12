@@ -33,6 +33,7 @@ import org.apache.thrift.transport.TServerTransport;
 import org.apache.thrift.transport.TTransportException;
 import org.kaaproject.kaa.server.common.thrift.gen.operations.OperationsThriftService;
 import org.kaaproject.kaa.server.common.zk.gen.ConnectionInfo;
+import org.kaaproject.kaa.server.common.zk.gen.LoadInfo;
 import org.kaaproject.kaa.server.common.zk.gen.OperationsNodeInfo;
 import org.kaaproject.kaa.server.common.zk.gen.TransportMetaData;
 import org.kaaproject.kaa.server.common.zk.operations.OperationsNode;
@@ -58,6 +59,8 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class DefaultOperationsBootstrapService implements OperationsBootstrapService {
+
+    private static final int DEFAULT_LOAD_INDEX = 1;
 
     /** The Constant logger. */
     private static final Logger LOG = LoggerFactory.getLogger(DefaultOperationsBootstrapService.class);
@@ -284,6 +287,7 @@ public class DefaultOperationsBootstrapService implements OperationsBootstrapSer
         OperationsNodeInfo nodeInfo = new OperationsNodeInfo();
         ByteBuffer keyData = ByteBuffer.wrap(keyStoreService.getPublicKey().getEncoded());
         nodeInfo.setConnectionInfo(new ConnectionInfo(getConfig().getThriftHost(), getConfig().getThriftPort(), keyData));
+        nodeInfo.setLoadInfo(new LoadInfo(DEFAULT_LOAD_INDEX));
         nodeInfo.setTransports(new ArrayList<TransportMetaData>());
         operationsNode = new OperationsNode(nodeInfo, getConfig().getZkHostPortList(), new RetryUntilElapsed(getConfig().getZkMaxRetryTime(), getConfig()
                 .getZkSleepTime()));

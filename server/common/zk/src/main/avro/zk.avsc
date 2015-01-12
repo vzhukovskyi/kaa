@@ -12,6 +12,14 @@
 {
  "namespace": "org.kaaproject.kaa.server.common.zk.gen",
  "type": "record",
+ "name": "LoadInfo",
+ "fields": [
+     {"name": "loadIndex",  "type": "int"}
+ ]
+},
+{
+ "namespace": "org.kaaproject.kaa.server.common.zk.gen",
+ "type": "record",
  "name": "VersionConnectionInfoPair",
  "fields": [
      {"name": "version",  "type": "int"},
@@ -45,6 +53,7 @@
  "name": "OperationsNodeInfo",
  "fields": [
      {"name": "connectionInfo", "type": "org.kaaproject.kaa.server.common.zk.gen.ConnectionInfo"},
+     {"name": "loadInfo", "type": "org.kaaproject.kaa.server.common.zk.gen.LoadInfo"},
      {"name": "timeStarted",  "type": "long"},
      {"name": "transports", "type":{"type": "array", "items": "org.kaaproject.kaa.server.common.zk.gen.TransportMetaData"}}
  ]

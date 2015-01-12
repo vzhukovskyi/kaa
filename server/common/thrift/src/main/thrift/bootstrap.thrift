@@ -20,39 +20,9 @@ include "cli.thrift"
 
 namespace java org.kaaproject.kaa.server.common.thrift.gen.bootstrap
 
-enum ThriftChannelType {
-  HTTP = 1,
-  HTTP_LP = 2,
-  KAATCP = 3
-}
-
-struct ThriftIpParameters {
-  1: string HostName
-  2: shared.Integer Port
-}
-
-typedef ThriftIpParameters ThriftHttpParameters
-typedef ThriftIpParameters ThriftHttpLpParameters
-typedef ThriftIpParameters ThriftKaaTcpParameters
-
-union ThriftCommunicationParameters {
-  1: ThriftHttpParameters httpParams
-  2: ThriftHttpLpParameters httpLpParams
-  3: ThriftKaaTcpParameters kaaTcpParams
-}
-
-struct ThriftSupportedChannel {
-  1: ThriftChannelType type
-  2: ThriftCommunicationParameters communicationParams
-}
-
-typedef list<ThriftSupportedChannel> ThriftSupportedChannels
-
 struct ThriftOperationsServer {
-  1: string Name
+  1: binary publicKey
   2: shared.Integer priority
-  3: binary publicKey
-  4: ThriftSupportedChannels supportedChannels 
 }
 
 typedef list<ThriftOperationsServer> serversList

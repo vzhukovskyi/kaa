@@ -36,7 +36,7 @@ import org.slf4j.LoggerFactory;
 public class ThriftOperationsServer implements org.apache.thrift.TBase<ThriftOperationsServer, ThriftOperationsServer._Fields>, java.io.Serializable, Cloneable, Comparable<ThriftOperationsServer> {
   private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("ThriftOperationsServer");
 
-  private static final org.apache.thrift.protocol.TField PUBLIC_KEY_FIELD_DESC = new org.apache.thrift.protocol.TField("publicKey", org.apache.thrift.protocol.TType.STRING, (short)1);
+  private static final org.apache.thrift.protocol.TField ID_FIELD_DESC = new org.apache.thrift.protocol.TField("id", org.apache.thrift.protocol.TType.STRING, (short)1);
   private static final org.apache.thrift.protocol.TField PRIORITY_FIELD_DESC = new org.apache.thrift.protocol.TField("priority", org.apache.thrift.protocol.TType.I32, (short)2);
 
   private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
@@ -45,12 +45,12 @@ public class ThriftOperationsServer implements org.apache.thrift.TBase<ThriftOpe
     schemes.put(TupleScheme.class, new ThriftOperationsServerTupleSchemeFactory());
   }
 
-  public ByteBuffer publicKey; // required
+  public String id; // required
   public int priority; // required
 
   /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
   public enum _Fields implements org.apache.thrift.TFieldIdEnum {
-    PUBLIC_KEY((short)1, "publicKey"),
+    ID((short)1, "id"),
     PRIORITY((short)2, "priority");
 
     private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
@@ -66,8 +66,8 @@ public class ThriftOperationsServer implements org.apache.thrift.TBase<ThriftOpe
      */
     public static _Fields findByThriftId(int fieldId) {
       switch(fieldId) {
-        case 1: // PUBLIC_KEY
-          return PUBLIC_KEY;
+        case 1: // ID
+          return ID;
         case 2: // PRIORITY
           return PRIORITY;
         default:
@@ -115,8 +115,8 @@ public class ThriftOperationsServer implements org.apache.thrift.TBase<ThriftOpe
   public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
   static {
     Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-    tmpMap.put(_Fields.PUBLIC_KEY, new org.apache.thrift.meta_data.FieldMetaData("publicKey", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING        , true)));
+    tmpMap.put(_Fields.ID, new org.apache.thrift.meta_data.FieldMetaData("id", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
     tmpMap.put(_Fields.PRIORITY, new org.apache.thrift.meta_data.FieldMetaData("priority", org.apache.thrift.TFieldRequirementType.DEFAULT, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32        , "Integer")));
     metaDataMap = Collections.unmodifiableMap(tmpMap);
@@ -127,11 +127,11 @@ public class ThriftOperationsServer implements org.apache.thrift.TBase<ThriftOpe
   }
 
   public ThriftOperationsServer(
-    ByteBuffer publicKey,
+    String id,
     int priority)
   {
     this();
-    this.publicKey = publicKey;
+    this.id = id;
     this.priority = priority;
     setPriorityIsSet(true);
   }
@@ -141,9 +141,8 @@ public class ThriftOperationsServer implements org.apache.thrift.TBase<ThriftOpe
    */
   public ThriftOperationsServer(ThriftOperationsServer other) {
     __isset_bitfield = other.__isset_bitfield;
-    if (other.isSetPublicKey()) {
-      this.publicKey = org.apache.thrift.TBaseHelper.copyBinary(other.publicKey);
-;
+    if (other.isSetId()) {
+      this.id = other.id;
     }
     this.priority = other.priority;
   }
@@ -154,42 +153,32 @@ public class ThriftOperationsServer implements org.apache.thrift.TBase<ThriftOpe
 
   @Override
   public void clear() {
-    this.publicKey = null;
+    this.id = null;
     setPriorityIsSet(false);
     this.priority = 0;
   }
 
-  public byte[] getPublicKey() {
-    setPublicKey(org.apache.thrift.TBaseHelper.rightSize(publicKey));
-    return publicKey == null ? null : publicKey.array();
+  public String getId() {
+    return this.id;
   }
 
-  public ByteBuffer bufferForPublicKey() {
-    return publicKey;
-  }
-
-  public ThriftOperationsServer setPublicKey(byte[] publicKey) {
-    setPublicKey(publicKey == null ? (ByteBuffer)null : ByteBuffer.wrap(publicKey));
+  public ThriftOperationsServer setId(String id) {
+    this.id = id;
     return this;
   }
 
-  public ThriftOperationsServer setPublicKey(ByteBuffer publicKey) {
-    this.publicKey = publicKey;
-    return this;
+  public void unsetId() {
+    this.id = null;
   }
 
-  public void unsetPublicKey() {
-    this.publicKey = null;
+  /** Returns true if field id is set (has been assigned a value) and false otherwise */
+  public boolean isSetId() {
+    return this.id != null;
   }
 
-  /** Returns true if field publicKey is set (has been assigned a value) and false otherwise */
-  public boolean isSetPublicKey() {
-    return this.publicKey != null;
-  }
-
-  public void setPublicKeyIsSet(boolean value) {
+  public void setIdIsSet(boolean value) {
     if (!value) {
-      this.publicKey = null;
+      this.id = null;
     }
   }
 
@@ -218,11 +207,11 @@ public class ThriftOperationsServer implements org.apache.thrift.TBase<ThriftOpe
 
   public void setFieldValue(_Fields field, Object value) {
     switch (field) {
-    case PUBLIC_KEY:
+    case ID:
       if (value == null) {
-        unsetPublicKey();
+        unsetId();
       } else {
-        setPublicKey((ByteBuffer)value);
+        setId((String)value);
       }
       break;
 
@@ -239,8 +228,8 @@ public class ThriftOperationsServer implements org.apache.thrift.TBase<ThriftOpe
 
   public Object getFieldValue(_Fields field) {
     switch (field) {
-    case PUBLIC_KEY:
-      return getPublicKey();
+    case ID:
+      return getId();
 
     case PRIORITY:
       return Integer.valueOf(getPriority());
@@ -256,8 +245,8 @@ public class ThriftOperationsServer implements org.apache.thrift.TBase<ThriftOpe
     }
 
     switch (field) {
-    case PUBLIC_KEY:
-      return isSetPublicKey();
+    case ID:
+      return isSetId();
     case PRIORITY:
       return isSetPriority();
     }
@@ -277,12 +266,12 @@ public class ThriftOperationsServer implements org.apache.thrift.TBase<ThriftOpe
     if (that == null)
       return false;
 
-    boolean this_present_publicKey = true && this.isSetPublicKey();
-    boolean that_present_publicKey = true && that.isSetPublicKey();
-    if (this_present_publicKey || that_present_publicKey) {
-      if (!(this_present_publicKey && that_present_publicKey))
+    boolean this_present_id = true && this.isSetId();
+    boolean that_present_id = true && that.isSetId();
+    if (this_present_id || that_present_id) {
+      if (!(this_present_id && that_present_id))
         return false;
-      if (!this.publicKey.equals(that.publicKey))
+      if (!this.id.equals(that.id))
         return false;
     }
 
@@ -302,10 +291,10 @@ public class ThriftOperationsServer implements org.apache.thrift.TBase<ThriftOpe
   public int hashCode() {
     HashCodeBuilder builder = new HashCodeBuilder();
 
-    boolean present_publicKey = true && (isSetPublicKey());
-    builder.append(present_publicKey);
-    if (present_publicKey)
-      builder.append(publicKey);
+    boolean present_id = true && (isSetId());
+    builder.append(present_id);
+    if (present_id)
+      builder.append(id);
 
     boolean present_priority = true;
     builder.append(present_priority);
@@ -323,12 +312,12 @@ public class ThriftOperationsServer implements org.apache.thrift.TBase<ThriftOpe
 
     int lastComparison = 0;
 
-    lastComparison = Boolean.valueOf(isSetPublicKey()).compareTo(other.isSetPublicKey());
+    lastComparison = Boolean.valueOf(isSetId()).compareTo(other.isSetId());
     if (lastComparison != 0) {
       return lastComparison;
     }
-    if (isSetPublicKey()) {
-      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.publicKey, other.publicKey);
+    if (isSetId()) {
+      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.id, other.id);
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -363,11 +352,11 @@ public class ThriftOperationsServer implements org.apache.thrift.TBase<ThriftOpe
     StringBuilder sb = new StringBuilder("ThriftOperationsServer(");
     boolean first = true;
 
-    sb.append("publicKey:");
-    if (this.publicKey == null) {
+    sb.append("id:");
+    if (this.id == null) {
       sb.append("null");
     } else {
-      org.apache.thrift.TBaseHelper.toString(this.publicKey, sb);
+      sb.append(this.id);
     }
     first = false;
     if (!first) sb.append(", ");
@@ -419,10 +408,10 @@ public class ThriftOperationsServer implements org.apache.thrift.TBase<ThriftOpe
           break;
         }
         switch (schemeField.id) {
-          case 1: // PUBLIC_KEY
+          case 1: // ID
             if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
-              struct.publicKey = iprot.readBinary();
-              struct.setPublicKeyIsSet(true);
+              struct.id = iprot.readString();
+              struct.setIdIsSet(true);
             } else { 
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
@@ -450,9 +439,9 @@ public class ThriftOperationsServer implements org.apache.thrift.TBase<ThriftOpe
       struct.validate();
 
       oprot.writeStructBegin(STRUCT_DESC);
-      if (struct.publicKey != null) {
-        oprot.writeFieldBegin(PUBLIC_KEY_FIELD_DESC);
-        oprot.writeBinary(struct.publicKey);
+      if (struct.id != null) {
+        oprot.writeFieldBegin(ID_FIELD_DESC);
+        oprot.writeString(struct.id);
         oprot.writeFieldEnd();
       }
       oprot.writeFieldBegin(PRIORITY_FIELD_DESC);
@@ -476,15 +465,15 @@ public class ThriftOperationsServer implements org.apache.thrift.TBase<ThriftOpe
     public void write(org.apache.thrift.protocol.TProtocol prot, ThriftOperationsServer struct) throws org.apache.thrift.TException {
       TTupleProtocol oprot = (TTupleProtocol) prot;
       BitSet optionals = new BitSet();
-      if (struct.isSetPublicKey()) {
+      if (struct.isSetId()) {
         optionals.set(0);
       }
       if (struct.isSetPriority()) {
         optionals.set(1);
       }
       oprot.writeBitSet(optionals, 2);
-      if (struct.isSetPublicKey()) {
-        oprot.writeBinary(struct.publicKey);
+      if (struct.isSetId()) {
+        oprot.writeString(struct.id);
       }
       if (struct.isSetPriority()) {
         oprot.writeI32(struct.priority);
@@ -496,8 +485,8 @@ public class ThriftOperationsServer implements org.apache.thrift.TBase<ThriftOpe
       TTupleProtocol iprot = (TTupleProtocol) prot;
       BitSet incoming = iprot.readBitSet(2);
       if (incoming.get(0)) {
-        struct.publicKey = iprot.readBinary();
-        struct.setPublicKeyIsSet(true);
+        struct.id = iprot.readString();
+        struct.setIdIsSet(true);
       }
       if (incoming.get(1)) {
         struct.priority = iprot.readI32();

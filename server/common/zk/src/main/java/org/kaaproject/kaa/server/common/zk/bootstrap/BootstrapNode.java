@@ -91,4 +91,13 @@ public class BootstrapNode extends WorkerNodeTracker {
     public BootstrapNodeInfo getNodeInfo() {
         return nodeInfo;
     }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("BootstrapNode [nodeInfo=");
+        builder.append(nodeInfo);
+        builder.append("]");
+        return builder.toString();
+    }
 }

@@ -22,23 +22,13 @@
 
     <util:properties id="properties" location="classpath:/bootstrap-server-test.properties" />
 
-    <bean id="resolveCommandFactory" class="org.kaaproject.kaa.server.bootstrap.service.http.commands.ResolveCommandFactory" />
+    <bean id="bootstrapInitializationService" class="org.kaaproject.kaa.server.bootstrap.service.initialization.DefaultBootstrapInitializationService" />
+    <bean id="operationsServerListService" class="org.kaaproject.kaa.server.bootstrap.service.DefaultOperationsServerListService" />
+    <bean id="keyStoreService" class="org.kaaproject.kaa.server.bootstrap.service.security.FileKeyStoreService" />
 
-    <bean id="bootstrapConfig" class="org.kaaproject.kaa.server.bootstrap.service.config.KaaHttpServiceChannelConfig">
-        <property name="commandList">
-            <list>
-                <ref bean="resolveCommandFactory" />
-            </list>
-        </property>
-        <property name="port" value="#{properties[netty_port]}"></property>
-        <property name="bindInterface" value="#{properties[netty_host]}"></property>
-        <property name="clientMaxBodySize" value="#{properties[http_maxContentLength]}"></property>
-        <property name="executorThreadSize" value="#{properties[executorThreadSize]}"></property>
-        <property name="statisticsCalculationWindow" value="#{properties[statistics_calculation_window]}" />
-        <property name="statisticsUpdateTimes" value="#{properties[statistics_update_times]}" />
-    </bean>
+    <!-- Configuration from properties file -->
 
-    <bean id="operationsServerConfig" class="org.kaaproject.kaa.server.bootstrap.service.config.BootstrapServerConfig">
+    <bean id="BootstrapServerConfig" class="org.kaaproject.kaa.server.bootstrap.service.config.BootstrapServerConfig">
         <property name="thriftHost" value="#{properties[thrift_host]}" />
         <property name="thriftPort" value="#{properties[thrift_port]}" />
         <property name="zkEnabled" value="#{properties[zk_enabled]}" />
@@ -48,11 +38,4 @@
         <property name="zkIgnoreErrors" value="#{properties[zk_ignore_errors]}" />
     </bean>
 
-    <bean id="bootstrapHttpServerInitializer" class="org.kaaproject.kaa.server.bootstrap.service.http.KaaHttpServerInitializer" />
-
-    <bean id="nettyHttpServer" class="org.kaaproject.kaa.server.bootstrap.service.http.KaaHttpService">
-        <constructor-arg ref="bootstrapConfig" />
-        <constructor-arg ref="operationsServerConfig" />
-        <constructor-arg ref="bootstrapHttpServerInitializer" />
-    </bean>
 </beans>

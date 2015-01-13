@@ -22,7 +22,7 @@
     <util:properties id="properties" location="classpath:/bootstrap-server.properties" />
 
     <bean id="bootstrapInitializationService" class="org.kaaproject.kaa.server.bootstrap.service.initialization.DefaultBootstrapInitializationService" />
-    <bean id="operationsServerListService" class="org.kaaproject.kaa.server.bootstrap.service.OperationsServerListService" />
+    <bean id="operationsServerListService" class="org.kaaproject.kaa.server.bootstrap.service.DefaultOperationsServerListService" />
     <bean id="keyStoreService" class="org.kaaproject.kaa.server.bootstrap.service.security.FileKeyStoreService" />
 
     <!-- Configuration from properties file -->

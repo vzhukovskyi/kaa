@@ -61,15 +61,17 @@ public class BootstrapTransportService extends AbstractTransportService implemen
 
     /** Constant logger. */
     private static final Logger LOG = LoggerFactory.getLogger(BootstrapTransportService.class);
+    
+    private static final int DEFAULT_THREAD_POOL_SIZE = 1;
 
     @Value("#{properties[worker_thread_pool]}")
-    private int threadPoolSize;
+    private int threadPoolSize = DEFAULT_THREAD_POOL_SIZE;
 
     @Value("#{properties[support_unencrypted_connection]}")
-    private Boolean supportUnencryptedConnection;
+    private boolean supportUnencryptedConnection;
 
     @Autowired
-    private OperationsServerListService opsListService;
+    private OperationsServerListService operationsServerListService;
 
     @Autowired
     private KeyStoreService keyStoreService;
@@ -94,7 +96,7 @@ public class BootstrapTransportService extends AbstractTransportService implemen
         LOG.info("Lookup platform protocols");
         Set<String> platformProtocols = PlatformLookup.lookupPlatformProtocols(PlatformLookup.DEFAULT_PROTOCOL_LOOKUP_PACKAGE_NAME);
         LOG.info("Initializing message handler with {} worker threads", threadPoolSize);
-        handler = new BootstrapMessageHandler(opsListService, Executors.newFixedThreadPool(threadPoolSize), platformProtocols, new KeyPair(
+        handler = new BootstrapMessageHandler(operationsServerListService, Executors.newFixedThreadPool(threadPoolSize), platformProtocols, new KeyPair(
                 keyStoreService.getPublicKey(), keyStoreService.getPrivateKey()), supportUnencryptedConnection);
     }
 
@@ -126,7 +128,7 @@ public class BootstrapTransportService extends AbstractTransportService implemen
 
         @Override
         public void process(SessionAware message) {
-            // Session messages are not
+            // Session messages are not processed
         }
 
         @Override

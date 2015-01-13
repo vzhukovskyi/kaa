@@ -100,37 +100,6 @@ public class DefaultOperationsServerListService implements OperationsServerListS
         }
     }
 
-    protected Set<ProtocolConnectionData> filterProtocolInstances(List<ProtocolVersionKey> keys) {
-        Set<ProtocolConnectionData> result = new HashSet<ProtocolConnectionData>();
-        for (ProtocolVersionKey key : keys) {
-            for (OperationsNodeInfo node : opsMap.values()) {
-                for (TransportMetaData md : node.getTransports()) {
-                    if (md.getId() == key.getProtocolId() && md.getMinSupportedVersion() <= key.getVersion()
-                            && key.getVersion() <= md.getMaxSupportedVersion()) {
-                        result.add(toProtocolConnectionData(node, md, key.getVersion()));
-                    }
-                }
-            }
-        }
-        return result;
-    }
-
-    private ProtocolConnectionData toProtocolConnectionData(OperationsNodeInfo node, TransportMetaData md, int version) {
-        byte[] connectionData = null;
-        for (VersionConnectionInfoPair pair : md.getConnectionInfo()) {
-            if (version == pair.getVersion()) {
-                connectionData = pair.getConenctionInfo().array();
-            }
-        }
-        return new ProtocolConnectionData(crc32(node.getConnectionInfo()), md.getId(), version, connectionData);
-    }
-
-    private static int crc32(ConnectionInfo info) {
-        CRC32 crc32 = new CRC32();
-        crc32.update(ServerNameUtil.getNameFromConnectionInfo(info).getBytes(UTF8));
-        return (int) crc32.getValue();
-    }
-
     @Override
     public void onNodeAdded(OperationsNodeInfo nodeInfo) {
         synchronized (listenerLock) {
@@ -167,6 +136,37 @@ public class DefaultOperationsServerListService implements OperationsServerListS
         }
         LOG.info("Cleanup cached responses");
         cache.clear();
+    }
+    
+    protected Set<ProtocolConnectionData> filterProtocolInstances(List<ProtocolVersionKey> keys) {
+        Set<ProtocolConnectionData> result = new HashSet<ProtocolConnectionData>();
+        for (ProtocolVersionKey key : keys) {
+            for (OperationsNodeInfo node : opsMap.values()) {
+                for (TransportMetaData md : node.getTransports()) {
+                    if (md.getId() == key.getProtocolId() && md.getMinSupportedVersion() <= key.getVersion()
+                            && key.getVersion() <= md.getMaxSupportedVersion()) {
+                        result.add(toProtocolConnectionData(node, md, key.getVersion()));
+                    }
+                }
+            }
+        }
+        return result;
+    }
+
+    private ProtocolConnectionData toProtocolConnectionData(OperationsNodeInfo node, TransportMetaData md, int version) {
+        byte[] connectionData = null;
+        for (VersionConnectionInfoPair pair : md.getConnectionInfo()) {
+            if (version == pair.getVersion()) {
+                connectionData = pair.getConenctionInfo().array();
+            }
+        }
+        return new ProtocolConnectionData(crc32(node.getConnectionInfo()), md.getId(), version, connectionData);
+    }
+
+    private static int crc32(ConnectionInfo info) {
+        CRC32 crc32 = new CRC32();
+        crc32.update(ServerNameUtil.getNameFromConnectionInfo(info).getBytes(UTF8));
+        return (int) crc32.getValue();
     }
 
     public interface Computable<A, V> {

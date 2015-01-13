@@ -16,12 +16,17 @@
 package org.kaaproject.kaa.server.sync.platform;
 
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import org.kaaproject.kaa.common.Constants;
 import org.kaaproject.kaa.common.avro.AvroByteArrayConverter;
+import org.kaaproject.kaa.common.endpoint.gen.BootstrapSyncRequest;
+import org.kaaproject.kaa.common.endpoint.gen.BootstrapSyncResponse;
 import org.kaaproject.kaa.common.endpoint.gen.ConfigurationSyncRequest;
 import org.kaaproject.kaa.common.endpoint.gen.ConfigurationSyncResponse;
 import org.kaaproject.kaa.common.endpoint.gen.EndpointAttachResponse;
@@ -38,6 +43,8 @@ import org.kaaproject.kaa.common.endpoint.gen.NotificationSyncResponse;
 import org.kaaproject.kaa.common.endpoint.gen.NotificationType;
 import org.kaaproject.kaa.common.endpoint.gen.ProfileSyncRequest;
 import org.kaaproject.kaa.common.endpoint.gen.ProfileSyncResponse;
+import org.kaaproject.kaa.common.endpoint.gen.ProtocolMetaData;
+import org.kaaproject.kaa.common.endpoint.gen.ProtocolVersionPair;
 import org.kaaproject.kaa.common.endpoint.gen.RedirectSyncResponse;
 import org.kaaproject.kaa.common.endpoint.gen.SubscriptionType;
 import org.kaaproject.kaa.common.endpoint.gen.SyncRequest;
@@ -78,6 +85,10 @@ import org.kaaproject.kaa.server.sync.TopicState;
 import org.kaaproject.kaa.server.sync.UserAttachRequest;
 import org.kaaproject.kaa.server.sync.UserClientSync;
 import org.kaaproject.kaa.server.sync.UserServerSync;
+import org.kaaproject.kaa.server.sync.bootstrap.BootstrapClientSync;
+import org.kaaproject.kaa.server.sync.bootstrap.BootstrapServerSync;
+import org.kaaproject.kaa.server.sync.bootstrap.ProtocolConnectionData;
+import org.kaaproject.kaa.server.sync.bootstrap.ProtocolVersionKey;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -178,6 +189,7 @@ public class AvroEncDec implements PlatformEncDec {
         ClientSync dest = new ClientSync();
         dest.setRequestId(source.getRequestId());
         dest.setClientSyncMetaData(convert(source.getSyncRequestMetaData()));
+        dest.setBootstrapSync(convert(source.getBootstrapSyncRequest()));
         dest.setProfileSync(convert(source.getProfileSyncRequest()));
         dest.setConfigurationSync(convert(source.getConfigurationSyncRequest()));
         dest.setNotificationSync(convert(source.getNotificationSyncRequest()));
@@ -198,6 +210,7 @@ public class AvroEncDec implements PlatformEncDec {
         SyncResponse sync = new SyncResponse();
         sync.setRequestId(source.getRequestId());
         sync.setStatus(convert(source.getStatus()));
+        sync.setBootstrapSyncResponse(convert(source.getBootstrapSync()));
         sync.setRedirectSyncResponse(convert(source.getRedirectSync()));
         sync.setProfileSyncResponse(convert(source.getProfileSync()));
         sync.setConfigurationSyncResponse(convert(source.getConfigurationSync()));
@@ -255,6 +268,25 @@ public class AvroEncDec implements PlatformEncDec {
         default:
             return null;
         }
+    }
+
+    private static BootstrapSyncResponse convert(BootstrapServerSync bootstrapSync) {
+        if (bootstrapSync == null) {
+            return null;
+        }
+        return new BootstrapSyncResponse(bootstrapSync.getRequestId(), convert(bootstrapSync.getProtocolList()));
+    }
+
+    private static List<ProtocolMetaData> convert(Set<ProtocolConnectionData> source) {
+        if (source == null) {
+            return Collections.emptyList();
+        }
+        List<ProtocolMetaData> result = new ArrayList<ProtocolMetaData>(source.size());
+        for (ProtocolConnectionData pcd : source) {
+            result.add(new ProtocolMetaData(pcd.getAccessPointId(), pcd.getProtocolId(), pcd.getProtocolVersion(), ByteBuffer.wrap(pcd
+                    .getConnectionData())));
+        }
+        return result;
     }
 
     private static RedirectSyncResponse convert(RedirectServerSync redirectSyncResponse) {
@@ -426,6 +458,24 @@ public class AvroEncDec implements PlatformEncDec {
         }
         return new ClientSyncMetaData(source.getApplicationToken(), source.getEndpointPublicKeyHash(), source.getProfileHash(),
                 source.getTimeout());
+    }
+
+    private static BootstrapClientSync convert(BootstrapSyncRequest source) {
+        if (source == null) {
+            return null;
+        }
+        return new BootstrapClientSync(source.getRequestId(), convert(source.getSupportedProtocols()));
+    }
+
+    private static List<ProtocolVersionKey> convert(List<ProtocolVersionPair> supportedProtocols) {
+        if (supportedProtocols == null) {
+            return Collections.emptyList();
+        }
+        List<ProtocolVersionKey> result = new ArrayList<ProtocolVersionKey>(supportedProtocols.size());
+        for (ProtocolVersionPair pair : supportedProtocols) {
+            result.add(new ProtocolVersionKey(pair.getId(), pair.getVersion()));
+        }
+        return result;
     }
 
     private static ProfileClientSync convert(ProfileSyncRequest source) {

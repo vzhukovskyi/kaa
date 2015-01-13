@@ -271,7 +271,6 @@ public class DefaultBootstrapInitializationService implements BootstrapInitializ
             bootstrapNode = new BootstrapNode(nodeInfo, zkHostPortList, new RetryUntilElapsed(zkMaxRetryTime, zkSleepTime));
             if (bootstrapNode != null) {
                 bootstrapNode.start();
-                serverConfig.setBootstrapNode(bootstrapNode);
             }
         }
     }
@@ -291,7 +290,6 @@ public class DefaultBootstrapInitializationService implements BootstrapInitializ
             LOG.warn("Exception when closing ZK node", e);
         } finally {
             bootstrapNode = null;
-            serverConfig.setBootstrapNode(bootstrapNode);
         }
     }
 

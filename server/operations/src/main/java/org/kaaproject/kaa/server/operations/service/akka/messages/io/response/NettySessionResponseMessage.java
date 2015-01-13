@@ -72,7 +72,7 @@ public class NettySessionResponseMessage implements SessionResponse{
     }
 
     @Override
-    public MessageBuilder getResponseConverter() {
+    public MessageBuilder getMessageBuilder() {
         return responseConverter;
     }
 

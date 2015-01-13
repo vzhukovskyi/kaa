@@ -15,10 +15,18 @@
  */
 package org.kaaproject.kaa.server.sync;
 
+import org.kaaproject.kaa.server.sync.bootstrap.BootstrapServerSync;
+
+/**
+ * 
+ * @author Andrew Shvayka
+ *
+ */
 public class ServerSync {
 
     private int requestId;
     private SyncStatus status;
+    private BootstrapServerSync bootstrapSync;
     private ProfileServerSync profileSync;
     private ConfigurationServerSync configurationSync;
     private NotificationServerSync notificationSync;
@@ -200,6 +208,14 @@ public class ServerSync {
         this.logSync = value;
     }
 
+    public BootstrapServerSync getBootstrapSync() {
+        return bootstrapSync;
+    }
+
+    public void setBootstrapSync(BootstrapServerSync bootstrapSync) {
+        this.bootstrapSync = bootstrapSync;
+    }
+
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
@@ -207,6 +223,8 @@ public class ServerSync {
         builder.append(requestId);
         builder.append(", status=");
         builder.append(status);
+        builder.append(", bootstrapSync=");
+        builder.append(bootstrapSync);
         builder.append(", profileSync=");
         builder.append(profileSync);
         builder.append(", configurationSync=");

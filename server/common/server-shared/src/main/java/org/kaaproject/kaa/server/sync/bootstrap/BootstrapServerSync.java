@@ -68,4 +68,15 @@ public class BootstrapServerSync {
         return true;
     }
 
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("BootstrapServerSync [requestId=");
+        builder.append(requestId);
+        builder.append(", protocolList=");
+        builder.append(protocolList);
+        builder.append("]");
+        return builder.toString();
+    }
+
 }

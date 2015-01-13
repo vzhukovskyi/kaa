@@ -68,4 +68,15 @@ public class BootstrapClientSync {
             return false;
         return true;
     }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("BootstrapClientSync [requestId=");
+        builder.append(requestId);
+        builder.append(", keys=");
+        builder.append(keys);
+        builder.append("]");
+        return builder.toString();
+    }
 }

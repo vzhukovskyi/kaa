@@ -55,7 +55,7 @@ public class TcpHandler extends SimpleChannelInboundHandler<AbstractKaaTcpComman
     private static final boolean NOT_ZIPPED = false;
 
     private final UUID uuid;
-    private final MessageHandler akkaService;
+    private final MessageHandler handler;
     private volatile SessionInfo session;
 
     private final static ErrorBuilder connectErrorConverter = new ErrorBuilder() {
@@ -104,7 +104,7 @@ public class TcpHandler extends SimpleChannelInboundHandler<AbstractKaaTcpComman
 
     public TcpHandler(UUID uuid, MessageHandler akkaService) {
         this.uuid = uuid;
-        this.akkaService = akkaService;
+        this.handler = akkaService;
         this.connectResponseConverter = new MessageBuilder() {
             volatile boolean connAckSent = false;
 
@@ -139,7 +139,7 @@ public class TcpHandler extends SimpleChannelInboundHandler<AbstractKaaTcpComman
         LOG.trace("[{}] Processing {}", uuid, frame);
         if (frame.getMessageType() == MessageType.CONNECT) {
             if (session == null) {
-                akkaService.process(new NettyTcpConnectMessage(uuid, new NettyChannelContext(ctx), (Connect) frame, ChannelType.TCP, this,
+                handler.process(new NettyTcpConnectMessage(uuid, new NettyChannelContext(ctx), (Connect) frame, ChannelType.TCP, this,
                         connectResponseConverter, connectErrorConverter));
             } else {
                 LOG.warn("[{}] Ignoring duplicate {} message ", uuid, MessageType.CONNECT);
@@ -149,15 +149,14 @@ public class TcpHandler extends SimpleChannelInboundHandler<AbstractKaaTcpComman
                 switch (frame.getMessageType()) {
                 case KAASYNC:
                     if (((KaaSync) frame).getKaaSyncMessageType() == KaaSyncMessageType.SYNC) {
-                        akkaService
-                                .process(new NettyTcpSyncMessage((SyncRequest) frame, session, syncResponseConverter, syncErrorConverter));
+                        handler.process(new NettyTcpSyncMessage((SyncRequest) frame, session, syncResponseConverter, syncErrorConverter));
                     }
                     break;
                 case PINGREQ:
-                    akkaService.process(new NettyTcpPingMessage(session));
+                    handler.process(new NettyTcpPingMessage(session));
                     break;
                 case DISCONNECT:
-                    akkaService.process(new NettyTcpDisconnectMessage(session));
+                    handler.process(new NettyTcpDisconnectMessage(session));
                     break;
                 default:
                     break;

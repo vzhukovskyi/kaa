@@ -19,7 +19,6 @@ package org.kaaproject.kaa.server.operations.service.akka.actors.io;
 import java.security.KeyPair;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;

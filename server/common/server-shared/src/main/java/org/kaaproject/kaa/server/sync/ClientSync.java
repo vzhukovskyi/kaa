@@ -15,6 +15,8 @@
  */
 package org.kaaproject.kaa.server.sync;
 
+import org.kaaproject.kaa.server.sync.bootstrap.BootstrapClientSync;
+
 /**
  * The Class ClientSync represents sync information sent from client to server.
  */
@@ -25,6 +27,9 @@ public class ClientSync {
 
     /** The client sync meta data. */
     private ClientSyncMetaData clientSyncMetaData;
+    
+    /** The client sync meta data. */
+    private BootstrapClientSync bootstrapSync;
 
     /** The profile sync. */
     private ProfileClientSync profileSync;
@@ -234,10 +239,19 @@ public class ClientSync {
 
 
 
+    public BootstrapClientSync getBootstrapSync() {
+        return bootstrapSync;
+    }
+
+    public void setBootstrapSync(BootstrapClientSync bootstrapSync) {
+        this.bootstrapSync = bootstrapSync;
+    }
+
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
+        result = prime * result + ((bootstrapSync == null) ? 0 : bootstrapSync.hashCode());
         result = prime * result + ((clientSyncMetaData == null) ? 0 : clientSyncMetaData.hashCode());
         result = prime * result + ((configurationSync == null) ? 0 : configurationSync.hashCode());
         result = prime * result + ((eventSync == null) ? 0 : eventSync.hashCode());
@@ -258,6 +272,11 @@ public class ClientSync {
         if (getClass() != obj.getClass())
             return false;
         ClientSync other = (ClientSync) obj;
+        if (bootstrapSync == null) {
+            if (other.bootstrapSync != null)
+                return false;
+        } else if (!bootstrapSync.equals(other.bootstrapSync))
+            return false;
         if (clientSyncMetaData == null) {
             if (other.clientSyncMetaData != null)
                 return false;
@@ -305,6 +324,8 @@ public class ClientSync {
         builder.append(requestId);
         builder.append(", clientSyncMetaData=");
         builder.append(clientSyncMetaData);
+        builder.append(", bootstrapSync=");
+        builder.append(bootstrapSync);
         builder.append(", profileSync=");
         builder.append(profileSync);
         builder.append(", configurationSync=");

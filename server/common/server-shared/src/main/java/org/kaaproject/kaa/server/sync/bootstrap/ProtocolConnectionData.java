@@ -82,4 +82,19 @@ public final class ProtocolConnectionData {
             return false;
         return true;
     }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("ProtocolConnectionData [accessPointId=");
+        builder.append(accessPointId);
+        builder.append(", protocolId=");
+        builder.append(protocolId);
+        builder.append(", protocolVersion=");
+        builder.append(protocolVersion);
+        builder.append(", connectionData=");
+        builder.append(Arrays.toString(connectionData));
+        builder.append("]");
+        return builder.toString();
+    }
 }

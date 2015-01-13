@@ -62,6 +62,10 @@ import org.kaaproject.kaa.server.sync.UserAttachRequest;
 import org.kaaproject.kaa.server.sync.UserClientSync;
 import org.kaaproject.kaa.server.sync.UserDetachNotification;
 import org.kaaproject.kaa.server.sync.UserServerSync;
+import org.kaaproject.kaa.server.sync.bootstrap.BootstrapClientSync;
+import org.kaaproject.kaa.server.sync.bootstrap.BootstrapServerSync;
+import org.kaaproject.kaa.server.sync.bootstrap.ProtocolConnectionData;
+import org.kaaproject.kaa.server.sync.bootstrap.ProtocolVersionKey;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -115,6 +119,7 @@ public class BinaryEncDec implements PlatformEncDec {
     static final byte OPTIONAL = 0x01;
 
     // Extension constants
+    static final byte BOOTSTRAP_EXTENSION_ID = 0;
     static final byte META_DATA_EXTENSION_ID = 1;
     static final byte PROFILE_EXTENSION_ID = 2;
     static final byte USER_EXTENSION_ID = 3;
@@ -220,6 +225,10 @@ public class BinaryEncDec implements PlatformEncDec {
         encodeMetaData(buf, sync);
         short extensionCount = 1;
 
+        if (sync.getBootstrapSync() != null) {
+            encode(buf, sync.getBootstrapSync());
+            extensionCount++;
+        }
         if (sync.getProfileSync() != null) {
             encode(buf, sync.getProfileSync());
             extensionCount++;
@@ -269,6 +278,21 @@ public class BinaryEncDec implements PlatformEncDec {
     private void encodeMetaData(GrowingByteBuffer buf, ServerSync sync) {
         buildExtensionHeader(buf, META_DATA_EXTENSION_ID, NOTHING, NOTHING, NOTHING, 4);
         buf.putInt(sync.getRequestId());
+    }
+    
+    private void encode(GrowingByteBuffer buf, BootstrapServerSync bootstrapSync) {
+        buildExtensionHeader(buf, BOOTSTRAP_EXTENSION_ID, NOTHING, NOTHING, NOTHING, 0);
+        int extPosition = buf.position();
+        buf.putShort((short)bootstrapSync.getRequestId());
+        buf.putShort((short)bootstrapSync.getProtocolList().size());
+        for(ProtocolConnectionData data : bootstrapSync.getProtocolList()){
+            buf.putInt(data.getAccessPointId());
+            buf.putInt(data.getProtocolId());
+            buf.putShort((short)data.getProtocolVersion());
+            buf.putShort((short)data.getConnectionData().length);
+            put(buf, data.getConnectionData());
+        }
+        buf.putInt(extPosition - SIZE_OF_INT, buf.position() - extPosition);
     }
 
     private void encode(GrowingByteBuffer buf, ProfileServerSync profileSync) {
@@ -489,6 +513,9 @@ public class BinaryEncDec implements PlatformEncDec {
                         payloadLength, buf.position()));
             }
             switch (type) {
+            case BOOTSTRAP_EXTENSION_ID:
+                parseBootstrapClientSync(sync, buf, options, payloadLength);
+                break;
             case META_DATA_EXTENSION_ID:
                 parseClientSyncMetaData(sync, buf, options, payloadLength);
                 break;
@@ -533,6 +560,18 @@ public class BinaryEncDec implements PlatformEncDec {
             md.setApplicationToken(getUTF8String(buf, Constants.APP_TOKEN_SIZE));
         }
         sync.setClientSyncMetaData(md);
+    }
+    
+    private void parseBootstrapClientSync(ClientSync sync, ByteBuffer buf, int options, int payloadLength) {
+        int requestId = buf.getShort();
+        int protocolCount = buf.getShort();
+        List<ProtocolVersionKey> keys = new ArrayList<>(protocolCount);
+        for(int i = 0; i < protocolCount; i++){
+            keys.add(new ProtocolVersionKey(buf.getInt(), buf.getShort()));
+            //reserved
+            buf.getShort();
+        }
+        sync.setBootstrapSync(new BootstrapClientSync(requestId, keys));
     }
 
     private void parseProfileClientSync(ClientSync sync, ByteBuffer buf, int options, int payloadLength) {

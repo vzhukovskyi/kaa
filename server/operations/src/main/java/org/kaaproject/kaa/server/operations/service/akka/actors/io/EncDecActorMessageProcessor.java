@@ -19,7 +19,6 @@ import java.security.GeneralSecurityException;
 import java.security.KeyPair;
 import java.security.PublicKey;
 import java.text.MessageFormat;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -39,6 +38,7 @@ import org.kaaproject.kaa.server.sync.ServerSync;
 import org.kaaproject.kaa.server.sync.SyncStatus;
 import org.kaaproject.kaa.server.sync.platform.PlatformEncDec;
 import org.kaaproject.kaa.server.sync.platform.PlatformEncDecException;
+import org.kaaproject.kaa.server.sync.platform.PlatformLookup;
 import org.kaaproject.kaa.server.transport.channel.ChannelContext;
 import org.kaaproject.kaa.server.transport.message.ErrorBuilder;
 import org.kaaproject.kaa.server.transport.message.Message;
@@ -82,27 +82,12 @@ public class EncDecActorMessageProcessor {
         this.cacheService = cacheService;
         this.supportUnencryptedConnection = supportUnencryptedConnection;
         this.crypt = new MessageEncoderDecoder(serverKeys.getPrivate(), serverKeys.getPublic());
-        this.platformEncDecMap = initPlatformProtocolMap(platformProtocols);
+        this.platformEncDecMap = PlatformLookup.initPlatformProtocolMap(platformProtocols);
         this.sessionInitMeter = metricsService.createMeter("sessionInitMeter", Thread.currentThread().getName());
         this.sessionRequestMeter = metricsService.createMeter("sessionRequestMeter", Thread.currentThread().getName());
         this.sessionResponseMeter = metricsService.createMeter("sessionResponseMeter", Thread.currentThread().getName());
         this.redirectMeter = metricsService.createMeter("redirectMeter", Thread.currentThread().getName());
         this.errorMeter = metricsService.createMeter("errorMeter", Thread.currentThread().getName());
-    }
-
-    private Map<Integer, PlatformEncDec> initPlatformProtocolMap(Set<String> platformProtocols) {
-        Map<Integer, PlatformEncDec> platformEncDecMap = new HashMap<>();
-        for (String platformProtocol : platformProtocols) {
-            try {
-                Class<?> clazz = Class.forName(platformProtocol);
-                PlatformEncDec protocol = (PlatformEncDec) clazz.newInstance();
-                platformEncDecMap.put(protocol.getId(), protocol);
-                LOG.info("Successfully initialized platform protocol {}", platformProtocol);
-            } catch (ReflectiveOperationException e) {
-                LOG.error("Error during instantiation of platform protocol", e);
-            }
-        }
-        return platformEncDecMap;
     }
 
     void decodeAndForward(ActorContext context, SessionInitMessage message) {
@@ -215,7 +200,7 @@ public class EncDecActorMessageProcessor {
             LOG.trace("Response data crypted");
         }
         ChannelContext context = message.getSessionInfo().getCtx();
-        MessageBuilder converter = message.getResponseConverter();
+        MessageBuilder converter = message.getMessageBuilder();
         Object[] objects = converter.build(responseData, session.isEncrypted());
         if (objects != null && objects.length > 0) {
             for (Object object : objects) {

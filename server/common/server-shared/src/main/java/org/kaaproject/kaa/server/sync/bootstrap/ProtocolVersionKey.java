@@ -63,4 +63,15 @@ public final class ProtocolVersionKey {
             return false;
         return true;
     }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("ProtocolVersionKey [protocolId=");
+        builder.append(protocolId);
+        builder.append(", version=");
+        builder.append(version);
+        builder.append("]");
+        return builder.toString();
+    }
 }

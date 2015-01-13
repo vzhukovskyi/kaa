@@ -44,9 +44,6 @@ public class BootstrapThriftServiceImpl extends BaseCliThriftService implements
     @Autowired
     BootstrapInitializationService bootstrapInitializationService;
 
-    @Autowired
-    DefaultOperationsServerListService operationsServerListService;
-
     private static final Logger LOG = LoggerFactory.getLogger(BootstrapThriftServiceImpl.class);
 
     /* (non-Javadoc)
@@ -73,40 +70,8 @@ public class BootstrapThriftServiceImpl extends BaseCliThriftService implements
      */
     @Override
     public void onOperationsServerListUpdate(List<ThriftOperationsServer> operationsServersList) throws TException {
-        // TODO Auto-generated method stub
         LOG.info("Operations server list update recived: now {} servers online:", operationsServersList.size());
-        for (ThriftOperationsServer server : operationsServersList) {
-            LOG.trace("Operations Server {}", server.getName());
-            for(ThriftSupportedChannel channel: server.getSupportedChannels()) {
-                LOG.trace("SupportedChannel {}", channel.getType().toString());
-                switch (channel.getType()) { //NOSONAR
-                case HTTP:
-                    ThriftCommunicationParameters httpParams = channel.getCommunicationParams();
-                    LOG.trace("HostName: {}, port {}",
-                            httpParams.getHttpParams().getHostName(),
-                            httpParams.getHttpParams().getPort());
-                    break;
-                case HTTP_LP:
-                    ThriftCommunicationParameters httpLpParams = channel.getCommunicationParams();
-                    LOG.trace("HostName: {}, port {}",
-                            httpLpParams.getHttpLpParams().getHostName(),
-                            httpLpParams.getHttpLpParams().getPort());
-                    break;
-                case KAATCP:
-                    ThriftCommunicationParameters kaaTcpParams = channel.getCommunicationParams();
-                    LOG.trace("HostName: {}, port {}",
-                            kaaTcpParams.getKaaTcpParams().getHostName(),
-                            kaaTcpParams.getKaaTcpParams().getPort());
-                    break;
-                }
-            }
-        }
-        if (operationsServerListService != null) {
-            LOG.trace("Updating OperationsServerListService");
-            operationsServerListService.updateList(operationsServersList);
-        } else {
-            throw new TException("Bootstrap server not initialized properly, config not set");
-        }
+        //TODO: add usage of ops list priority in future releases.
     }
 
     @Override

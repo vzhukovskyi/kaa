@@ -17,6 +17,7 @@ package org.kaaproject.kaa.server.bootstrap.service.transport;
 
 import java.security.GeneralSecurityException;
 import java.security.KeyPair;
+import java.security.PublicKey;
 import java.text.MessageFormat;
 import java.util.Map;
 import java.util.Properties;
@@ -103,6 +104,11 @@ public class BootstrapTransportService extends AbstractTransportService implemen
     @Override
     protected MessageHandler getMessageHandler() {
         return handler;
+    }
+    
+    @Override
+    protected PublicKey getPublicKey() {
+        return keyStoreService.getPublicKey();
     }
 
     public static class BootstrapMessageHandler implements MessageHandler {
@@ -251,5 +257,4 @@ public class BootstrapTransportService extends AbstractTransportService implemen
             });
         }
     }
-
 }

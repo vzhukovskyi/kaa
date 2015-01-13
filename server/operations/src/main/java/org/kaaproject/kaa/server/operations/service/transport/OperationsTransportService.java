@@ -15,9 +15,11 @@
  */
 package org.kaaproject.kaa.server.operations.service.transport;
 
+import java.security.PublicKey;
 import java.util.Properties;
 
 import org.kaaproject.kaa.server.operations.service.akka.AkkaService;
+import org.kaaproject.kaa.server.operations.service.security.KeyStoreService;
 import org.kaaproject.kaa.server.transport.AbstractTransportService;
 import org.kaaproject.kaa.server.transport.TransportService;
 import org.kaaproject.kaa.server.transport.message.MessageHandler;
@@ -33,9 +35,12 @@ import org.springframework.stereotype.Service;
 @Service
 public class OperationsTransportService extends AbstractTransportService implements TransportService {
 
-    /** The cache service. */
     @Autowired
     private AkkaService akkaService;
+    
+    @Autowired
+    private KeyStoreService keyStoreService;
+
 
     @Autowired
     private Properties properties;
@@ -52,5 +57,10 @@ public class OperationsTransportService extends AbstractTransportService impleme
     @Override
     protected Properties getServiceProperties() {
         return properties;
+    }
+
+    @Override
+    protected PublicKey getPublicKey() {
+        return keyStoreService.getPublicKey();
     }
 }

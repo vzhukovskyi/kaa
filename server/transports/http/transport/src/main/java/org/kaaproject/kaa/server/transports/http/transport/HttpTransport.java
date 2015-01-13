@@ -31,8 +31,8 @@ import org.kaaproject.kaa.server.common.server.AbstractNettyServer;
 import org.kaaproject.kaa.server.common.server.CommandFactory;
 import org.kaaproject.kaa.server.common.server.KaaCommandProcessorFactory;
 import org.kaaproject.kaa.server.transport.AbstractKaaTransport;
+import org.kaaproject.kaa.server.transport.SpecificTransportContext;
 import org.kaaproject.kaa.server.transport.TransportLifecycleException;
-import org.kaaproject.kaa.server.transport.TransportProperties;
 import org.kaaproject.kaa.server.transport.http.config.gen.AvroHttpConfig;
 import org.kaaproject.kaa.server.transports.http.transport.commands.LongSyncCommandFactory;
 import org.kaaproject.kaa.server.transports.http.transport.commands.SyncCommandFactory;
@@ -54,14 +54,14 @@ public class HttpTransport extends AbstractKaaTransport<AvroHttpConfig> {
     private static final String BIND_INTERFACE_PROP_NAME = "transport.bindInterface";
     private static final String LOCALHOST = "localhost";
     private static final int SUPPORTED_VERSION = 1;
-    private AvroHttpConfig configuration;
+    private SpecificTransportContext<AvroHttpConfig> context;
     private AbstractNettyServer netty;
 
     @Override
-    public void init(TransportProperties commonProperties, AvroHttpConfig configuration) throws TransportLifecycleException {
-        this.configuration = configuration;
-        this.configuration.setBindInterface(replaceProperty(this.configuration.getBindInterface(), BIND_INTERFACE_PROP_NAME,
-                commonProperties.getProperty(BIND_INTERFACE_PROP_NAME, LOCALHOST)));
+    public void init(SpecificTransportContext<AvroHttpConfig> context) throws TransportLifecycleException {
+        AvroHttpConfig configuration = context.getConfiguration();
+        configuration.setBindInterface(replaceProperty(configuration.getBindInterface(), BIND_INTERFACE_PROP_NAME,
+                context.getCommonProperties().getProperty(BIND_INTERFACE_PROP_NAME, LOCALHOST)));
 
         List<KaaCommandProcessorFactory<HttpRequest, HttpResponse>> processors = new ArrayList<KaaCommandProcessorFactory<HttpRequest,HttpResponse>>();
         processors.add(new SyncCommandFactory());
@@ -114,10 +114,14 @@ public class HttpTransport extends AbstractKaaTransport<AvroHttpConfig> {
 
     @Override
     protected ByteBuffer getSerializedConnectionInfo() {
-        byte[] interfaceData = toUTF8Bytes(configuration.getBindInterface());
-        ByteBuffer buf = ByteBuffer.wrap(new byte[SIZE_OF_INT + interfaceData.length]);
-        buf.putInt(configuration.getBindPort());
+        byte[] interfaceData = toUTF8Bytes(context.getConfiguration().getBindInterface());
+        byte[] publicKeyData = context.getServerKey().getEncoded();
+        ByteBuffer buf = ByteBuffer.wrap(new byte[SIZE_OF_INT*3 + interfaceData.length + publicKeyData.length]);
+        buf.putInt(publicKeyData.length);
+        buf.put(publicKeyData);
+        buf.putInt(interfaceData.length);
         buf.put(interfaceData);
+        buf.putInt(context.getConfiguration().getBindPort());
         return buf;
     }
 

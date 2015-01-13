@@ -9,8 +9,8 @@ import java.util.UUID;
 
 import org.kaaproject.kaa.server.common.server.AbstractNettyServer;
 import org.kaaproject.kaa.server.transport.AbstractKaaTransport;
+import org.kaaproject.kaa.server.transport.SpecificTransportContext;
 import org.kaaproject.kaa.server.transport.TransportLifecycleException;
-import org.kaaproject.kaa.server.transport.TransportProperties;
 import org.kaaproject.kaa.server.transport.tcp.config.gen.AvroTcpConfig;
 import org.kaaproject.kaa.server.transports.tcp.transport.commands.KaaTcpCommandFactory;
 import org.kaaproject.kaa.server.transports.tcp.transport.netty.AbstractKaaTcpCommandProcessor;
@@ -24,14 +24,14 @@ public class TcpTransport extends AbstractKaaTransport<AvroTcpConfig> {
     private static final String BIND_INTERFACE_PROP_NAME = "transport.bindInterface";
     private static final String LOCALHOST = "localhost";
     private static final int SUPPORTED_VERSION = 1;
-    private AvroTcpConfig configuration;
+    private SpecificTransportContext<AvroTcpConfig> context;
     private AbstractNettyServer netty;
 
     @Override
-    protected void init(TransportProperties commonProperties, AvroTcpConfig configuration) throws TransportLifecycleException {
-        this.configuration = configuration;
-        this.configuration.setBindInterface(replaceProperty(this.configuration.getBindInterface(), BIND_INTERFACE_PROP_NAME,
-                commonProperties.getProperty(BIND_INTERFACE_PROP_NAME, LOCALHOST)));
+    protected void init(SpecificTransportContext<AvroTcpConfig> context) throws TransportLifecycleException {
+        AvroTcpConfig configuration = context.getConfiguration();
+        configuration.setBindInterface(replaceProperty(configuration.getBindInterface(), BIND_INTERFACE_PROP_NAME,
+                context.getCommonProperties().getProperty(BIND_INTERFACE_PROP_NAME, LOCALHOST)));
         final KaaTcpCommandFactory factory = new KaaTcpCommandFactory();
         this.netty = new AbstractNettyServer(configuration.getBindInterface(), configuration.getBindPort()) {
 
@@ -73,10 +73,14 @@ public class TcpTransport extends AbstractKaaTransport<AvroTcpConfig> {
 
     @Override
     protected ByteBuffer getSerializedConnectionInfo() {
-        byte[] interfaceData = toUTF8Bytes(configuration.getBindInterface());
-        ByteBuffer buf = ByteBuffer.wrap(new byte[SIZE_OF_INT + interfaceData.length]);
-        buf.putInt(configuration.getBindPort());
+        byte[] interfaceData = toUTF8Bytes(context.getConfiguration().getBindInterface());
+        byte[] publicKeyData = context.getServerKey().getEncoded();
+        ByteBuffer buf = ByteBuffer.wrap(new byte[SIZE_OF_INT*3 + interfaceData.length + publicKeyData.length]);
+        buf.putInt(publicKeyData.length);
+        buf.put(publicKeyData);
+        buf.putInt(interfaceData.length);
         buf.put(interfaceData);
+        buf.putInt(context.getConfiguration().getBindPort());
         return buf;
     }
 

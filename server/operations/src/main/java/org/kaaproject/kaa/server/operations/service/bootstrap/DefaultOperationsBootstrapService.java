@@ -177,12 +177,14 @@ public class DefaultOperationsBootstrapService implements OperationsBootstrapSer
 
             @Override
             public void onTransportsStarted(List<TransportMetaData> mdList) {
-                OperationsNodeInfo info = operationsNode.getNodeInfo();
-                info.setTransports(mdList);
-                try {
-                    operationsNode.updateNodeData(info);
-                } catch (IOException e) {
-                    LOG.error("Failed to update bootstrap node info", e);
+                if(operationsNode != null){
+                    OperationsNodeInfo info = operationsNode.getNodeInfo();
+                    info.setTransports(mdList);
+                    try {
+                        operationsNode.updateNodeData(info);
+                    } catch (IOException e) {
+                        LOG.error("Failed to update bootstrap node info", e);
+                    }
                 }
             }
 

@@ -52,13 +52,13 @@ public abstract class AbstractKaaTransport<T extends SpecificRecordBase> impleme
      * @see org.kaaproject.kaa.server.transport.Transport#init(byte[])
      */
     @Override
-    public void init(TransportProperties commonProperties, byte[] configuration, MessageHandler handler) throws TransportLifecycleException {
-        this.handler = handler;
+    public void init(GenericTransportContext context) throws TransportLifecycleException {
+        this.handler = context.getHandler();
         AvroByteArrayConverter<T> converter = new AvroByteArrayConverter<>(getConfigurationClass());
         try {
-            T config = converter.fromByteArray(configuration);
+            T config = converter.fromByteArray(context.getConfiguration());
             LOG.info("Initializing transport {} with {}", getClassName(), config);
-            init(commonProperties, config);
+            init(new SpecificTransportContext<T>(context, config));
         } catch (IOException e) {
             LOG.error(MessageFormat.format("Failed to initialize transport {0}", getClassName()), e);
             throw new TransportLifecycleException(e);
@@ -80,7 +80,7 @@ public abstract class AbstractKaaTransport<T extends SpecificRecordBase> impleme
      *            the configuration
      * @throws TransportLifecycleException
      */
-    protected abstract void init(TransportProperties commonProperties, T configuration) throws TransportLifecycleException;
+    protected abstract void init(SpecificTransportContext<T> context) throws TransportLifecycleException;
 
     /**
      * Gets the configuration class.

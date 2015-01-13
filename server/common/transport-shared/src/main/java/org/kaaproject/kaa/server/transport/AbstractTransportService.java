@@ -6,6 +6,7 @@ import java.net.URL;
 import java.nio.ByteBuffer;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.security.PublicKey;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -77,7 +78,8 @@ public abstract class AbstractTransportService implements TransportService {
                 GenericAvroConverter<GenericRecord> configConverter = new GenericAvroConverter<GenericRecord>(config.getConfigSchema());
                 GenericRecord configRecord = configConverter.decodeJson(Files.readAllBytes(Paths.get(configFileURL.toURI())));
                 LOG.info("Lookup of transport configuration file {}", config.getConfigFileName());
-                transport.init(transportProperties, configConverter.encode(configRecord), getMessageHandler());
+                TransportContext context = new TransportContext(transportProperties, getPublicKey(), getMessageHandler());
+                transport.init(new GenericTransportContext(context, configConverter.encode(configRecord)));
                 transports.put(config.getId(), transport);
             } catch (ReflectiveOperationException | IOException | URISyntaxException | TransportLifecycleException e) {
                 LOG.error(MessageFormat.format("Failed to init transport for {0}", config.getTransportClass()), e);
@@ -119,6 +121,8 @@ public abstract class AbstractTransportService implements TransportService {
     protected abstract Properties getServiceProperties();
 
     protected abstract MessageHandler getMessageHandler();
+
+    protected abstract PublicKey getPublicKey();
 
     private void notifyListeners() {
         List<org.kaaproject.kaa.server.common.zk.gen.TransportMetaData> mdList = toTransportMDList(transports);

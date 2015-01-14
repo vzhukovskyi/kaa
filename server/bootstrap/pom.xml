@@ -474,6 +474,7 @@
                 <dependency>
                     <groupId>org.kaaproject.kaa.server.transports.http</groupId>
                     <artifactId>transport</artifactId>
+                    <classifier>http</classifier>
                 </dependency>
             </dependencies>
         </profile>
@@ -483,6 +484,7 @@
                 <dependency>
                     <groupId>org.kaaproject.kaa.server.transports.tcp</groupId>
                     <artifactId>transport</artifactId>
+                    <classifier>tcp</classifier>
                 </dependency>
             </dependencies>
         </profile>

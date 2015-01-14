@@ -112,7 +112,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "/common-test-context.xml")
-@DirtiesContext(classMode = ClassMode.AFTER_CLASS)
+@DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
 @Transactional
 public class OperationsServiceIT extends AbstractTest {
     private static final Charset UTF_8 = Charset.forName("UTF-8");

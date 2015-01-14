@@ -25,7 +25,6 @@ import org.kaaproject.kaa.server.transport.channel.ChannelType;
 import org.kaaproject.kaa.server.transport.message.ErrorBuilder;
 import org.kaaproject.kaa.server.transport.message.MessageBuilder;
 import org.kaaproject.kaa.server.transports.http.transport.commands.SyncCommand;
-import org.kaaproject.kaa.server.transports.http.transport.messages.NettyHttpSyncMessage;
 import org.mockito.Mockito;
 
 public class NettyHttpMessageTest {

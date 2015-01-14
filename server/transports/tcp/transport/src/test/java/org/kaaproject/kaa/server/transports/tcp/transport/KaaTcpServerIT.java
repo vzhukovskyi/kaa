@@ -26,6 +26,8 @@ import org.kaaproject.kaa.common.channels.protocols.kaatcp.messages.Connect;
 import org.kaaproject.kaa.common.channels.protocols.kaatcp.messages.Disconnect;
 import org.kaaproject.kaa.common.channels.protocols.kaatcp.messages.Disconnect.DisconnectReason;
 import org.kaaproject.kaa.common.channels.protocols.kaatcp.messages.PingRequest;
+import org.kaaproject.kaa.server.transport.GenericTransportContext;
+import org.kaaproject.kaa.server.transport.TransportContext;
 import org.kaaproject.kaa.server.transport.TransportProperties;
 import org.kaaproject.kaa.server.transport.channel.ChannelContext;
 import org.kaaproject.kaa.server.transport.channel.ChannelType;
@@ -53,20 +55,24 @@ public class KaaTcpServerIT {
         try {
             LOG.debug("Initializing TCP server");
             final MessageHandler handler = Mockito.mock(MessageHandler.class);
-            transport.init(new TransportProperties(new Properties()), getTestConfig(), new MessageHandler() {
+            GenericTransportContext context = new GenericTransportContext(new TransportContext(new TransportProperties(new Properties()),
+                    null, new MessageHandler() {
 
-                @Override
-                public void process(SessionInitMessage message) {
-                    message.onSessionCreated(new SessionInfo(UUID.randomUUID(), 1, Mockito.mock(ChannelContext.class),
-                            ChannelType.TCP, null, null, null, 100, false));
-                    handler.process(message);
-                }
+                        @Override
+                        public void process(SessionInitMessage message) {
+                            message.onSessionCreated(new SessionInfo(UUID.randomUUID(), 1, Mockito.mock(ChannelContext.class),
+                                    ChannelType.TCP, null, null, null, 100, false));
+                            handler.process(message);
+                        }
 
-                @Override
-                public void process(SessionAware message) {
-                    handler.process(message);
-                }
-            });
+                        @Override
+                        public void process(SessionAware message) {
+                            handler.process(message);
+                        }
+                    }), getTestConfig());
+            
+            transport.init(context);
+
             LOG.debug("Starting TCP server");
             transport.start();
 
@@ -81,7 +87,7 @@ public class KaaTcpServerIT {
             socket.getOutputStream().write(ping.getFrame().array());
 
             Mockito.verify(handler, Mockito.timeout(TIMEOUT)).process(Mockito.any(SessionPingMessage.class));
-            
+
             Disconnect disconnect = new Disconnect(DisconnectReason.NONE);
             socket.getOutputStream().write(disconnect.getFrame().array());
 

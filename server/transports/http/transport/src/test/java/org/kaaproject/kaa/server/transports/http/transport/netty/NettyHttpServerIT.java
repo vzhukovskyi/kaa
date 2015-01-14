@@ -35,6 +35,8 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.kaaproject.kaa.common.avro.AvroByteArrayConverter;
+import org.kaaproject.kaa.server.transport.GenericTransportContext;
+import org.kaaproject.kaa.server.transport.TransportContext;
 import org.kaaproject.kaa.server.transport.TransportProperties;
 import org.kaaproject.kaa.server.transport.http.config.gen.AvroHttpConfig;
 import org.kaaproject.kaa.server.transport.message.MessageHandler;
@@ -100,20 +102,22 @@ public class NettyHttpServerIT {
      */
     @Before
     public void beforeTest() throws Exception {
-        netty.init(new TransportProperties(new Properties()), getTestConfig(), new MessageHandler() {
-            
-            @Override
-            public void process(SessionInitMessage message) {
-                // TODO Auto-generated method stub
-                
-            }
-            
-            @Override
-            public void process(SessionAware message) {
-                // TODO Auto-generated method stub
-                
-            }
-        });
+        GenericTransportContext context = new GenericTransportContext(new TransportContext(new TransportProperties(new Properties()), null,
+                new MessageHandler() {
+
+                    @Override
+                    public void process(SessionInitMessage message) {
+                        // TODO Auto-generated method stub
+
+                    }
+
+                    @Override
+                    public void process(SessionAware message) {
+                        // TODO Auto-generated method stub
+
+                    }
+                }), getTestConfig());
+        netty.init(context);
         netty.start();
     }
 

@@ -517,11 +517,13 @@ Copyright 2014 CyberVision, Inc.
             <dependency>
                 <groupId>org.kaaproject.kaa.server.transports.http</groupId>
                 <artifactId>transport</artifactId>
+                <classifier>http</classifier>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.kaaproject.kaa.server.transports.tcp</groupId>
                 <artifactId>transport</artifactId>
+                <classifier>tcp</classifier>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

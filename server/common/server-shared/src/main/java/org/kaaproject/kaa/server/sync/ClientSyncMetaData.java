@@ -33,7 +33,7 @@ public class ClientSyncMetaData {
         this.applicationToken = applicationToken;
         this.endpointPublicKeyHash = endpointPublicKeyHash;
         this.profileHash = profileHash;
-        this.timeout = timeout;
+        this.timeout = timeout == null ? 0 : timeout.longValue();
     }
 
     /**

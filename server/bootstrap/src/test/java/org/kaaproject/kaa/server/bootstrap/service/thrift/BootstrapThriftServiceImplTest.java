@@ -64,7 +64,6 @@ public class BootstrapThriftServiceImplTest {
     @Test
     public void testShutdown() {
         BootstrapThriftServiceImpl b = new BootstrapThriftServiceImpl();
-        ReflectionTestUtils.setField(b, "operationsServerListService", operationsListMock);
         ReflectionTestUtils.setField(b, "bootstrapInitializationService", bootstrapInitializationService);
 
         try {

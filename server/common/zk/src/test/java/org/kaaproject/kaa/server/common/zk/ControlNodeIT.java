@@ -36,6 +36,7 @@ import org.kaaproject.kaa.server.common.zk.control.ControlNode;
 import org.kaaproject.kaa.server.common.zk.control.ControlNodeListener;
 import org.kaaproject.kaa.server.common.zk.gen.ConnectionInfo;
 import org.kaaproject.kaa.server.common.zk.gen.ControlNodeInfo;
+import org.kaaproject.kaa.server.common.zk.gen.LoadInfo;
 import org.kaaproject.kaa.server.common.zk.gen.OperationsNodeInfo;
 import org.kaaproject.kaa.server.common.zk.operations.OperationsNode;
 
@@ -143,6 +144,7 @@ public class ControlNodeIT {
         OperationsNodeInfo nodeInfo = new OperationsNodeInfo();
         ByteBuffer testKeyData = ByteBuffer.wrap(new byte[] { 10, 11, 12, 45, 34, 23, 67, 89, 66, 12 });
         nodeInfo.setConnectionInfo(new ConnectionInfo(ENDPOINT_NODE_HOST, 1000, testKeyData));
+        nodeInfo.setLoadInfo(new LoadInfo(1));
         nodeInfo.setTimeStarted(System.currentTimeMillis());
         nodeInfo.setTransports(BootstrapNodeIT.getHttpAndTcpTransportMD() );
         return nodeInfo;

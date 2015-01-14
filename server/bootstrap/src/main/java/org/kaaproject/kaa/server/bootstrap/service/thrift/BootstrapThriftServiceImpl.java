@@ -19,7 +19,6 @@ package org.kaaproject.kaa.server.bootstrap.service.thrift;
 import java.util.List;
 
 import org.apache.thrift.TException;
-import org.kaaproject.kaa.server.bootstrap.service.DefaultOperationsServerListService;
 import org.kaaproject.kaa.server.bootstrap.service.initialization.BootstrapInitializationService;
 import org.kaaproject.kaa.server.common.thrift.cli.server.BaseCliThriftService;
 import org.kaaproject.kaa.server.common.thrift.gen.bootstrap.BootstrapThriftService;

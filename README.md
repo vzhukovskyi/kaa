@@ -23,7 +23,6 @@ Key features of Kaa are:
 * **[Profiling](http://docs.kaaproject.org/display/KAA/Endpoint+profiling) and [grouping](http://docs.kaaproject.org/display/KAA/Endpoint+grouping)**: Kaa introduces the concept of the endpoint profile which consists of client-side and server-side parts. Profiles can then be used to organize the endpoints into groups. Endpoint groups can be used, for example, to send targeted notifications or adjust software behavior.
 * **[Notifications delivery](http://docs.kaaproject.org/display/KAA/Notifications)**: Kaa features a topic-based notification system that allows the server to deliver messages of any predefined structure to subscribed endpoints.
 * **[Data distribution](http://docs.kaaproject.org/display/KAA/Configuration)**: Kaa allows performing updates of operational data, such as configuration data, from the Kaa server to endpoints.
-* **[Transport abstraction](http://docs.kaaproject.org/display/KAA/Transports)**: Kaa’s data channel abstraction architecture presents software vendors with freedom in selecting a networking stack for establishing communication between the server and endpoints - WiFi, Ethernet, Zigbee, mqtt, CoAP, XMPP, TCP, HTTP, etc.
 * **[Support of multi-tenancy and multi-application configuration](http://docs.kaaproject.org/display/KAA/Design+reference)**: The Kaa server is able to serve multiple business entities and multiple applications independently on a single server instance.
 
 ### Resources

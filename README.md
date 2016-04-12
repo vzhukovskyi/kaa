@@ -7,8 +7,7 @@ Kaa is an open-source middleware platform for building, managing, and integratin
 
 [![Kaa logo](logo_kaa_fullsize.png)](http://www.kaaproject.org/)
 
-Kaa in a nutshell
-=================
+### Kaa in a nutshell
 
 Kaa is a highly flexible open-source platform for building, managing, and integrating applications in the Internet of Things. Kaa offers a holistic approach for implementing rich communication, control, and interoperation capabilities into connected products and smart devices. On top of this, powerful back-end functionality of Kaa greatly speeds up IoT product development, allowing vendors to concentrate on maximizing their product’s unique value to the consumer.
 
@@ -22,7 +21,7 @@ Key features of Kaa are:
 * **Transport abstraction**: Kaa’s data channel abstraction architecture presents software vendors with freedom in selecting a networking stack for establishing communication between the server and endpoints - WiFi, Ethernet, Zigbee, mqtt, CoAP, XMPP, TCP, HTTP, etc. A prominent characteristic of Kaa is its ability to build applications that function over any type of network connection and communicate with devices even over intermittent data connections.
 * **Support of multi-tenancy and multi-application configuration**: The Kaa server is able to serve multiple business entities and multiple applications independently on a single server instance. For more details, refer to the [Design reference](http://docs.kaaproject.org/display/KAA/Design+reference).
 
-## Resources
+### Resources
 
 * [Kaa website](http://www.kaaproject.org/)
 * [Project wiki](http://docs.kaaproject.org/display/KAA/)
@@ -30,15 +29,15 @@ Key features of Kaa are:
 * [Google group](https://groups.google.com/forum/#!forum/kaaproject)
 * [Documentation](http://docs.kaaproject.org/display/KAA/Kaa+IoT+Platform+Home)
 
-## Getting started
+# Getting started
 
 Kaa Sandbox is the quickest and easiest way to get started with Kaa. It's a private Kaa environment which includes demo client applications. Kaa Sandbox includes all necessary Kaa components in a convenient virtual environment that can be set up in just 5 minutes! Checkout [Getting started](http://docs.kaaproject.org/display/KAA/Getting+started) page for more information.
 
-## Installation and configuration
+### Installation and configuration
 
 After you get acquainted with Kaa Sandbox and its demo applications, you can take one step further and install Kaa into your environment. Kaa installation is available in the single node mode or in the distributed mode, as described in the [Installation guide](http://docs.kaaproject.org/display/KAA/Installation+guide).
 
-## Supported platforms
+### Supported platforms
 
 Operating systems:
 

@@ -6,9 +6,9 @@ Welcome to Kaa!
 Kaa is an open-source middleware platform for building, managing, and integrating connected products with the Internet of Everything.
 
 <div style="display:flex;justify-content:center;align-items:center;">
-    <a href="http://www.kaaproject.org/"> 
+    <div><a href="http://www.kaaproject.org/"> 
         <img src="logo_kaa_fullsize.png" height="250">
-    </a>
+    </div></a>
 </div>
 
 ### Kaa in a nutshell

@@ -3,7 +3,7 @@ Kaa open-source IoT platform
 
 Welcome to Kaa!
 
-Kaa is an open-source middleware platform for building, managing, and integrating connected products with the Internet of Everything.
+Kaa is an open-source middleware platform for building, managing, and integrating connected products with the Internet of Things.
 
 
 <p align="center">
@@ -14,13 +14,13 @@ Kaa is an open-source middleware platform for building, managing, and integratin
 
 ### Kaa in a nutshell
 
-Kaa is a highly flexible open-source platform for building, managing, and integrating applications in the Internet of Things. Kaa offers a holistic approach for implementing rich communication, control, and interoperation capabilities into connected products and smart devices. On top of this, powerful back-end functionality of Kaa greatly speeds up IoT product development, allowing vendors to concentrate on maximizing their product’s unique value to the consumer.
+Kaa is a highly flexible open-source platform for building, managing, and integrating applications in the Internet of Things. Kaa offers a holistic approach for implementing rich communication, control, and interoperability capabilities into connected products and smart devices. On top of this, powerful back-end functionality of Kaa greatly speeds up the IoT product development, allowing vendors to concentrate on maximizing their product’s unique value to the customer.
 
 Key features of Kaa are:
 
 * **[Events](http://docs.kaaproject.org/display/KAA/Events)**: Kaa provides a mechanism for delivery of configurable event messages across connected devices.
-* **[Data collection](http://docs.kaaproject.org/display/KAA/Logging)**: The Kaa Logging subsystem is responsiblefor temporary storage of data records ("logs") on the endpoints, periodically transferring these logs from endpoints to servers, and, finally, either persisting them on the server for further processing or submitting them to immediate stream analysis.
-* **[Profiling](http://docs.kaaproject.org/display/KAA/Endpoint+profiling) and [grouping](http://docs.kaaproject.org/display/KAA/Endpoint+grouping)**: Kaa introduces the concept of the endpoint profile which consists of client-side and server-side parts. Profiles can then be used to organize the endpoints into groups. Endpoint groups can be used, for example, to send targeted notifications or adjust software behavior.
+* **[Data collection](http://docs.kaaproject.org/display/KAA/Logging)**: The Kaa Logging subsystem is responsible for temporary storage of data records ("logs") on the endpoints, periodically transferring these logs from endpoints to servers, and, finally, either persisting them on the server for further processing or submitting them to immediate stream analysis.
+* **[Profiling](http://docs.kaaproject.org/display/KAA/Endpoint+profiling) and [grouping](http://docs.kaaproject.org/display/KAA/Endpoint+grouping)**: Kaa introduces the concept of the endpoint profile, which consists of a client-side part and a server-side part. Profiles can then be used to organize the endpoints into groups. Endpoint groups can be used, for example, to send targeted notifications or adjust software behavior.
 * **[Notifications delivery](http://docs.kaaproject.org/display/KAA/Notifications)**: Kaa features a topic-based notification system that allows the server to deliver messages of any predefined structure to subscribed endpoints.
 * **[Data distribution](http://docs.kaaproject.org/display/KAA/Configuration)**: Kaa allows performing updates of operational data, such as configuration data, from the Kaa server to endpoints.
 * **[Support of multi-tenancy and multi-application configuration](http://docs.kaaproject.org/display/KAA/Design+reference)**: The Kaa server is able to serve multiple business entities and multiple applications independently on a single server instance.
@@ -34,11 +34,11 @@ Key features of Kaa are:
 
 # Getting started
 
-Kaa Sandbox is the quickest and easiest way to get started with Kaa. It's a private Kaa environment which includes demo client applications. Kaa Sandbox includes all necessary Kaa components in a convenient virtual environment that can be set up in just 5 minutes! Checkout [Getting started](http://docs.kaaproject.org/display/KAA/Getting+started) page for more information.
+The Kaa Sandbox is the quickest and easiest way to get started with Kaa. It's a private Kaa environment which includes demo client applications. The Kaa Sandbox includes all necessary Kaa components in a convenient virtual environment that can be set up in just 5 minutes! Check out [Getting started](http://docs.kaaproject.org/display/KAA/Getting+started) page for more information.
 
 ### Installation and configuration
 
-After you get acquainted with Kaa Sandbox and its demo applications, you can take one step further and install Kaa into your environment. Kaa installation is available in the single node mode or in the distributed mode, as described in the [Installation guide](http://docs.kaaproject.org/display/KAA/Installation+guide).
+After you get acquainted with the Kaa Sandbox and its demo applications, you can take one step further and install Kaa into your environment. Kaa installation is available in the single node mode or in the distributed mode, as described in the [Installation guide](http://docs.kaaproject.org/display/KAA/Installation+guide).
 
 ### Supported platforms
 
@@ -72,7 +72,7 @@ Supported data processing systems
 
 ## Contribute to Kaa
 
-Checkout the [contributor's guide](http://docs.kaaproject.org/display/KAA/Contribute+to+Kaa) explaining how to contribute to Kaa.
+Check out the [contributor's guide](http://docs.kaaproject.org/display/KAA/Contribute+to+Kaa) explaining how to contribute to Kaa.
 
 ## License
 
